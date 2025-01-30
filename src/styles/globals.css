@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-red: #E63946;
+  --color-orange: #F4A261;
+  --color-blue: #264653;
+  --color-yellow: #E9C46A;
+  --color-gray: #f8f9fa;
+}
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-[#264653];
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 bg-[#E9C46A] text-[#264653] rounded-lg hover:opacity-90 transition-opacity;
+  }
+
+  .input {
+    @apply w-full px-4 py-2 bg-white border border-[#E63946] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E63946];
+  }
+
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+.nav-link {
+  @apply text-[#264653] hover:text-[#E63946] transition-colors;
+}
+
+.dropdown {
+  @apply absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-50 border border-[#E63946];
+}
