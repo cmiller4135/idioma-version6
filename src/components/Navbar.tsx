@@ -58,7 +58,7 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-8">
             <div className="relative">
               <button onClick={toggleToolsMenu} className="text-custom-yellow flex items-center">
-                Tools <ChevronDown className="ml-1 h-4 w-4 text-custom-yellow" />
+                Language Learning Tools <ChevronDown className="ml-1 h-4 w-4 text-custom-yellow" />
               </button>
               {toolsOpen && (
                 <div className="absolute mt-2 w-48 bg-white rounded-md shadow-lg">

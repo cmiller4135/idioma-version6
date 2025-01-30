@@ -86,7 +86,7 @@ const Landing = () => {
 
           <div className="bg-white p-8 rounded-lg shadow-md border border-[#E63946]">
             <h2 className="text-2xl font-bold mb-6 text-center text-[#264653]">
-              {isLogin ? 'Welcome Back!' : 'Create Your Account'}
+              {isLogin ? 'Welcome Back!' : 'Create Your Account to Get More Language Learning Tools'}
             </h2>
 
             {error && (
@@ -123,7 +123,7 @@ const Landing = () => {
               </button>
             </form>
 
-            <div className="mt-4">
+            {/* <div className="mt-4">
               <button
                 onClick={handleGoogleLogin}
                 className="w-full flex items-center justify-center px-4 py-2 border border-[#E63946] rounded-lg text-[#264653] hover:bg-gray-50"
@@ -131,7 +131,7 @@ const Landing = () => {
                 <Mail className="h-5 w-5 mr-2" />
                 Continue with Google
               </button>
-            </div>
+            </div> */}
 
             <p className="mt-4 text-center text-[#264653]">
               {isLogin ? "Don't have an account? " : "Already a member? "}
