@@ -76,10 +76,10 @@ const Landing = () => {
             <div className="space-y-4">
               <h3 className="font-semibold text-xl">Cool Tools You'll Love:</h3>
               <ul className="space-y-2">
-                <li>• AI-Powered Conversation Practice</li>
-                <li>• Interactive Grammar Exercises</li>
-                <li>• Vocabulary Building Games</li>
-                <li>• Cultural Immersion Activities</li>
+                <li>• AI-Powered Image/Photo Translation</li>
+                <li>• Learn a Language with topics you love</li>
+                <li>• Fun conjugation learning tools</li>
+                <li>• Improve your vocabulary with AI</li>
               </ul>
             </div>
           </div>
