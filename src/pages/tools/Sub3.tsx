@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const subjects = [
-  "Other - You choose the topic",
   "Medicine/Healthcare",
+  "Other - You choose the topic",
   "Business/Finance",
   "Hospitality/Tourism",
   "Technology/IT",

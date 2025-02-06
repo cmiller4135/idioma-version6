@@ -50,13 +50,14 @@ const Sub1 = () => {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md border border-[#E63946]">
-      <h1>Spanish Verb Translator and Conjugator</h1>
+      <h3>Spanish Verb Translator and Conjugator</h3>
+      <h1>Type any form of a Spanish or English verb and get the conjugation and 10 example sentences</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Type a word..."
+          placeholder="Type a Spanish or English verb..."
           className="mt-4 p-2 border border-gray-300 rounded w-full"
         />
         <button

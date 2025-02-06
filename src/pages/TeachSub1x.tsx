@@ -23,7 +23,6 @@ function TeachSub1() {
   const [isStreamReady, setIsStreamReady] = useState(false);
   const [translationType, setTranslationType] = useState<TranslationType>('Translate from English to Spanish');
   const [lastTranslatedImage, setLastTranslatedImage] = useState<string | null>(null);
-  const [translationBuffer, setTranslationBuffer] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -117,7 +116,7 @@ function TeachSub1() {
             ],
           },
         ],
-        max_tokens: 4090,
+        max_tokens: 4000,
       });
 
       const translationContent = translationResponse.choices[0]?.message?.content || 'No text detected or unable to translate.';
@@ -130,9 +129,7 @@ function TeachSub1() {
       const translatedText = translatedMatch ? translatedMatch[1].trim() : 'Translation not available';
       const englishText = englishMatch ? englishMatch[1].trim() : 'Original text not available'; 
 
-      const formattedResponse = `${targetLanguage} Translation:\n${translatedText}\n\r\n\n
-      
-      English Text:\n${englishText}`;
+      const formattedResponse = `${targetLanguage} Translation:\n${translatedText}\n\n\nEnglish Text:\n${englishText}`;
       
       setMessages(prev => [
         ...prev,
@@ -141,7 +138,6 @@ function TeachSub1() {
       
       setLastTranslatedImage(photo);
       setPhoto(null);
-      setTranslationBuffer(translationContent); // Store the response in the buffer
     } catch (error) {
       console.error('Error:', error);
       setMessages(prev => [...prev, {
@@ -154,7 +150,7 @@ function TeachSub1() {
   };
 
   const handleAnalyzeVerbs = async () => {
-    if (!translationBuffer) return;
+    if (!lastTranslatedImage) return;
 
     setIsLoading(true);
     try {
@@ -163,8 +159,15 @@ function TeachSub1() {
         messages: [
           {
             role: "user",
-            content: `Identify all verbs in the translated text. For each verb, put the translated verb, english verb, and conjugation followed by a new line in the html ${translationBuffer}`
-                      // content: `Identify all verbs in the translated text. For each verb, provide the following details on a new line: [foreign language verb] - [original verb in English] - [conjugation with tense]. Ensure each verb is listed on a separate line.\n\n${translationBuffer}`
+            content: [
+              { type: "text", text: "Find all translated verbs in the text and put each 'foreign language verb - original verb - conjugation with tense' on a line then go to a new line in the container so that each verb is on a single line in the response)" },
+              {
+                type: "image_url",
+                image_url: {
+                  url: lastTranslatedImage,
+                },
+              },
+            ],
           },
         ],
         max_tokens: 3000,
@@ -188,7 +191,7 @@ function TeachSub1() {
   };
 
   const handleAnalyzeAdjectives = async () => {
-    if (!translationBuffer) return;
+    if (!lastTranslatedImage) return;
 
     setIsLoading(true);
     try {
@@ -197,7 +200,15 @@ function TeachSub1() {
         messages: [
           {
             role: "user",
-            content: `Identify all adjectives in the translated text. For each adjective, provide the translated adjective and original adjective followed by a new line in the html. Just put the adjectives, don't include explanation before or after the list. ${translationBuffer}`
+            content: [
+              { type: "text", text: "Find all adjectives in the text and put each adjective - Translated adjective on a line then go to a new line in the container so that each adjective is on a single line in the response)" },
+              {
+                type: "image_url",
+                image_url: {
+                  url: lastTranslatedImage,
+                },
+              },
+            ],
           },
         ],
         max_tokens: 3000,
