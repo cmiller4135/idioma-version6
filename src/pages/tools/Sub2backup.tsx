@@ -17,10 +17,6 @@ const Sub2 = () => {
   const [error, setError] = useState<string | null>(null);
   const [editingWordId, setEditingWordId] = useState<string | null>(null);
   const [editingTranslationId, setEditingTranslationId] = useState<string | null>(null);
-  const [newWord, setNewWord] = useState<string>('');
-  const [newTranslation, setNewTranslation] = useState<string>('');
-  const [addingWord, setAddingWord] = useState<boolean>(false);
-  const [newWordListName, setNewWordListName] = useState<string | null>(null);
 
   useEffect(() => {
     fetchUserId();
@@ -61,11 +57,7 @@ const Sub2 = () => {
         .eq('list_name', listName);
 
       if (error) throw error;
-      if (Array.isArray(data)) {
-        setVocabulary(data);
-      } else {
-        setVocabulary([]);
-      }
+      setVocabulary(data);
     } catch (err) {
       setError(err.message);
     }
@@ -129,24 +121,6 @@ const Sub2 = () => {
     }
   };
 
-  const handleAddWord = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('vocabulary')
-        .insert([{ user_id: userId, list_name: newWordListName, word: newWord, word_translated: newTranslation }]);
-
-      if (error) throw error;
-      if (Array.isArray(data)) {
-        setVocabulary(prev => [...prev, ...data]);
-      }
-      setNewWord('');
-      setNewTranslation('');
-      setAddingWord(false);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
   if (loading) return <div className="p-4">Loading...</div>;
   if (error) return <div className="p-4 text-[#E63946]">Error: {error}</div>;
 
@@ -174,46 +148,6 @@ const Sub2 = () => {
       <div className="bg-white p-6 rounded-lg shadow-md border border-[#E63946] w-1/2">
         <div className="text-left text-sm text-gray-700 mb-4">User ID: {userId}</div>
         <h1 className="text-xl font-semibold text-custom-blue mb-4">{selectedListName} Vocabulary</h1>
-        <button
-          onClick={() => setAddingWord(true)}
-          className="mb-4 bg-custom-blue text-white py-2 px-4 rounded-lg hover:bg-custom-red transition-colors"
-        >
-          Add a Word
-        </button>
-        {addingWord && (
-          <div className="mb-4">
-            <select
-              value={newWordListName || ''}
-              onChange={(e) => setNewWordListName(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded mb-2"
-            >
-              <option value="" disabled>Select a vocabulary list</option>
-              {listNames.map((listName, index) => (
-                <option key={index} value={listName}>{listName}</option>
-              ))}
-            </select>
-            <input
-              type="text"
-              value={newWord}
-              onChange={(e) => setNewWord(e.target.value)}
-              placeholder="Word"
-              className="w-full p-2 border border-gray-300 rounded mb-2"
-            />
-            <input
-              type="text"
-              value={newTranslation}
-              onChange={(e) => setNewTranslation(e.target.value)}
-              placeholder="Translation"
-              className="w-full p-2 border border-gray-300 rounded mb-2"
-            />
-            <button
-              onClick={handleAddWord}
-              className="w-full bg-custom-blue text-white py-2 px-4 rounded-lg hover:bg-custom-red transition-colors"
-            >
-              Save Word
-            </button>
-          </div>
-        )}
         <ul className="space-y-4">
           {vocabulary.map((word) => (
             <li key={word.vocab_id} className="flex justify-between p-4 bg-gray-50 border border-gray-200 rounded-lg" style={{ height: '62.5%' }}>
