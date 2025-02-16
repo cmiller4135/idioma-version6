@@ -56,14 +56,16 @@ const Navbar = () => {
 
           {/* Middle: Main Navigation */}
           <div className="hidden md:flex items-center space-x-8">
+          <Link to="/tools/sub2" className="text-custom-yellow">My Vocabulary</Link>
             <div className="relative">
+            
               <button onClick={toggleToolsMenu} className="text-custom-yellow flex items-center">
                 Language Learning Tools <ChevronDown className="ml-1 h-4 w-4 text-custom-yellow" />
               </button>
               {toolsOpen && (
                 <div className="absolute mt-2 w-48 bg-white rounded-md shadow-lg">
                   <Link to="/tools/sub1" className="block px-4 py-2 text-gray-800 hover:bg-gray-100" onClick={handleSubMenuClick}>Spanish Conjugations</Link>
-                  <Link to="/tools/sub2" className="block px-4 py-2 text-gray-800 hover:bg-gray-100" onClick={handleSubMenuClick}>Spanish Vocabulary</Link>
+                  {/* <Link to="/tools/sub2" className="block px-4 py-2 text-gray-800 hover:bg-gray-100" onClick={handleSubMenuClick}>Spanish Vocabulary</Link> */}
                   <Link to="/tools/sub3" className="block px-4 py-2 text-gray-800 hover:bg-gray-100" onClick={handleSubMenuClick}>Study a topic or industry</Link>
                 </div>
               )}
@@ -80,8 +82,6 @@ const Navbar = () => {
                 </div>
               )}
             </div>
-
-            <Link to="/saas1" className="text-custom-yellow">Study Grammar with AI</Link>
             <Link to="/saas2" className="text-custom-yellow">Study a Language with AI</Link>
             {/* <Link to="/twilio" className="text-custom-yellow">Twilio</Link>
             <Link to="/twilioOptIn" className="text-custom-yellow">Twilio Messaging Opt-In</Link> */}
@@ -121,6 +121,7 @@ const Navbar = () => {
         {/* Mobile menu */}
         {isOpen && (
           <div className="md:hidden py-4">
+            <Link to="/tools/sub2" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Vocabulary</Link>
             <Link to="/tools" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Learning Tools</Link>
             <Link to="/tools/sub1" className="block py-2 pl-4 text-custom-yellow" onClick={handleSubMenuClick}>Spanish Conjugations</Link>
             <Link to="/tools/sub2" className="block py-2 pl-4 text-custom-yellow" onClick={handleSubMenuClick}>Spanish Vocabulary</Link>
@@ -130,7 +131,7 @@ const Navbar = () => {
             <Link to="/teach/sub1" className="block py-2 pl-4 text-custom-yellow" onClick={handleSubMenuClick}>Photo Translation</Link>
             <Link to="/teach/sub2" className="block py-2 pl-4 text-custom-yellow" onClick={handleSubMenuClick}>Video Learning</Link>
             
-            <Link to="/saas1" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Study Grammar with AI</Link>
+            
             <Link to="/saas2" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Study a Language with AI</Link>
             {/* <Link to="/twilio" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Twilio</Link>
             <Link to="/twilioOptIn" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Twilio Messaging Opt-In</Link> */}

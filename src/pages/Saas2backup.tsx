@@ -3,7 +3,6 @@ import { Send } from 'lucide-react';
 import { saveAs } from 'file-saver';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
 import axios from 'axios';
-import PixabayImage from '../components/PixabayImage';
 
 interface GrokResponse {
   text: string;
@@ -345,7 +344,6 @@ Correct Answer: [correct answer]`;
 
       {response && (
         <div className="mt-8 space-y-8">
-          <PixabayImage description={topic} />
           <div className="bg-gray-50 p-6 rounded-lg">
             <h2 className="text-xl font-semibold text-custom-blue mb-4">Generated Content</h2>
             <div className="grid grid-cols-2 gap-4">
