@@ -10,10 +10,12 @@ const Landing = () => {
   const [password, setPassword] = React.useState('');
   const [isLogin, setIsLogin] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [message, setMessage] = React.useState<string | null>(null);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setMessage(null);
     try {
       let authResponse;
       if (isLogin) {
@@ -21,6 +23,8 @@ const Landing = () => {
           email,
           password,
         });
+        if (authResponse.error) throw authResponse.error;
+        navigate('/home');
       } else {
         authResponse = await supabase.auth.signUp({
           email,
@@ -29,11 +33,12 @@ const Landing = () => {
             data: {
               username: email.split('@')[0], // Store username in auth metadata
             },
+            emailRedirectTo: `${window.location.origin}/verify-email`
           },
         });
+        if (authResponse.error) throw authResponse.error;
+        setMessage('A verification email has been sent to your email address. Please verify your email before logging in.');
       }
-      if (authResponse.error) throw authResponse.error;
-      navigate('/home');
     } catch (error) {
       console.error('Error:', error);
       setError(error.message);
@@ -92,6 +97,12 @@ const Landing = () => {
             {error && (
               <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
                 <p className="text-red-600">{error}</p>
+              </div>
+            )}
+
+            {message && (
+              <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-green-600">{message}</p>
               </div>
             )}
 

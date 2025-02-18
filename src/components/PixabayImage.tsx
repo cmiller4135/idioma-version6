@@ -34,12 +34,14 @@ const PixabayImage: React.FC<PixabayImageProps> = ({ description }) => {
 
   return (
     <div>
+    <div>
       {imageUrl ? (
         <img src={imageUrl} alt={description} className="mb-1 rounded-lg shadow-md" />
       ) : (
         <p className="mt-4 text-red-500">{error}</p>
       )}
     </div>
+      </div>
   );
 };
 

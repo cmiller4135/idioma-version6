@@ -5,7 +5,10 @@ import PixabayImage from './PixabayImage';
 const LeftColumn = () => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <PixabayImage description="fairy tale like image of a winding road" />
+      {/* <PixabayImage description="fairy tale like image of a winding road" /> */}
+      <div>
+      <img className="mb-1 rounded-lg shadow-md" src="/images/journey.jpg" alt="Logo" />
+    </div>
       <h2 className="text-xl font-bold mb-4 text-[#264653]">Language Learning Journey</h2>
       
       <blockquote className="border-l-4 border-[#E63946] pl-4 mb-6 italic">

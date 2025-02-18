@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import axios from 'axios';
+import { Chat } from './Chat';
 
 interface VocabularyWord {
   vocab_id: string;
@@ -419,6 +420,7 @@ const Sub2 = () => {
           </div>
         ))}
       </div>
+      <Chat></Chat>
     </div>
   );
 };
