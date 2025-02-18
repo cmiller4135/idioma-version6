@@ -16,19 +16,17 @@ import Sub3 from './pages/tools/Sub3';
 import TeachSub1 from './pages/teach/TeachSub1';
 import TeachSub2 from './pages/teach/TeachSub2';
 
-import TwilioOptIn from './pages/TwilioOptIn';
-
-
 const Layout = ({ children }: { children: React.ReactNode }) => (
   <div className="min-h-screen flex flex-col">
     <Navbar />
     <div className="flex-1 container-custom py-8">
       <div className="grid md:grid-cols-4 gap-8">
-        <div className="md:col-span-1">
-          <LeftColumn />
-        </div>
+
         <div className="md:col-span-3">
           {children}
+        </div>
+        <div className="md:col-span-1">
+          <LeftColumn />
         </div>
       </div>
     </div>
@@ -52,8 +50,6 @@ function App() {
         <Route path="/saas1" element={<Layout><Saas1 /></Layout>} />
         <Route path="/saas2" element={<Layout><Saas2 /></Layout>} />
         <Route path="/profile/config" element={<Layout><ProfileConfig /></Layout>} />
-
-        <Route path="/twiliooptin" element={<TwilioOptIn />} />
       </Routes>
     </Router>
   );
