@@ -24,7 +24,7 @@ const Landing = () => {
           password,
         });
         if (authResponse.error) throw authResponse.error;
-        navigate('/home');
+        navigate('/teach/sub1');
       } else {
         authResponse = await supabase.auth.signUp({
           email,
