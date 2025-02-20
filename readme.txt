@@ -4,6 +4,21 @@ Sentences need an option for beginner, intermediate, etc. sentences.
 images
 Common mistakes could be it's own page
 
+UPDATES
+  - remove email verification logic until Sonu is done with the SendGrid verification emails
+  - create a 'Forgot Password?'
+  - on update in Profile page, put 'Update Successful'
+  - get Country Code working (allow typing of country, maybe have a table in Supabase)
+  - Format the input of the phone number
+  - implement reCaptcha
+  - Sonu - Twilio and SendGrid (for email verification)
+  - implement a lastlogintime when a user logs in
+  - In the vocabulary page...
+    - when 'Save Word' is clicked, get the lists and words again
+    - when a list is clicked, make sure dropdown, word, translation, and 'Save Word' is hidden.
+    - 
+
+
 very smart chat - beginner, intermediate. (in roles)
 
 choose what things a user wants to study. 
@@ -35,12 +50,3 @@ get Deepl translate functionality working.
 In Saas2.tsx, fix the answer part of the quiz
 
 change fetchExamplesSentences to do the following: 1. before the open ai api is called, put all the word_translated items in a string that puts first word, then a comma and a space, then the second word then a comma and a space, until the last word then only put a space. 2. use this string 
-
-  Sonu Items
-  - Explain how to use the API
-  - How to use it with other country codes
-  - How to use the API with WhatsApp and with SMS messaging
-  - Write a function/component (.tsx)  that creates an initial Welcome text message after a button is clicked (then I can incorporate that component into my website when a user checks the Opt-in to messaging box)
-  - Need help in getting SendMail to work in my website to add email verification for my website users
-  - Confidentiality Agreement 
-  - Create a GitHub repository for Sonu to work from. 

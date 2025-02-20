@@ -11,7 +11,7 @@ interface Message {
 }
 
 type TranslationType = 
-  | 'Translate to Spanish'
+  | 'Translate from English to Spanish'
   | 'Translate from Spanish to English'
   | 'Translate from English to Japanese'
   | 'Translate from English to French';
@@ -21,7 +21,7 @@ function TeachSub1() {
   const [isLoading, setIsLoading] = useState(false);
   const [photo, setPhoto] = useState<string | null>(null);
   const [isStreamReady, setIsStreamReady] = useState(false);
-  const [translationType, setTranslationType] = useState<TranslationType>('Translate to Spanish');
+  const [translationType, setTranslationType] = useState<TranslationType>('Translate from English to Spanish');
   const [lastTranslatedImage, setLastTranslatedImage] = useState<string | null>(null);
   const [translationBuffer, setTranslationBuffer] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -83,7 +83,7 @@ function TeachSub1() {
 
   const getTranslationPrompt = () => {
     switch (translationType) {
-      case 'Translate to Spanish':
+      case 'Translate from English to Spanish':
         return "1. Translate this text to Spanish. 2. Also provide the original English text. Format your response exactly like this: SPANISH: [Spanish translation] ENGLISH: [Original English text]";
       case 'Translate from Spanish to English':
         return "1. Translate this text to English. 2. Also provide the original Spanish text. Format your response exactly like this: ENGLISH: [English translation] SPANISH: [Original Spanish text]";
@@ -130,7 +130,9 @@ function TeachSub1() {
       const translatedText = translatedMatch ? translatedMatch[1].trim() : 'Translation not available';
       const englishText = englishMatch ? englishMatch[1].trim() : 'Original text not available'; 
 
-      const formattedResponse = `${targetLanguage} Translation:\n${translatedText}\n\nEnglish Text:\n${englishText}`;
+      const formattedResponse = `${targetLanguage} Translation:\n${translatedText}\n\r\n\n
+      
+      English Text:\n${englishText}`;
       
       setMessages(prev => [
         ...prev,
@@ -161,7 +163,8 @@ function TeachSub1() {
         messages: [
           {
             role: "user",
-            content: `Identify all verbs in the translated text. For each verb, provide the following details on a new line: [foreign language verb] - [original verb in English] - [conjugation with tense]. Ensure each verb is listed on a separate line.\n\n${translationBuffer}`
+            content: `Identify all verbs in the translated text. For each verb, put the translated verb, english verb, and conjugation followed by a new line in the html ${translationBuffer}`
+                      // content: `Identify all verbs in the translated text. For each verb, provide the following details on a new line: [foreign language verb] - [original verb in English] - [conjugation with tense]. Ensure each verb is listed on a separate line.\n\n${translationBuffer}`
           },
         ],
         max_tokens: 3000,
@@ -303,7 +306,7 @@ function TeachSub1() {
                       className="w-full bg-custom-blue text-white py-3 px-6 rounded-lg hover:bg-custom-red transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       <option disabled>Select a Translation...</option>
-                      <option>Translate to Spanish</option>
+                      <option>Translate from English to Spanish</option>
                       <option>Translate from Spanish to English</option>
                       <option>Translate from English to Japanese</option>
                       <option>Translate from English to French</option>
