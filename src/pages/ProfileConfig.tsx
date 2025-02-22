@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import usePrompt from '../hooks/usePrompt';
 
 interface Profile {
   id: string;
@@ -17,10 +19,28 @@ const ProfileConfig = () => {
   const [error, setError] = useState<string | null>(null);
   const [updatedProfile, setUpdatedProfile] = useState<Profile | null>(null);
   const [phoneError, setPhoneError] = useState<boolean>(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProfile();
   }, []);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges) {
+        event.preventDefault();
+        event.returnValue = '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [hasUnsavedChanges]);
+
+  usePrompt("You have unsaved changes. Are you sure you want to leave the page?", hasUnsavedChanges);
 
   const fetchProfile = async () => {
     try {
@@ -44,6 +64,7 @@ const ProfileConfig = () => {
   };
 
   const handleUpdate = (field: string, value: any) => {
+    setHasUnsavedChanges(true);
     if (field === 'phone_num' && /\D/.test(value)) {
       setPhoneError(true);
     } else {
@@ -62,6 +83,8 @@ const ProfileConfig = () => {
 
       if (error) throw error;
       setProfile(updatedProfile);
+      setHasUnsavedChanges(false);
+      alert("Update Successful");
     } catch (err) {
       setError(err.message);
     }
