@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import axios from 'axios';
+import { Chat } from './Chat';
 
 interface VocabularyWord {
   vocab_id: string;
   word: string;
   word_translated: string;
   list_name: string;
+  language: string;
 }
 
 const openaiApiKey = import.meta.env.VITE_OPENAI_API_KEY;
+const deeplApiKey = import.meta.env.VITE_DEEPL_API_KEY;
 
 const Sub2 = () => {
   const [userId, setUserId] = useState<string | null>(null);
@@ -27,6 +30,8 @@ const Sub2 = () => {
   const [creatingNewList, setCreatingNewList] = useState<boolean>(false);
   const [newListName, setNewListName] = useState<string>('');
   const [exampleSentences, setExampleSentences] = useState<{ [key: string]: string[] }>({});
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('');
+  const [otherLanguage, setOtherLanguage] = useState<string>('');
 
   useEffect(() => {
     fetchUserId();
@@ -62,7 +67,7 @@ const Sub2 = () => {
     try {
       const { data, error } = await supabase
         .from('vocabulary')
-        .select('vocab_id, word, word_translated, list_name')
+        .select('vocab_id, word, word_translated, list_name, language')
         .eq('user_id', userId)
         .eq('list_name', listName);
 
@@ -136,11 +141,37 @@ const Sub2 = () => {
   };
 
   const handleAddWord = async () => {
+    if (creatingNewList && !newListName.trim()) {
+      alert('Please enter a vocabulary list name');
+      return;
+    }
+
+    if (creatingNewList && selectedLanguage === '') {
+      alert('Please select a language');
+      return;
+    }
+
+    if (selectedLanguage === 'Other' && !otherLanguage.trim()) {
+      alert('Please enter a language');
+      return;
+    }
+
+    if (!newWord.trim()) {
+      alert('Please enter a word');
+      return;
+    }
+
+    if (!newTranslation.trim()) {
+      alert('Please enter a translation');
+      return;
+    }
+
     try {
       const listNameToUse = creatingNewList ? newListName : newWordListName;
+      const languageToUse = selectedLanguage === 'Other' ? otherLanguage : selectedLanguage;
       const { data, error } = await supabase
         .from('vocabulary')
-        .insert([{ user_id: userId, list_name: listNameToUse, word: newWord, word_translated: newTranslation }]);
+        .insert([{ user_id: userId, list_name: listNameToUse, word: newWord, word_translated: newTranslation, language: languageToUse }]);
 
       if (error) throw error;
       if (Array.isArray(data)) {
@@ -150,7 +181,10 @@ const Sub2 = () => {
       setNewTranslation('');
       setAddingWord(false);
       setCreatingNewList(false);
+      setNewWordListName(listNameToUse); // Ensure the dropdown shows the correct value
       setNewListName('');
+      setSelectedLanguage('');
+      setOtherLanguage('');
       await fetchListNames(); // Reload the list names
     } catch (err) {
       setError(err.message);
@@ -160,10 +194,35 @@ const Sub2 = () => {
   const handleNewWordListNameChange = (value: string) => {
     if (value === 'new') {
       setCreatingNewList(true);
-      setNewWordListName(null);
+      setNewWordListName('new');
     } else {
       setCreatingNewList(false);
       setNewWordListName(value);
+    }
+  };
+
+  const handleGetTranslation = async () => {
+    try {
+      const response = await fetch('https://api.deepl.com/v2/translate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          auth_key: deeplApiKey,
+          text: newWord,
+          target_lang: 'ES',
+        }),
+      });
+
+      const data = await response.json();
+      if (data.translations && data.translations.length > 0) {
+        setNewTranslation(data.translations[0].text);
+      } else {
+        setError('No translation found');
+      }
+    } catch (err) {
+      setError('Error fetching translation');
     }
   };
 
@@ -182,7 +241,7 @@ const Sub2 = () => {
             },
             {
               role: 'user',
-              content: `Provide two example Spanish sentences for the word "${word.word_translated}" with English translations.`
+              content: `Provide two example ${word.language} sentences for the word "${word.word_translated}" with English translations.`
             }
           ],
           max_tokens: 2000,
@@ -210,7 +269,8 @@ const Sub2 = () => {
     <div className="flex flex-col">
       <div className="flex">
         <div className="bg-white p-6 rounded-lg shadow-md border border-[#E63946] w-1/2 h-full">
-          <h2 className="text-xl font-semibold text-custom-blue mb-4">My Vocabulary Lists</h2>
+          <h2 className="text-xl font-semibold text-custom-blue">My Vocabulary Lists</h2>
+          <p className="text-custom-blue text-sm mb-2">(click 'Add a Word' to manage lists and words)</p>
           <div className="flex flex-wrap gap-2">
             {listNames.map((listName, index) => (
               <button
@@ -224,7 +284,7 @@ const Sub2 = () => {
           </div>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md border border-[#E63946] w-1/2">
-          <h1 className="text-xl font-semibold text-custom-blue mb-4">{selectedListName} Vocabulary</h1>
+          <h1 className="text-xl font-semibold text-custom-blue mb-4"> My {selectedListName} Vocabulary Words</h1>
           <button
             onClick={() => setAddingWord(true)}
             className="mb-4 bg-custom-blue text-white py-2 px-4 rounded-lg hover:bg-custom-red transition-colors"
@@ -253,13 +313,45 @@ const Sub2 = () => {
                   className="w-full p-2 border border-gray-300 rounded mb-2"
                 />
               )}
-              <input
-                type="text"
-                value={newWord}
-                onChange={(e) => setNewWord(e.target.value)}
-                placeholder="Word"
+              {creatingNewList && (
+              <select
+                value={selectedLanguage}
+                onChange={(e) => setSelectedLanguage(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded mb-2"
-              />
+              >
+                <option value="" disabled>Select a Language</option>
+                <option value="Spanish">Spanish</option>
+                <option value="French">French</option>
+                <option value="German">German</option>
+                <option value="Japanese">Japanese</option>
+                <option value="Portuguese">Portuguese</option>
+                <option value="Other">Other</option>
+              </select>
+              )}
+              {selectedLanguage === 'Other' && (
+                <input
+                  type="text"
+                  value={otherLanguage}
+                  onChange={(e) => setOtherLanguage(e.target.value)}
+                  placeholder="Enter other language"
+                  className="w-full p-2 border border-gray-300 rounded mb-2"
+                />
+              )}
+              <div className="flex mb-2">
+                <input
+                  type="text"
+                  value={newWord}
+                  onChange={(e) => setNewWord(e.target.value)}
+                  placeholder="Word"
+                  className="w-3/4 p-2 border border-gray-300 rounded"
+                />
+                <button
+                  onClick={handleGetTranslation}
+                  className="ml-2 w-1/4 bg-custom-blue text-white py-2 px-4 rounded-lg hover:bg-custom-red transition-colors hidden"
+                >
+                  Translate
+                </button>
+              </div>
               <input
                 type="text"
                 value={newTranslation}
@@ -328,6 +420,7 @@ const Sub2 = () => {
           </div>
         ))}
       </div>
+      <Chat></Chat>
     </div>
   );
 };

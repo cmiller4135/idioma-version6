@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import axios from 'axios';
 import { Chat } from './Chat';
+import MenuButton from '../../components/MenuButton';
 
 interface VocabularyWord {
   vocab_id: string;
@@ -21,8 +22,6 @@ const Sub2 = () => {
   const [selectedListName, setSelectedListName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [editingWordId, setEditingWordId] = useState<string | null>(null);
-  const [editingTranslationId, setEditingTranslationId] = useState<string | null>(null);
   const [newWord, setNewWord] = useState<string>('');
   const [newTranslation, setNewTranslation] = useState<string>('');
   const [addingWord, setAddingWord] = useState<boolean>(false);
@@ -32,6 +31,13 @@ const Sub2 = () => {
   const [exampleSentences, setExampleSentences] = useState<{ [key: string]: string[] }>({});
   const [selectedLanguage, setSelectedLanguage] = useState<string>('');
   const [otherLanguage, setOtherLanguage] = useState<string>('');
+  const [renamingListName, setRenamingListName] = useState<string | null>(null);
+  const [newListNameInput, setNewListNameInput] = useState<string>('');
+  const [renamingWordId, setRenamingWordId] = useState<string | null>(null);
+  const [newWordInput, setNewWordInput] = useState<string>('');
+  const [newTranslationInput, setNewTranslationInput] = useState<string>('');
+  const [loadingExamples, setLoadingExamples] = useState<boolean>(false);
+  const [numSentences, setNumSentences] = useState<number>(3);
 
   useEffect(() => {
     fetchUserId();
@@ -100,16 +106,6 @@ const Sub2 = () => {
     setLoading(false);
   };
 
-  const handleEditWord = (id: string) => {
-    setEditingWordId(id);
-    setEditingTranslationId(null);
-  };
-
-  const handleEditTranslation = (id: string) => {
-    setEditingTranslationId(id);
-    setEditingWordId(null);
-  };
-
   const handleSaveWord = async (id: string, newWord: string) => {
     try {
       const { error } = await supabase
@@ -119,7 +115,6 @@ const Sub2 = () => {
 
       if (error) throw error;
       setVocabulary(prev => prev.map(word => word.vocab_id === id ? { ...word, word: newWord } : word));
-      setEditingWordId(null);
     } catch (err) {
       setError(err.message);
     }
@@ -134,7 +129,6 @@ const Sub2 = () => {
 
       if (error) throw error;
       setVocabulary(prev => prev.map(word => word.vocab_id === id ? { ...word, word_translated: newTranslation } : word));
-      setEditingTranslationId(null);
     } catch (err) {
       setError(err.message);
     }
@@ -227,7 +221,12 @@ const Sub2 = () => {
   };
 
   const fetchExampleSentences = async () => {
-    if (!selectedListName) return;
+    if (!selectedListName) {
+      alert("No list is selected. Please click one of your Vocabulary Lists and try again.");
+      return;
+    }
+
+    setLoadingExamples(true);
 
     const sentences: { [key: string]: string[] } = {};
     for (const word of vocabulary) {
@@ -241,10 +240,10 @@ const Sub2 = () => {
             },
             {
               role: 'user',
-              content: `Provide two example ${word.language} sentences for the word "${word.word_translated}" with English translations.`
+              content: `Provide ${numSentences} example ${word.language} sentences for the word "${word.word_translated}" with English translations.`
             }
           ],
-          max_tokens: 2000,
+          max_tokens: 3000,
           temperature: 0.4
         }, {
           headers: {
@@ -260,6 +259,97 @@ const Sub2 = () => {
       }
     }
     setExampleSentences(sentences);
+    setLoadingExamples(false);
+  };
+
+  const handleDeleteList = async (listName: string) => {
+    try {
+      const { error } = await supabase
+        .from('vocabulary')
+        .delete()
+        .eq('user_id', userId)
+        .eq('list_name', listName);
+
+      if (error) throw error;
+      setListNames(prev => prev.filter(name => name !== listName));
+      if (selectedListName === listName) {
+        setSelectedListName(null);
+        setVocabulary([]);
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleRenameList = async (oldListName: string) => {
+    setRenamingListName(oldListName);
+    setNewListNameInput(oldListName);
+  };
+
+  const handleSaveListName = async (oldListName: string) => {
+    try {
+      const { error } = await supabase
+        .from('vocabulary')
+        .update({ list_name: newListNameInput })
+        .eq('user_id', userId)
+        .eq('list_name', oldListName);
+
+      if (error) throw error;
+      setListNames(prev => prev.map(name => name === oldListName ? newListNameInput : name));
+      if (selectedListName === oldListName) {
+        setSelectedListName(newListNameInput);
+      }
+      setRenamingListName(null);
+      setNewListNameInput('');
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleDelete = async (vocabId: string) => {
+    try {
+      const { error } = await supabase
+        .from('vocabulary')
+        .delete()
+        .eq('vocab_id', vocabId);
+
+      if (error) throw error;
+      setVocabulary(prev => prev.filter(word => word.vocab_id !== vocabId));
+
+      // Refresh list names and vocabulary
+      await fetchListNames();
+      if (selectedListName) {
+        await fetchVocabulary(selectedListName);
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleRename = (vocabId: string) => {
+    const wordToRename = vocabulary.find(word => word.vocab_id === vocabId);
+    if (wordToRename) {
+      setRenamingWordId(vocabId);
+      setNewWordInput(wordToRename.word);
+      setNewTranslationInput(wordToRename.word_translated);
+    }
+  };
+
+  const handleSaveRename = async (vocabId: string) => {
+    try {
+      const { error } = await supabase
+        .from('vocabulary')
+        .update({ word: newWordInput, word_translated: newTranslationInput })
+        .eq('vocab_id', vocabId);
+
+      if (error) throw error;
+      setVocabulary(prev => prev.map(word => word.vocab_id === vocabId ? { ...word, word: newWordInput, word_translated: newTranslationInput } : word));
+      setRenamingWordId(null);
+      setNewWordInput('');
+      setNewTranslationInput('');
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   if (loading) return <div className="p-4">Loading...</div>;
@@ -268,18 +358,42 @@ const Sub2 = () => {
   return (
     <div className="flex flex-col">
       <div className="flex">
-        <div className="bg-white p-6 rounded-lg shadow-md border border-[#E63946] w-1/2 h-full">
+        <div className="ml-2 bg-white p-6 rounded-lg shadow-md border border-[#E63946] w-1/2 h-full">
           <h2 className="text-xl font-semibold text-custom-blue">My Vocabulary Lists</h2>
           <p className="text-custom-blue text-sm mb-2">(click 'Add a Word' to manage lists and words)</p>
           <div className="flex flex-wrap gap-2">
             {listNames.map((listName, index) => (
-              <button
-                key={index}
-                onClick={() => handleListClick(listName)}
-                className={`w-[35%] py-2 px-4 rounded-lg transition-colors ${selectedListName === listName ? 'bg-custom-red text-white' : 'bg-custom-blue text-white hover:bg-custom-red'}`}
-              >
-                {listName}
-              </button>
+              <div key={index} className="relative w-[62.5%] flex items-center">
+                <div className="flex-grow">
+                  {renamingListName === listName ? (
+                    <div className="flex items-center">
+                      <input
+                        type="text"
+                        value={newListNameInput}
+                        onChange={(e) => setNewListNameInput(e.target.value)}
+                        className="w-full py-2 px-4 rounded-lg border border-gray-300"
+                      />
+                      <button
+                        onClick={() => handleSaveListName(listName)}
+                        className="ml-2 bg-custom-blue text-white py-2 px-4 rounded-lg hover:bg-custom-red transition-colors"
+                      >
+                        Save
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => handleListClick(listName)}
+                      className={`w-full py-2 px-4 rounded-lg transition-colors ${selectedListName === listName ? 'bg-custom-red text-white' : 'bg-custom-blue text-white hover:bg-custom-red'} flex justify-between items-center`}
+                    >
+                      <span className="flex-grow text-center">{listName}</span>
+                      <MenuButton
+                        onDelete={() => handleDeleteList(listName)}
+                        onRename={() => handleRenameList(listName)}
+                      />
+                    </button>
+                  )}
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -370,45 +484,66 @@ const Sub2 = () => {
           <ul className="space-y-4">
             {vocabulary.map((word) => (
               <li key={word.vocab_id} className="flex justify-between p-4 bg-gray-50 border border-gray-200 rounded-lg" style={{ height: '62.5%' }}>
-                {editingWordId === word.vocab_id ? (
-                  <input
-                    type="text"
-                    value={word.word}
-                    onChange={(e) => handleSaveWord(word.vocab_id, e.target.value)}
-                    className="border border-gray-300 rounded p-2"
-                  />
+                {renamingWordId === word.vocab_id ? (
+                  <div className="flex flex-col w-full">
+                    <input
+                      type="text"
+                      value={newWordInput}
+                      onChange={(e) => setNewWordInput(e.target.value)}
+                      className="mb-2 p-2 border border-gray-300 rounded"
+                    />
+                    <input
+                      type="text"
+                      value={newTranslationInput}
+                      onChange={(e) => setNewTranslationInput(e.target.value)}
+                      className="mb-2 p-2 border border-gray-300 rounded"
+                    />
+                    <button
+                      onClick={() => handleSaveRename(word.vocab_id)}
+                      className="bg-custom-blue text-white py-2 px-4 rounded-lg hover:bg-custom-red transition-colors"
+                    >
+                      Save
+                    </button>
+                  </div>
                 ) : (
-                  <span className="font-medium text-custom-blue" onClick={() => handleEditWord(word.vocab_id)}>
-                    {word.word}
-                  </span>
-                )}
-                {editingTranslationId === word.vocab_id ? (
-                  <input
-                    type="text"
-                    value={word.word_translated}
-                    onChange={(e) => handleSaveTranslation(word.vocab_id, e.target.value)}
-                    className="border border-gray-300 rounded p-2"
-                  />
-                ) : (
-                  <span className="text-gray-700" onClick={() => handleEditTranslation(word.vocab_id)}>
-                    {word.word_translated}
-                  </span>
+                  <>
+                    <span className="font-medium text-custom-blue">{word.word}</span>
+                    <span className="text-gray-700">{word.word_translated}</span>
+                    <MenuButton
+                      onDelete={() => handleDelete(word.vocab_id)}
+                      onRename={() => handleRename(word.vocab_id)}
+                    />
+                  </>
                 )}
               </li>
             ))}
           </ul>
         </div>
       </div>
-      <div className="mt-4 text-xl font-semibold text-custom-blue">
-        Hello World
+      <div className="ml-2 mt-4 text-xl font-semibold text-custom-blue">
+        After highlighting a list, click the button below to get example sentences.
       </div>
-      <button
-        onClick={fetchExampleSentences}
-        className="mt-4 bg-custom-blue text-white py-2 px-4 rounded-lg hover:bg-custom-red transition-colors"
-      >
-        Get example sentences
-      </button>
-      <div className="mt-4">
+      <div className="flex items-center mt-4">
+
+        <select
+          value={numSentences}
+          onChange={(e) => setNumSentences(Number(e.target.value))}
+          className="ml-2 p-2 border border-gray-300 rounded"
+        >
+          {Array.from({ length: 10 }, (_, i) => i + 1).map(num => (
+            <option key={num} value={num}>{num}</option>
+          ))}
+        </select>
+        <button
+          onClick={fetchExampleSentences}
+          className="bg-custom-blue text-white py-2 px-4 rounded-lg hover:bg-custom-red transition-colors"
+        >
+          example sentences from the highlighted list.
+        </button>
+
+      </div>
+      {loadingExamples && <div className="mt-4 text-xl font-semibold text-custom-blue">Loading...</div>}
+      <div className="mt-4 ml-2">
         {Object.entries(exampleSentences).map(([word, sentences]) => (
           <div key={word} className="mb-4">
             <h3 className="text-lg font-semibold text-custom-blue mb-2">{word}</h3>

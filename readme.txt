@@ -1,4 +1,5 @@
 contact us page
+component that rolls new features
 
 Sentences need an option for beginner, intermediate, etc. sentences.
 images
@@ -16,7 +17,7 @@ UPDATES
   - In the vocabulary page...
     - when 'Save Word' is clicked, get the lists and words again
     - when a list is clicked, make sure dropdown, word, translation, and 'Save Word' is hidden.
-    - 
+    - language field in vocabulary table might allow nulls in the user interface
 
 
 very smart chat - beginner, intermediate. (in roles)
@@ -26,7 +27,7 @@ choose what things a user wants to study.
 choose a subject theme, options to study. to create a conversation. 
 
 add a chat box under the 'Get Examples' in the 'My Vocabulary' page. Then instead of Get Examples, execute the button action with the chat window. Also populate a dropdown box that  executes the chat immediately and then has other dropdown suggestions for studying.
-Such as provide suggestions for studying vocabulary with chat got 
+Such as provide suggestions for studying vocabulary with chat bot 
 
 give top 20 mistakes
 verbs that have a lot of meanings. 
