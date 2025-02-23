@@ -18,6 +18,7 @@ UPDATES
     - when 'Save Word' is clicked, get the lists and words again
     - when a list is clicked, make sure dropdown, word, translation, and 'Save Word' is hidden.
     - language field in vocabulary table might allow nulls in the user interface
+  - add an last login field to the profile table. Put code in login page that updates this field
 
 
 very smart chat - beginner, intermediate. (in roles)

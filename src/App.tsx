@@ -15,6 +15,17 @@ import Sub2 from './pages/tools/Sub2';
 import Sub3 from './pages/tools/Sub3';
 import TeachSub1 from './pages/teach/TeachSub1';
 import TeachSub2 from './pages/teach/TeachSub2';
+import { useEffect } from 'react';
+import TagManager from 'react-gtm-module';
+
+const tagManagerArgs = {
+  gtmId: 'GTM-KJTB89TKD'
+};
+
+const App: React.FC = () => {
+  useEffect(() => {
+    TagManager.initialize(tagManagerArgs);
+  }, []);
 
 const Layout = ({ children }: { children: React.ReactNode }) => (
   <div className="min-h-screen flex flex-col">
