@@ -27,25 +27,23 @@ const App: React.FC = () => {
     TagManager.initialize(tagManagerArgs);
   }, []);
 
-const Layout = ({ children }: { children: React.ReactNode }) => (
-  <div className="min-h-screen flex flex-col">
-    <Navbar />
-    <div className="flex-1 container-custom py-8">
-      <div className="grid md:grid-cols-4 gap-8">
-
-        <div className="md:col-span-3">
-          {children}
-        </div>
-        <div className="md:col-span-1">
-          <LeftColumn />
+  const Layout = ({ children }: { children: React.ReactNode }) => (
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <div className="flex-1 container-custom py-8">
+        <div className="grid md:grid-cols-4 gap-8">
+          <div className="md:col-span-3">
+            {children}
+          </div>
+          <div className="md:col-span-1">
+            <LeftColumn />
+          </div>
         </div>
       </div>
+      <Footer />
     </div>
-    <Footer />
-  </div>
-);
+  );
 
-function App() {
   return (
     <Router>
       <Routes>
