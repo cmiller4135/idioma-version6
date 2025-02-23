@@ -102,6 +102,7 @@ const Sub2 = () => {
   const handleListClick = async (listName: string) => {
     setSelectedListName(listName);
     setLoading(true);
+    setAddingWord(false); // Hide the add word form
     await fetchVocabulary(listName);
     setLoading(false);
   };
@@ -115,6 +116,9 @@ const Sub2 = () => {
 
       if (error) throw error;
       setVocabulary(prev => prev.map(word => word.vocab_id === id ? { ...word, word: newWord } : word));
+      if (selectedListName) {
+        await fetchVocabulary(selectedListName); // Refresh the vocabulary list
+      }
     } catch (err) {
       setError(err.message);
     }
@@ -180,6 +184,9 @@ const Sub2 = () => {
       setSelectedLanguage('');
       setOtherLanguage('');
       await fetchListNames(); // Reload the list names
+      if (selectedListName) {
+        await fetchVocabulary(selectedListName); // Refresh the vocabulary list
+      }
     } catch (err) {
       setError(err.message);
     }

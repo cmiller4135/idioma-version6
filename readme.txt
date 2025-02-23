@@ -6,7 +6,7 @@ images
 Common mistakes could be it's own page
 
 UPDATES
-  - remove email verification logic until Sonu is done with the SendGrid verification emails
+  - DONE remove email verification logic until Sonu is done with the SendGrid verification emails
   - create a 'Forgot Password?'
   - on update in Profile page, put 'Update Successful'
   - get Country Code working (allow typing of country, maybe have a table in Supabase)
@@ -15,8 +15,8 @@ UPDATES
   - Sonu - Twilio and SendGrid (for email verification)
   - implement a lastlogintime when a user logs in
   - In the vocabulary page...
-    - when 'Save Word' is clicked, get the lists and words again
-    - when a list is clicked, make sure dropdown, word, translation, and 'Save Word' is hidden.
+    - DONE when 'Save Word' is clicked, get the lists and words again
+    - DONE when a list is clicked, make sure dropdown, word, translation, and 'Save Word' is hidden.
     - language field in vocabulary table might allow nulls in the user interface
   - add an last login field to the profile table. Put code in login page that updates this field
 

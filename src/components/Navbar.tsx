@@ -50,7 +50,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Left: Logo */}
-          <Link to="/home" className="text-2xl font-bold text-custom-yellow">
+          <Link to="/home" className="text-xl font-bold text-custom-yellow">
             Idioma-AI
           </Link>
 
@@ -88,7 +88,7 @@ const Navbar = () => {
           </div>
 
           {/* Right: Profile */}
-          <div className="hidden md:block">
+          <div className="ml-2 hidden md:block">
             <div className="relative">
               <button onClick={toggleProfileMenu} className="text-custom-yellow flex items-center">
                 Profile <ChevronDown className="ml-1 h-4 w-4 text-custom-yellow" />
