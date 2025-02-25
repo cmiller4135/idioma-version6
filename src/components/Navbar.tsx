@@ -96,13 +96,13 @@ const Navbar = () => {
               {profileOpen && (
                 <div className="absolute mt-2 w-48 bg-white rounded-md shadow-lg">
                   <Link to="/profile/config" className="block px-4 py-2 text-gray-800 hover:bg-gray-100" onClick={handleSubMenuClick}>
-                    Profile and Configuration
+                    Settings
                   </Link>
                   <button 
                     onClick={() => { handleLogout(); handleSubMenuClick(); }} 
                     className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
                   >
-                    Logout
+                    Sign Out
                   </button>
                 </div>
               )}
@@ -135,9 +135,9 @@ const Navbar = () => {
             <Link to="/saas2" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Study a Language with AI</Link>
             {/* <Link to="/twilio" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Twilio</Link>
             <Link to="/twilioOptIn" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Twilio Messaging Opt-In</Link> */}
-            <Link to="/profile/config" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Profile and Configuration</Link>
+            <Link to="/profile/config" className="block py-2 text-custom-yellow" onClick={handleSubMenuClick}>Settings</Link>
             <button onClick={() => { handleLogout(); handleSubMenuClick(); }} className="w-full text-left py-2 text-custom-yellow">
-              Logout
+              Sign Out
             </button>
           </div>
         )}

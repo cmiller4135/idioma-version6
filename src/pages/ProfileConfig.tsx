@@ -13,6 +13,11 @@ interface Profile {
   daily_phrase?: boolean;
 }
 
+interface CountryCode {
+  countrycode: string;
+  countryname: string;
+}
+
 const ProfileConfig = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -20,6 +25,9 @@ const ProfileConfig = () => {
   const [updatedProfile, setUpdatedProfile] = useState<Profile | null>(null);
   const [phoneError, setPhoneError] = useState<boolean>(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false);
+  const [countryCodes, setCountryCodes] = useState<CountryCode[]>([]);
+  const [filteredCountryCodes, setFilteredCountryCodes] = useState<CountryCode[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,6 +71,31 @@ const ProfileConfig = () => {
     }
   };
 
+  const fetchCountryCodes = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('countrycodes')
+        .select('countrycode, countryname')
+        .order('countryname', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching country codes:', error);
+        throw error;
+      }
+      console.log('Country codes data:', data);
+      if (data) {
+        setCountryCodes(data);
+      }
+    } catch (err) {
+      console.error('Error:', err.message);
+      setError(err.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchCountryCodes();
+  }, []);
+
   const handleUpdate = (field: string, value: any) => {
     setHasUnsavedChanges(true);
     if (field === 'phone_num' && /\D/.test(value)) {
@@ -71,6 +104,14 @@ const ProfileConfig = () => {
       setPhoneError(false);
     }
     setUpdatedProfile(prev => prev ? { ...prev, [field]: value } : null);
+  };
+
+  const handleCountryCodeChange = (value: string) => {
+    handleUpdate('country_code', value);
+  };
+
+  const handleCountryCodeSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    handleUpdate('country_code', event.target.value);
   };
 
   const handleSubmit = async () => {
@@ -122,16 +163,22 @@ const ProfileConfig = () => {
             className="input border border-black"
           />
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col relative">
           <label className="text-sm font-medium text-[#264653] mb-1">
-            Country Code
+            The Country Code
           </label>
-          <input
-            type="text"
+          <select
             value={updatedProfile?.country_code || ''}
-            onChange={(e) => handleUpdate('country_code', e.target.value)}
+            onChange={handleCountryCodeSelect}
             className="input border border-black"
-          />
+          >
+            <option value="" disabled>Select a country code</option>
+            {countryCodes.map((code, index) => (
+              <option key={index} value={code.countrycode}>
+                {code.countryname} ({code.countrycode})
+              </option>
+            ))}
+          </select>
         </div>
         <div className="flex flex-col relative">
           <label className="text-sm font-medium text-[#264653] mb-1">
