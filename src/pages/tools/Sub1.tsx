@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-
-const openaiApiKey = import.meta.env.VITE_OPENAI_API_KEY;
+import { callOpenAI } from '../../lib/edgeFunctions';
 
 const Sub1 = () => {
   const [query, setQuery] = useState('');
@@ -17,7 +15,8 @@ const Sub1 = () => {
     const prompt = `Translate the word "${query}" into its infinitive Spanish verb, provide the English translation, complete conjugation including tense, mood, and person, and 10 example sentences in Spanish with English translations. The sentences should use a variety of tense, mood, and person but should not use the infinitive version of the Spanish verb.`;
 
     try {
-      const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+      const response = await callOpenAI({
+        type: 'chat',
         model: 'gpt-4-turbo',
         messages: [
           {
@@ -31,14 +30,9 @@ const Sub1 = () => {
         ],
         max_tokens: 3000,
         temperature: 0.4
-      }, {
-        headers: {
-          'Authorization': `Bearer ${openaiApiKey}`,
-          'Content-Type': 'application/json'
-        }
       });
 
-      const data = response.data.choices[0].message.content;
+      const data = response.choices[0].message.content;
       setResponse(data);
     } catch (error) {
       console.error('Error:', error);

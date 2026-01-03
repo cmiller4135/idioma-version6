@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
-import axios from 'axios';
+import { callOpenAI, translateWithDeepL } from '../../lib/edgeFunctions';
 import { Chat } from './Chat';
 import MenuButton from '../../components/MenuButton';
 
@@ -11,9 +11,6 @@ interface VocabularyWord {
   list_name: string;
   language: string;
 }
-
-const openaiApiKey = import.meta.env.VITE_OPENAI_API_KEY;
-const deeplApiKey = import.meta.env.VITE_DEEPL_API_KEY;
 
 const Sub2 = () => {
   const [userId, setUserId] = useState<string | null>(null);
@@ -197,19 +194,7 @@ const Sub2 = () => {
 
   const handleGetTranslation = async () => {
     try {
-      const response = await fetch('https://api.deepl.com/v2/translate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          auth_key: deeplApiKey,
-          text: newWord,
-          target_lang: 'ES',
-        }),
-      });
-
-      const data = await response.json();
+      const data = await translateWithDeepL(newWord, 'ES');
       if (data.translations && data.translations.length > 0) {
         setNewTranslation(data.translations[0].text);
       } else {
@@ -231,7 +216,8 @@ const Sub2 = () => {
     const sentences: { [key: string]: string[] } = {};
     for (const word of vocabulary) {
       try {
-        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+        const response = await callOpenAI({
+          type: 'chat',
           model: 'gpt-4-turbo',
           messages: [
             {
@@ -245,14 +231,9 @@ const Sub2 = () => {
           ],
           max_tokens: 3000,
           temperature: 0.4
-        }, {
-          headers: {
-            'Authorization': `Bearer ${openaiApiKey}`,
-            'Content-Type': 'application/json'
-          }
         });
 
-        const data = response.data.choices[0].message.content;
+        const data = response.choices[0].message.content;
         sentences[word.word_translated] = data.split('\n').filter(sentence => sentence.trim() !== '');
       } catch (error) {
         console.error('Error fetching example sentences:', error);

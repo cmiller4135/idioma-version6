@@ -1,7 +1,5 @@
 import React, { useState, useRef } from 'react';
-import axios from 'axios';
-
-const openaiApiKey = import.meta.env.VITE_OPENAI_API_KEY;
+import { callOpenAI } from '../../lib/edgeFunctions';
 
 const TeachSub2 = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -51,20 +49,26 @@ const TeachSub2 = () => {
     setError(null);
     setTranslation(null);
     try {
-      const formData = new FormData();
-      formData.append('file', audioBlob, 'audio.wav');
-      formData.append('model', 'whisper-1');
-
-      const response = await axios.post('https://api.openai.com/v1/audio/transcriptions', formData, {
-        headers: {
-          'Authorization': `Bearer ${openaiApiKey}`,
-          'Content-Type': 'multipart/form-data',
-        },
+      // Convert audioBlob to base64
+      const reader = new FileReader();
+      const audioBase64 = await new Promise<string>((resolve) => {
+        reader.onloadend = () => {
+          const base64 = reader.result as string;
+          resolve(base64.split(',')[1]); // Remove data:audio/wav;base64, prefix
+        };
+        reader.readAsDataURL(audioBlob);
       });
 
-      const transcription = response.data.text;
+      const transcriptionData = await callOpenAI({
+        type: 'transcription',
+        audioBase64: audioBase64,
+        filename: 'audio.wav'
+      });
 
-      const translationResponse = await axios.post('https://api.openai.com/v1/chat/completions', {
+      const transcription = transcriptionData.text;
+
+      const translationResponse = await callOpenAI({
+        type: 'chat',
         model: 'gpt-4-turbo',
         messages: [
           {
@@ -78,14 +82,9 @@ const TeachSub2 = () => {
         ],
         max_tokens: 3000,
         temperature: 0.4
-      }, {
-        headers: {
-          'Authorization': `Bearer ${openaiApiKey}`,
-          'Content-Type': 'application/json'
-        }
       });
 
-      const translationData = translationResponse.data.choices[0].message.content;
+      const translationData = translationResponse.choices[0].message.content;
       setTranslation(translationData);
     } catch (error) {
       console.error('Error:', error);

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Send } from 'lucide-react';
 import { saveAs } from 'file-saver';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
+import { callOpenAI } from '../lib/edgeFunctions';
 
 interface GrokResponse {
   text: string;
@@ -21,8 +22,6 @@ interface QuizQuestion {
   options: string[];
   correctAnswer: string;
 }
-
-const openaiApiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
 function Saas1() {
   const [loading, setLoading] = useState(false);
@@ -49,27 +48,14 @@ function Saas1() {
 Make sure to include ALL verbs and adjectives used in the summary, and ensure proper formatting with the dash separators.`;
 
     try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${openaiApiKey}`
-        },
-        body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          messages: [{ role: "system", content: prompt }],
-          max_tokens: 1200,
-          temperature: 0.4
-        })
+      const data = await callOpenAI({
+        type: 'chat',
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "system", content: prompt }],
+        max_tokens: 1200,
+        temperature: 0.4
       });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.error?.message || `API request failed with status ${response.status}`);
-      }
-
-      const data = await response.json();
-      
       if (!data?.choices?.[0]?.message?.content) {
         throw new Error('Invalid response format from API');
       }
@@ -134,26 +120,13 @@ Options:
 Correct Answer: [correct answer]`;
 
     try {
-      const quizResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${openaiApiKey}`
-        },
-        body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          messages: [{ role: "system", content: quizPrompt }],
-          max_tokens: 1000,
-          temperature: 0.4
-        })
+      const quizData = await callOpenAI({
+        type: 'chat',
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "system", content: quizPrompt }],
+        max_tokens: 1000,
+        temperature: 0.4
       });
-
-      if (!quizResponse.ok) {
-        const errorData = await quizResponse.json().catch(() => null);
-        throw new Error(errorData?.error?.message || `API request failed with status ${quizResponse.status}`);
-      }
-
-      const quizData = await quizResponse.json();
       
       if (!quizData?.choices?.[0]?.message?.content) {
         throw new Error('Invalid response format from API');

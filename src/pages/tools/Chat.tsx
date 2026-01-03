@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Send } from 'lucide-react';
+import { callOpenAI } from '../../lib/edgeFunctions';
 
 export function Chat() {
   const [message, setMessage] = useState('');
@@ -16,23 +17,14 @@ export function Chat() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
-          messages: [...messages, userMessage],
-        }),
+      const data = await callOpenAI({
+        type: 'chat',
+        model: 'gpt-3.5-turbo',
+        messages: [...messages, userMessage],
       });
 
-      if (!response.ok) throw new Error('Failed to get response');
-
-      const data = await response.json();
       const assistantMessage = data.choices[0].message;
-      
+
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
       console.error('Error:', error);

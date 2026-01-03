@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Camera } from 'lucide-react';
-import OpenAI from 'openai';
+import { callOpenAI } from '../../lib/edgeFunctions';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -10,7 +10,7 @@ interface Message {
   content: string;
 }
 
-type TranslationType = 
+type TranslationType =
   | 'Translate to Spanish'
   | 'Translate from Spanish to English'
   | 'Translate from English to Japanese'
@@ -27,11 +27,6 @@ function TeachSub1() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const openai = new OpenAI({
-    apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-    dangerouslyAllowBrowser: true
-  });
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -101,7 +96,8 @@ function TeachSub1() {
 
     setIsLoading(true);
     try {
-      const translationResponse = await openai.chat.completions.create({
+      const translationResponse = await callOpenAI({
+        type: 'vision',
         model: "gpt-4-turbo",
         messages: [
           {
@@ -156,7 +152,8 @@ function TeachSub1() {
 
     setIsLoading(true);
     try {
-      const verbResponse = await openai.chat.completions.create({
+      const verbResponse = await callOpenAI({
+        type: 'chat',
         model: "gpt-4-turbo",
         messages: [
           {
@@ -189,7 +186,8 @@ function TeachSub1() {
 
     setIsLoading(true);
     try {
-      const adjectiveResponse = await openai.chat.completions.create({
+      const adjectiveResponse = await callOpenAI({
+        type: 'chat',
         model: "gpt-4-turbo",
         messages: [
           {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { callOpenAI } from '../../lib/edgeFunctions';
 
 const subjects = [
   "Medicine/Healthcare",
@@ -13,10 +13,8 @@ const subjects = [
   "Agriculture/Farming",
   "Arts/Entertainment",
   "Culinary/Gastronomy"
-  
-];
 
-const openaiApiKey = import.meta.env.VITE_OPENAI_API_KEY;
+];
 
 const Sub3 = () => {
   const [selectedSubject, setSelectedSubject] = useState(subjects[0]);
@@ -34,35 +32,23 @@ const Sub3 = () => {
     const prompt = `Please provide a list of 10 Spanish words related to ${topic} along with their English translations. After each word, provide 2 example sentences using the word.`;
 
     try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${openaiApiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: 'gpt-4-turbo',
-          messages: [
-            {
-              role: 'system',
-              content: 'You are a helpful assistant.'
-            },
-            {
-              role: 'user',
-              content: prompt
-            }
-          ],
-          max_tokens: 3000,
-          temperature: 0.4
-        })
+      const data = await callOpenAI({
+        type: 'chat',
+        model: 'gpt-4-turbo',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a helpful assistant.'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        max_tokens: 3000,
+        temperature: 0.4
       });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.error?.message || `API request failed with status ${response.status}`);
-      }
-
-      const data = await response.json();
       setResponse(data.choices[0].message.content);
     } catch (error) {
       console.error('Error:', error);
