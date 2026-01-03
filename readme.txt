@@ -4,21 +4,29 @@ component that rolls new features
 Sentences need an option for beginner, intermediate, etc. sentences.
 images
 Common mistakes could be it's own page
+Translate button functionality in Vocabulary page
+rolling features update 
+Pixabay - send sqare pixel size to the component to control size
+respond to Sonu
+Work on Twilio
+
+Make a page that has gets a word of the day or phrase of the day. Pull from a database of 365 words
+work on translate button in Add a Word in vocabulary page
 
 UPDATES
-  - remove email verification logic until Sonu is done with the SendGrid verification emails
+  - DONE remove email verification logic until Sonu is done with the SendGrid verification emails
   - create a 'Forgot Password?'
-  - on update in Profile page, put 'Update Successful'
+  - DONE on update in Profile page, put 'Update Successful' (put a popup)
   - get Country Code working (allow typing of country, maybe have a table in Supabase)
   - Format the input of the phone number
   - implement reCaptcha
   - Sonu - Twilio and SendGrid (for email verification)
-  - implement a lastlogintime when a user logs in
+  - DONE implement a lastlogintime when a user logs in
   - In the vocabulary page...
-    - when 'Save Word' is clicked, get the lists and words again
-    - when a list is clicked, make sure dropdown, word, translation, and 'Save Word' is hidden.
+    - DONE when 'Save Word' is clicked, get the lists and words again
+    - DONE when a list is clicked, make sure dropdown, word, translation, and 'Save Word' is hidden.
     - language field in vocabulary table might allow nulls in the user interface
-  - add an last login field to the profile table. Put code in login page that updates this field
+  - DONE add an last login and a login count field to the profile table. Put code in login page that updates this field
 
 
 very smart chat - beginner, intermediate. (in roles)

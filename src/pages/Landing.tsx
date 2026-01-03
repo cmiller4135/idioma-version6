@@ -24,7 +24,15 @@ const Landing = () => {
           password,
         });
         if (authResponse.error) throw authResponse.error;
-        navigate('/teach/sub1');
+        const userId = authResponse.data.user?.id;
+        if (userId) {
+          await supabase.rpc('increment_login_count', { user_id: userId });
+          await supabase
+            .from('profiles')
+            .update({ last_login: new Date().toISOString() })
+            .eq('id', userId);
+        }
+        navigate('/tools/sub2');
       } else {
         authResponse = await supabase.auth.signUp({
           email,
@@ -33,11 +41,24 @@ const Landing = () => {
             data: {
               username: email.split('@')[0], // Store username in auth metadata
             },
-            emailRedirectTo: `${window.location.origin}/verify-email`
           },
         });
         if (authResponse.error) throw authResponse.error;
-        setMessage('A verification email has been sent to your email address. Please verify your email before logging in.');
+        // Automatically log the user in after sign up
+        const loginResponse = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (loginResponse.error) throw loginResponse.error;
+        const userId = loginResponse.data.user?.id;
+        if (userId) {
+          await supabase.rpc('increment_login_count', { user_id: userId });
+          await supabase
+            .from('profiles')
+            .update({ last_login: new Date().toISOString() })
+            .eq('id', userId);
+        }
+        navigate('/tools/sub2');
       }
     } catch (error) {
       console.error('Error:', error);
