@@ -2,6 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===== Global Font Standardization ===== */
+@layer base {
+  /* Apply Inter font globally */
+  html {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    font-family: inherit;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11'; /* Inter stylistic alternates for cleaner UI */
+  }
+
+  /* Ensure all elements inherit the font */
+  *, *::before, *::after {
+    font-family: inherit;
+  }
+
+  /* Headings with tighter tracking for Inter */
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.025em;
+    font-weight: 600;
+  }
+
+  /* Body text optimizations */
+  p, span, div, li, td, th, label {
+    letter-spacing: -0.011em; /* Optimal letter-spacing for Inter at body sizes */
+  }
+
+  /* Monospace for code elements */
+  code, pre, kbd, samp {
+    font-family: 'SF Mono', Monaco, Inconsolata, 'Fira Mono', 'Droid Sans Mono', 'Source Code Pro', monospace;
+  }
+
+  /* Button and input text */
+  button, input, select, textarea {
+    font-family: inherit;
+    letter-spacing: inherit;
+  }
+}
+
 /* ===== Accessibility Improvements ===== */
 
 /* Focus visible styles - enhanced keyboard navigation */
