@@ -1,27 +1,65 @@
 import React, { useState } from 'react';
+import { Languages, Send, Copy, Check, ChevronDown, ChevronUp } from 'lucide-react';
 import { callOpenAI } from '../../lib/edgeFunctions';
+import { Card, Button, Input, Spinner } from '../../components/ui';
+import Breadcrumb from '../../components/Breadcrumb';
 
-const Sub1 = () => {
+interface ConjugationData {
+  infinitive: string;
+  translation: string;
+  rawContent: string;
+}
+
+const Sub1: React.FC = () => {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<any | null>(null);
+  const [conjugation, setConjugation] = useState<ConjugationData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['conjugation', 'examples']));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!query.trim()) {
+      setError('Please enter a verb to conjugate');
+      return;
+    }
+
     setLoading(true);
     setError(null);
+    setConjugation(null);
 
-    const prompt = `Translate the word "${query}" into its infinitive Spanish verb, provide the English translation, complete conjugation including tense, mood, and person, and 10 example sentences in Spanish with English translations. The sentences should use a variety of tense, mood, and person but should not use the infinitive version of the Spanish verb.`;
+    const prompt = `Translate the word "${query}" into its infinitive Spanish verb, provide the English translation, complete conjugation including tense, mood, and person, and 10 example sentences in Spanish with English translations. The sentences should use a variety of tense, mood, and person but should not use the infinitive version of the Spanish verb.
+
+Format your response like this:
+INFINITIVE: [Spanish infinitive verb]
+TRANSLATION: [English translation]
+
+CONJUGATION:
+[Present Indicative]
+yo: [conjugation]
+tú: [conjugation]
+él/ella/usted: [conjugation]
+nosotros: [conjugation]
+vosotros: [conjugation]
+ellos/ellas/ustedes: [conjugation]
+
+[Preterite]
+...continue with other tenses...
+
+EXAMPLES:
+1. [Spanish sentence]
+   [English translation]
+2. ...continue with 10 examples...`;
 
     try {
       const response = await callOpenAI({
         type: 'chat',
-        model: 'gpt-4-turbo',
+        model: 'gpt-4o',
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant.'
+            content: 'You are a helpful Spanish language assistant specializing in verb conjugations.'
           },
           {
             role: 'user',
@@ -32,8 +70,17 @@ const Sub1 = () => {
         temperature: 0.4
       });
 
-      const data = response.choices[0].message.content;
-      setResponse(data);
+      const content = response.choices[0].message.content;
+
+      // Parse the response
+      const infinitiveMatch = content.match(/INFINITIVE:\s*(.+)/i);
+      const translationMatch = content.match(/TRANSLATION:\s*(.+)/i);
+
+      setConjugation({
+        infinitive: infinitiveMatch ? infinitiveMatch[1].trim() : query,
+        translation: translationMatch ? translationMatch[1].trim() : '',
+        rawContent: content
+      });
     } catch (error) {
       console.error('Error:', error);
       setError(error instanceof Error ? error.message : 'An unexpected error occurred');
@@ -42,53 +89,227 @@ const Sub1 = () => {
     }
   };
 
-  return (
-    <div className="bg-white p-6 rounded-lg shadow-md border border-[#E63946]">
-      <h3>Spanish Verb Translator and Conjugator</h3>
-      <h1>Type any form of a Spanish or English verb and get the conjugation and 10 example sentences</h1>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Type a Spanish or English verb..."
-          className="mt-4 p-2 border border-gray-300 rounded w-full"
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-custom-blue text-white py-3 px-6 rounded-lg hover:bg-custom-red transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-        >
-          {loading ? 'Generating...' : 'Submit'}
-        </button>
-      </form>
+  const handleCopy = async () => {
+    if (conjugation?.rawContent) {
+      await navigator.clipboard.writeText(conjugation.rawContent);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
-      {error && (
-        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-red-600">{error}</p>
+  const toggleSection = (section: string) => {
+    const newExpanded = new Set(expandedSections);
+    if (newExpanded.has(section)) {
+      newExpanded.delete(section);
+    } else {
+      newExpanded.add(section);
+    }
+    setExpandedSections(newExpanded);
+  };
+
+  const parseConjugationSection = (content: string): string => {
+    const conjugationMatch = content.match(/CONJUGATION:([\s\S]*?)(?=EXAMPLES:|$)/i);
+    return conjugationMatch ? conjugationMatch[1].trim() : '';
+  };
+
+  const parseExamplesSection = (content: string): string[] => {
+    const examplesMatch = content.match(/EXAMPLES:([\s\S]*?)$/i);
+    if (!examplesMatch) return [];
+
+    const examplesText = examplesMatch[1].trim();
+    // Split by numbered items
+    const examples = examplesText.split(/\n\d+\.\s+/).filter(e => e.trim());
+    return examples;
+  };
+
+  return (
+    <div className="space-y-6">
+      <Breadcrumb />
+
+      {/* Header */}
+      <div>
+        <div className="flex items-center gap-3 mb-2">
+          <div className="p-2 bg-primary-100 rounded-xl">
+            <Languages className="w-6 h-6 text-primary-600" />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-800">Spanish Verb Conjugator</h1>
+        </div>
+        <p className="text-gray-600 ml-14">
+          Enter any Spanish or English verb to get complete conjugations and example sentences.
+        </p>
+      </div>
+
+      {/* Search Form */}
+      <Card>
+        <Card.Body>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              label="Enter a verb"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="e.g., hablar, to speak, como, running..."
+              error={error && !loading ? error : undefined}
+              leftIcon={<Languages className="w-5 h-5" />}
+            />
+            <Button
+              type="submit"
+              isLoading={loading}
+              fullWidth
+              rightIcon={<Send className="w-4 h-4" />}
+            >
+              {loading ? 'Conjugating...' : 'Conjugate Verb'}
+            </Button>
+          </form>
+        </Card.Body>
+      </Card>
+
+      {/* Loading State */}
+      {loading && (
+        <Card>
+          <Card.Body className="py-12">
+            <div className="flex flex-col items-center justify-center gap-4">
+              <Spinner size="lg" />
+              <p className="text-gray-500">Generating conjugations and examples...</p>
+            </div>
+          </Card.Body>
+        </Card>
+      )}
+
+      {/* Results */}
+      {conjugation && !loading && (
+        <div className="space-y-4">
+          {/* Verb Header Card */}
+          <Card className="bg-gradient-to-r from-primary-600 to-primary-700 border-0">
+            <Card.Body>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-white">{conjugation.infinitive}</h2>
+                  <p className="text-primary-100 text-lg">{conjugation.translation}</p>
+                </div>
+                <Button
+                  variant="ghost"
+                  onClick={handleCopy}
+                  className="text-white hover:bg-white/10"
+                  leftIcon={copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                >
+                  {copied ? 'Copied!' : 'Copy All'}
+                </Button>
+              </div>
+            </Card.Body>
+          </Card>
+
+          {/* Conjugation Section */}
+          <Card>
+            <button
+              onClick={() => toggleSection('conjugation')}
+              className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+            >
+              <h3 className="text-lg font-semibold text-gray-800">Conjugation Tables</h3>
+              {expandedSections.has('conjugation') ? (
+                <ChevronUp className="w-5 h-5 text-gray-500" />
+              ) : (
+                <ChevronDown className="w-5 h-5 text-gray-500" />
+              )}
+            </button>
+            {expandedSections.has('conjugation') && (
+              <Card.Body className="pt-0 border-t border-gray-100">
+                <div className="prose prose-sm max-w-none">
+                  <pre className="whitespace-pre-wrap bg-gray-50 p-4 rounded-lg text-sm font-mono text-gray-700 overflow-x-auto">
+                    {parseConjugationSection(conjugation.rawContent)}
+                  </pre>
+                </div>
+              </Card.Body>
+            )}
+          </Card>
+
+          {/* Examples Section */}
+          <Card>
+            <button
+              onClick={() => toggleSection('examples')}
+              className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+            >
+              <h3 className="text-lg font-semibold text-gray-800">Example Sentences</h3>
+              {expandedSections.has('examples') ? (
+                <ChevronUp className="w-5 h-5 text-gray-500" />
+              ) : (
+                <ChevronDown className="w-5 h-5 text-gray-500" />
+              )}
+            </button>
+            {expandedSections.has('examples') && (
+              <Card.Body className="pt-0 border-t border-gray-100">
+                <div className="space-y-4">
+                  {parseExamplesSection(conjugation.rawContent).map((example, index) => (
+                    <div
+                      key={index}
+                      className="p-4 bg-gray-50 rounded-lg border-l-4 border-primary-500"
+                    >
+                      <div className="flex items-start gap-3">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-600 text-sm font-medium flex items-center justify-center">
+                          {index + 1}
+                        </span>
+                        <div className="flex-1 space-y-1">
+                          {example.split('\n').map((line, lineIndex) => (
+                            <p
+                              key={lineIndex}
+                              className={lineIndex === 0 ? 'font-medium text-gray-800' : 'text-gray-600 text-sm'}
+                            >
+                              {line.trim()}
+                            </p>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Card.Body>
+            )}
+          </Card>
+
+          {/* Full Response (Collapsible) */}
+          <Card>
+            <button
+              onClick={() => toggleSection('full')}
+              className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+            >
+              <h3 className="text-lg font-semibold text-gray-800">Full Response</h3>
+              {expandedSections.has('full') ? (
+                <ChevronUp className="w-5 h-5 text-gray-500" />
+              ) : (
+                <ChevronDown className="w-5 h-5 text-gray-500" />
+              )}
+            </button>
+            {expandedSections.has('full') && (
+              <Card.Body className="pt-0 border-t border-gray-100">
+                <pre className="whitespace-pre-wrap bg-gray-50 p-4 rounded-lg text-sm text-gray-700 overflow-x-auto">
+                  {conjugation.rawContent}
+                </pre>
+              </Card.Body>
+            )}
+          </Card>
         </div>
       )}
 
-      {loading ? (
-        <div className="mt-8 space-y-8">
-          <div className="bg-gray-50 p-6 rounded-lg">
-            <h2 className="text-xl font-semibold text-custom-blue mb-4">Generated Content</h2>
-            <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-              Your answer will be here in seconds...
-            </div>
-          </div>
-        </div>
-      ) : (
-        response && (
-          <div className="mt-8 space-y-8">
-            <div className="bg-gray-50 p-6 rounded-lg">
-              <h2 className="text-xl font-semibold text-custom-blue mb-4">Generated Content</h2>
-              <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                <pre>{response}</pre>
-              </div>
-            </div>
-          </div>
-        )
+      {/* Tips Card */}
+      {!conjugation && !loading && (
+        <Card className="bg-gray-50 border-gray-200">
+          <Card.Body>
+            <h3 className="font-semibold text-gray-800 mb-3">Tips for Better Results</h3>
+            <ul className="space-y-2 text-sm text-gray-600">
+              <li className="flex items-start gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary-500 mt-2 flex-shrink-0" />
+                <span>You can enter verbs in any form (infinitive, conjugated, English, or Spanish)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary-500 mt-2 flex-shrink-0" />
+                <span>Try entering "como" to see conjugations of "comer" (to eat)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary-500 mt-2 flex-shrink-0" />
+                <span>English verbs like "to speak" will be translated to Spanish automatically</span>
+              </li>
+            </ul>
+          </Card.Body>
+        </Card>
       )}
     </div>
   );

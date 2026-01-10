@@ -8,7 +8,7 @@ const corsHeaders = {
 
 interface ChatRequest {
   type: 'chat';
-  model: 'gpt-4-turbo' | 'gpt-3.5-turbo';
+  model: 'gpt-4o' | 'gpt-4-turbo' | 'gpt-3.5-turbo' | string;
   messages: Array<{
     role: 'system' | 'user' | 'assistant';
     content: string | any;

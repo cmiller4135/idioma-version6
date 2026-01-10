@@ -1,8 +1,21 @@
 import React, { useEffect, useState } from 'react';
+import {
+  BookOpen,
+  Plus,
+  Languages,
+  Trash2,
+  Edit3,
+  Save,
+  X,
+  FileText,
+  FolderOpen,
+  Sparkles
+} from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { callOpenAI, translateWithDeepL } from '../../lib/edgeFunctions';
 import { Chat } from './Chat';
-import MenuButton from '../../components/MenuButton';
+import { Card, Button, Input, Select, Spinner, Modal } from '../../components/ui';
+import Breadcrumb from '../../components/Breadcrumb';
 
 interface VocabularyWord {
   vocab_id: string;
@@ -12,7 +25,22 @@ interface VocabularyWord {
   language: string;
 }
 
-const Sub2 = () => {
+const languageOptions = [
+  { value: '', label: 'Select a Language' },
+  { value: 'Spanish', label: 'Spanish' },
+  { value: 'French', label: 'French' },
+  { value: 'German', label: 'German' },
+  { value: 'Japanese', label: 'Japanese' },
+  { value: 'Portuguese', label: 'Portuguese' },
+  { value: 'Other', label: 'Other' },
+];
+
+const sentenceCountOptions = Array.from({ length: 10 }, (_, i) => ({
+  value: String(i + 1),
+  label: `${i + 1} sentence${i > 0 ? 's' : ''}`
+}));
+
+const Sub2: React.FC = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [vocabulary, setVocabulary] = useState<VocabularyWord[]>([]);
   const [listNames, setListNames] = useState<string[]>([]);
@@ -35,6 +63,15 @@ const Sub2 = () => {
   const [newTranslationInput, setNewTranslationInput] = useState<string>('');
   const [loadingExamples, setLoadingExamples] = useState<boolean>(false);
   const [numSentences, setNumSentences] = useState<number>(3);
+  const [translating, setTranslating] = useState<boolean>(false);
+
+  // Delete confirmation state
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    type: 'list' | 'word';
+    id: string;
+    name: string;
+  }>({ isOpen: false, type: 'list', id: '', name: '' });
 
   useEffect(() => {
     fetchUserId();
@@ -59,8 +96,8 @@ const Sub2 = () => {
 
       if (error) throw error;
       setUserId(data.id);
-    } catch (err) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
     }
@@ -80,8 +117,8 @@ const Sub2 = () => {
       } else {
         setVocabulary([]);
       }
-    } catch (err) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 
@@ -91,15 +128,16 @@ const Sub2 = () => {
 
       if (error) throw error;
       setListNames(data.map((item: { list_name: string }) => item.list_name));
-    } catch (err) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 
   const handleListClick = async (listName: string) => {
     setSelectedListName(listName);
     setLoading(true);
-    setAddingWord(false); // Hide the add word form
+    setAddingWord(false);
+    setExampleSentences({});
     await fetchVocabulary(listName);
     setLoading(false);
   };
@@ -114,10 +152,10 @@ const Sub2 = () => {
       if (error) throw error;
       setVocabulary(prev => prev.map(word => word.vocab_id === id ? { ...word, word: newWord } : word));
       if (selectedListName) {
-        await fetchVocabulary(selectedListName); // Refresh the vocabulary list
+        await fetchVocabulary(selectedListName);
       }
-    } catch (err) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 
@@ -130,34 +168,34 @@ const Sub2 = () => {
 
       if (error) throw error;
       setVocabulary(prev => prev.map(word => word.vocab_id === id ? { ...word, word_translated: newTranslation } : word));
-    } catch (err) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 
   const handleAddWord = async () => {
     if (creatingNewList && !newListName.trim()) {
-      alert('Please enter a vocabulary list name');
+      setError('Please enter a vocabulary list name');
       return;
     }
 
     if (creatingNewList && selectedLanguage === '') {
-      alert('Please select a language');
+      setError('Please select a language');
       return;
     }
 
     if (selectedLanguage === 'Other' && !otherLanguage.trim()) {
-      alert('Please enter a language');
+      setError('Please enter a language');
       return;
     }
 
     if (!newWord.trim()) {
-      alert('Please enter a word');
+      setError('Please enter a word');
       return;
     }
 
     if (!newTranslation.trim()) {
-      alert('Please enter a translation');
+      setError('Please enter a translation');
       return;
     }
 
@@ -176,16 +214,17 @@ const Sub2 = () => {
       setNewTranslation('');
       setAddingWord(false);
       setCreatingNewList(false);
-      setNewWordListName(listNameToUse); // Ensure the dropdown shows the correct value
+      setNewWordListName(listNameToUse);
       setNewListName('');
       setSelectedLanguage('');
       setOtherLanguage('');
-      await fetchListNames(); // Reload the list names
+      setError(null);
+      await fetchListNames();
       if (selectedListName) {
-        await fetchVocabulary(selectedListName); // Refresh the vocabulary list
+        await fetchVocabulary(selectedListName);
       }
-    } catch (err) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 
@@ -200,32 +239,46 @@ const Sub2 = () => {
   };
 
   const handleGetTranslation = async () => {
+    if (!newWord.trim()) {
+      setError('Please enter a word to translate');
+      return;
+    }
+    setTranslating(true);
     try {
       const data = await translateWithDeepL(newWord, 'ES');
       if (data.translations && data.translations.length > 0) {
         setNewTranslation(data.translations[0].text);
+        setError(null);
       } else {
         setError('No translation found');
       }
     } catch (err) {
       setError('Error fetching translation');
+    } finally {
+      setTranslating(false);
     }
   };
 
   const fetchExampleSentences = async () => {
     if (!selectedListName) {
-      alert("No list is selected. Please click one of your Vocabulary Lists and try again.");
+      setError('No list is selected. Please click one of your Vocabulary Lists and try again.');
+      return;
+    }
+
+    if (vocabulary.length === 0) {
+      setError('No words in this list. Add some words first.');
       return;
     }
 
     setLoadingExamples(true);
+    setError(null);
 
     const sentences: { [key: string]: string[] } = {};
     for (const word of vocabulary) {
       try {
         const response = await callOpenAI({
           type: 'chat',
-          model: 'gpt-4-turbo',
+          model: 'gpt-4o',
           messages: [
             {
               role: 'system',
@@ -241,13 +294,40 @@ const Sub2 = () => {
         });
 
         const data = response.choices[0].message.content;
-        sentences[word.word_translated] = data.split('\n').filter(sentence => sentence.trim() !== '');
+        sentences[word.word_translated] = data.split('\n').filter((sentence: string) => sentence.trim() !== '');
       } catch (error) {
         console.error('Error fetching example sentences:', error);
       }
     }
     setExampleSentences(sentences);
     setLoadingExamples(false);
+  };
+
+  const confirmDeleteList = (listName: string) => {
+    setDeleteModal({
+      isOpen: true,
+      type: 'list',
+      id: listName,
+      name: listName
+    });
+  };
+
+  const confirmDeleteWord = (vocabId: string, wordName: string) => {
+    setDeleteModal({
+      isOpen: true,
+      type: 'word',
+      id: vocabId,
+      name: wordName
+    });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteModal.type === 'list') {
+      await handleDeleteList(deleteModal.id);
+    } else {
+      await handleDelete(deleteModal.id);
+    }
+    setDeleteModal({ isOpen: false, type: 'list', id: '', name: '' });
   };
 
   const handleDeleteList = async (listName: string) => {
@@ -264,8 +344,8 @@ const Sub2 = () => {
         setSelectedListName(null);
         setVocabulary([]);
       }
-    } catch (err) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 
@@ -289,8 +369,8 @@ const Sub2 = () => {
       }
       setRenamingListName(null);
       setNewListNameInput('');
-    } catch (err) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 
@@ -304,13 +384,12 @@ const Sub2 = () => {
       if (error) throw error;
       setVocabulary(prev => prev.filter(word => word.vocab_id !== vocabId));
 
-      // Refresh list names and vocabulary
       await fetchListNames();
       if (selectedListName) {
         await fetchVocabulary(selectedListName);
       }
-    } catch (err) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 
@@ -335,215 +414,432 @@ const Sub2 = () => {
       setRenamingWordId(null);
       setNewWordInput('');
       setNewTranslationInput('');
-    } catch (err) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 
-  if (loading) return <div className="p-4">Loading...</div>;
-  if (error) return <div className="p-4 text-[#E63946]">Error: {error}</div>;
+  const handleCancelRename = () => {
+    setRenamingWordId(null);
+    setNewWordInput('');
+    setNewTranslationInput('');
+  };
+
+  const getListOptions = () => {
+    const options = [
+      { value: '', label: 'Select a vocabulary list' },
+      { value: 'new', label: '+ Create a New List' },
+      ...listNames.map(name => ({ value: name, label: name }))
+    ];
+    return options;
+  };
+
+  if (loading && !userId) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col">
-      <div className="flex">
-        <div className="ml-2 bg-white p-6 rounded-lg shadow-md border border-[#E63946] w-1/2 h-full">
-          <h2 className="text-xl font-semibold text-custom-blue">My Vocabulary Lists</h2>
-          <p className="text-custom-blue text-sm mb-2">(click 'Add a Word' to manage lists and words)</p>
-          <div className="flex flex-wrap gap-2">
-            {listNames.map((listName, index) => (
-              <div key={index} className="relative w-[62.5%] flex items-center">
-                <div className="flex-grow">
-                  {renamingListName === listName ? (
-                    <div className="flex items-center">
-                      <input
-                        type="text"
-                        value={newListNameInput}
-                        onChange={(e) => setNewListNameInput(e.target.value)}
-                        className="w-full py-2 px-4 rounded-lg border border-gray-300"
-                      />
-                      <button
-                        onClick={() => handleSaveListName(listName)}
-                        className="ml-2 bg-custom-blue text-white py-2 px-4 rounded-lg hover:bg-custom-red transition-colors"
+    <div className="space-y-6">
+      <Breadcrumb />
+
+      {/* Header */}
+      <div>
+        <div className="flex items-center gap-3 mb-2">
+          <div className="p-2 bg-primary-100 rounded-xl">
+            <BookOpen className="w-6 h-6 text-primary-600" />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-800">My Vocabulary</h1>
+        </div>
+        <p className="text-gray-600 ml-14">
+          Build and manage your personal vocabulary lists.
+        </p>
+      </div>
+
+      {/* Error Display */}
+      {error && (
+        <div className="p-4 bg-error-50 border border-error-200 rounded-lg text-error-700">
+          {error}
+          <button onClick={() => setError(null)} className="ml-2 text-error-500 hover:text-error-700">
+            <X className="w-4 h-4 inline" />
+          </button>
+        </div>
+      )}
+
+      {/* Main Content - Responsive Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Lists Panel */}
+        <Card>
+          <Card.Header>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <FolderOpen className="w-5 h-5 text-primary-600" />
+                <h2 className="text-lg font-semibold text-gray-800">My Vocabulary Lists</h2>
+              </div>
+              <span className="text-sm text-gray-500">{listNames.length} lists</span>
+            </div>
+          </Card.Header>
+          <Card.Body>
+            {listNames.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <FolderOpen className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                <p>No vocabulary lists yet.</p>
+                <p className="text-sm">Click "Add a Word" to create your first list.</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {listNames.map((listName, index) => (
+                  <div key={index} className="group">
+                    {renamingListName === listName ? (
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          value={newListNameInput}
+                          onChange={(e) => setNewListNameInput(e.target.value)}
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                          autoFocus
+                        />
+                        <Button
+                          size="sm"
+                          onClick={() => handleSaveListName(listName)}
+                          leftIcon={<Save className="w-4 h-4" />}
+                        >
+                          Save
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => setRenamingListName(null)}
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <div
+                        onClick={() => handleListClick(listName)}
+                        className={`
+                          flex items-center justify-between p-3 rounded-lg cursor-pointer transition-all
+                          ${selectedListName === listName
+                            ? 'bg-primary-100 border-2 border-primary-500'
+                            : 'bg-gray-50 border-2 border-transparent hover:bg-gray-100'
+                          }
+                        `}
                       >
-                        Save
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => handleListClick(listName)}
-                      className={`w-full py-2 px-4 rounded-lg transition-colors ${selectedListName === listName ? 'bg-custom-red text-white' : 'bg-custom-blue text-white hover:bg-custom-red'} flex justify-between items-center`}
-                    >
-                      <span className="flex-grow text-center">{listName}</span>
-                      <MenuButton
-                        onDelete={() => handleDeleteList(listName)}
-                        onRename={() => handleRenameList(listName)}
+                        <span className={`font-medium ${selectedListName === listName ? 'text-primary-700' : 'text-gray-700'}`}>
+                          {listName}
+                        </span>
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); handleRenameList(listName); }}
+                            className="p-1.5 rounded hover:bg-gray-200 text-gray-500 hover:text-gray-700"
+                            title="Rename list"
+                          >
+                            <Edit3 className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); confirmDeleteList(listName); }}
+                            className="p-1.5 rounded hover:bg-error-100 text-gray-500 hover:text-error-600"
+                            title="Delete list"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card.Body>
+        </Card>
+
+        {/* Words Panel */}
+        <Card>
+          <Card.Header>
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center gap-2">
+                <FileText className="w-5 h-5 text-accent-600" />
+                <h2 className="text-lg font-semibold text-gray-800">
+                  {selectedListName ? `${selectedListName} Words` : 'Select a List'}
+                </h2>
+              </div>
+              <Button
+                size="sm"
+                onClick={() => setAddingWord(!addingWord)}
+                leftIcon={addingWord ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                variant={addingWord ? 'secondary' : 'primary'}
+              >
+                {addingWord ? 'Cancel' : 'Add a Word'}
+              </Button>
+            </div>
+          </Card.Header>
+          <Card.Body>
+            {/* Add Word Form */}
+            {addingWord && (
+              <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <h3 className="font-medium text-gray-800 mb-3">Add New Word</h3>
+                <div className="space-y-3">
+                  <Select
+                    label="Vocabulary List"
+                    options={getListOptions()}
+                    value={newWordListName || ''}
+                    onChange={(e) => handleNewWordListNameChange(e.target.value)}
+                  />
+
+                  {creatingNewList && (
+                    <>
+                      <Input
+                        label="New List Name"
+                        value={newListName}
+                        onChange={(e) => setNewListName(e.target.value)}
+                        placeholder="Enter new list name"
                       />
-                    </button>
+                      <Select
+                        label="Language"
+                        options={languageOptions}
+                        value={selectedLanguage}
+                        onChange={(e) => setSelectedLanguage(e.target.value)}
+                      />
+                      {selectedLanguage === 'Other' && (
+                        <Input
+                          label="Specify Language"
+                          value={otherLanguage}
+                          onChange={(e) => setOtherLanguage(e.target.value)}
+                          placeholder="Enter language name"
+                        />
+                      )}
+                    </>
                   )}
+
+                  <div className="flex gap-2">
+                    <div className="flex-1">
+                      <Input
+                        label="Word (English)"
+                        value={newWord}
+                        onChange={(e) => setNewWord(e.target.value)}
+                        placeholder="e.g., apple"
+                      />
+                    </div>
+                    <div className="flex items-end">
+                      <Button
+                        variant="secondary"
+                        onClick={handleGetTranslation}
+                        isLoading={translating}
+                        leftIcon={<Languages className="w-4 h-4" />}
+                        title="Auto-translate to Spanish"
+                      >
+                        Translate
+                      </Button>
+                    </div>
+                  </div>
+
+                  <Input
+                    label="Translation"
+                    value={newTranslation}
+                    onChange={(e) => setNewTranslation(e.target.value)}
+                    placeholder="e.g., manzana"
+                  />
+
+                  <Button
+                    onClick={handleAddWord}
+                    fullWidth
+                    leftIcon={<Save className="w-4 h-4" />}
+                  >
+                    Save Word
+                  </Button>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md border border-[#E63946] w-1/2">
-          <h1 className="text-xl font-semibold text-custom-blue mb-4"> My {selectedListName} Vocabulary Words</h1>
-          <button
-            onClick={() => setAddingWord(true)}
-            className="mb-4 bg-custom-blue text-white py-2 px-4 rounded-lg hover:bg-custom-red transition-colors"
-          >
-            Add a Word
-          </button>
-          {addingWord && (
-            <div className="mb-4">
-              <select
-                value={newWordListName || ''}
-                onChange={(e) => handleNewWordListNameChange(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded mb-2"
-              >
-                <option value="" disabled>Select a vocabulary list</option>
-                <option value="new">Create a New List</option>
-                {listNames.map((listName, index) => (
-                  <option key={index} value={listName}>{listName}</option>
-                ))}
-              </select>
-              {creatingNewList && (
-                <input
-                  type="text"
-                  value={newListName}
-                  onChange={(e) => setNewListName(e.target.value)}
-                  placeholder="Enter new list name"
-                  className="w-full p-2 border border-gray-300 rounded mb-2"
-                />
-              )}
-              {creatingNewList && (
-              <select
-                value={selectedLanguage}
-                onChange={(e) => setSelectedLanguage(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded mb-2"
-              >
-                <option value="" disabled>Select a Language</option>
-                <option value="Spanish">Spanish</option>
-                <option value="French">French</option>
-                <option value="German">German</option>
-                <option value="Japanese">Japanese</option>
-                <option value="Portuguese">Portuguese</option>
-                <option value="Other">Other</option>
-              </select>
-              )}
-              {selectedLanguage === 'Other' && (
-                <input
-                  type="text"
-                  value={otherLanguage}
-                  onChange={(e) => setOtherLanguage(e.target.value)}
-                  placeholder="Enter other language"
-                  className="w-full p-2 border border-gray-300 rounded mb-2"
-                />
-              )}
-              <div className="flex mb-2">
-                <input
-                  type="text"
-                  value={newWord}
-                  onChange={(e) => setNewWord(e.target.value)}
-                  placeholder="Word"
-                  className="w-3/4 p-2 border border-gray-300 rounded"
-                />
-                <button
-                  onClick={handleGetTranslation}
-                  className="ml-2 w-1/4 bg-custom-blue text-white py-2 px-4 rounded-lg hover:bg-custom-red transition-colors hidden"
-                >
-                  Translate
-                </button>
+            )}
+
+            {/* Words List */}
+            {loading ? (
+              <div className="flex items-center justify-center py-8">
+                <Spinner />
               </div>
-              <input
-                type="text"
-                value={newTranslation}
-                onChange={(e) => setNewTranslation(e.target.value)}
-                placeholder="Translation"
-                className="w-full p-2 border border-gray-300 rounded mb-2"
+            ) : !selectedListName ? (
+              <div className="text-center py-8 text-gray-500">
+                <FileText className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                <p>Select a list to view words</p>
+              </div>
+            ) : vocabulary.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <FileText className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                <p>No words in this list yet.</p>
+                <p className="text-sm">Click "Add a Word" to get started.</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {vocabulary.map((word) => (
+                  <div
+                    key={word.vocab_id}
+                    className="group p-3 bg-gray-50 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors"
+                  >
+                    {renamingWordId === word.vocab_id ? (
+                      <div className="space-y-2">
+                        <Input
+                          value={newWordInput}
+                          onChange={(e) => setNewWordInput(e.target.value)}
+                          placeholder="Word"
+                        />
+                        <Input
+                          value={newTranslationInput}
+                          onChange={(e) => setNewTranslationInput(e.target.value)}
+                          placeholder="Translation"
+                        />
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            onClick={() => handleSaveRename(word.vocab_id)}
+                            leftIcon={<Save className="w-4 h-4" />}
+                          >
+                            Save
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={handleCancelRename}
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-primary-700 truncate">{word.word}</p>
+                          <p className="text-sm text-gray-600 truncate">{word.word_translated}</p>
+                        </div>
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity ml-2">
+                          <button
+                            onClick={() => handleRename(word.vocab_id)}
+                            className="p-1.5 rounded hover:bg-gray-200 text-gray-500 hover:text-gray-700"
+                            title="Edit word"
+                          >
+                            <Edit3 className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => confirmDeleteWord(word.vocab_id, word.word)}
+                            className="p-1.5 rounded hover:bg-error-100 text-gray-500 hover:text-error-600"
+                            title="Delete word"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card.Body>
+        </Card>
+      </div>
+
+      {/* Example Sentences Section */}
+      <Card>
+        <Card.Header>
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-warning-600" />
+            <h2 className="text-lg font-semibold text-gray-800">Generate Example Sentences</h2>
+          </div>
+        </Card.Header>
+        <Card.Body>
+          <p className="text-gray-600 mb-4">
+            Select a vocabulary list above, then generate example sentences for all words in the list.
+          </p>
+          <div className="flex flex-wrap items-center gap-3 mb-4">
+            <div className="w-32">
+              <Select
+                options={sentenceCountOptions}
+                value={String(numSentences)}
+                onChange={(e) => setNumSentences(Number(e.target.value))}
               />
-              <button
-                onClick={handleAddWord}
-                className="w-full bg-custom-blue text-white py-2 px-4 rounded-lg hover:bg-custom-red transition-colors"
-              >
-                Save Word
-              </button>
+            </div>
+            <Button
+              onClick={fetchExampleSentences}
+              isLoading={loadingExamples}
+              disabled={!selectedListName || vocabulary.length === 0}
+              leftIcon={<Sparkles className="w-4 h-4" />}
+            >
+              Generate Examples
+            </Button>
+            {selectedListName && (
+              <span className="text-sm text-gray-500">
+                for {vocabulary.length} words in "{selectedListName}"
+              </span>
+            )}
+          </div>
+
+          {/* Example Sentences Results */}
+          {loadingExamples && (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-center">
+                <Spinner size="lg" />
+                <p className="mt-3 text-gray-500">Generating example sentences...</p>
+              </div>
             </div>
           )}
-          <ul className="space-y-4">
-            {vocabulary.map((word) => (
-              <li key={word.vocab_id} className="flex justify-between p-4 bg-gray-50 border border-gray-200 rounded-lg" style={{ height: '62.5%' }}>
-                {renamingWordId === word.vocab_id ? (
-                  <div className="flex flex-col w-full">
-                    <input
-                      type="text"
-                      value={newWordInput}
-                      onChange={(e) => setNewWordInput(e.target.value)}
-                      className="mb-2 p-2 border border-gray-300 rounded"
-                    />
-                    <input
-                      type="text"
-                      value={newTranslationInput}
-                      onChange={(e) => setNewTranslationInput(e.target.value)}
-                      className="mb-2 p-2 border border-gray-300 rounded"
-                    />
-                    <button
-                      onClick={() => handleSaveRename(word.vocab_id)}
-                      className="bg-custom-blue text-white py-2 px-4 rounded-lg hover:bg-custom-red transition-colors"
-                    >
-                      Save
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <span className="font-medium text-custom-blue">{word.word}</span>
-                    <span className="text-gray-700">{word.word_translated}</span>
-                    <MenuButton
-                      onDelete={() => handleDelete(word.vocab_id)}
-                      onRename={() => handleRename(word.vocab_id)}
-                    />
-                  </>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-      <div className="ml-2 mt-4 text-xl font-semibold text-custom-blue">
-        After highlighting a list, click the button below to get example sentences.
-      </div>
-      <div className="flex items-center mt-4">
 
-        <select
-          value={numSentences}
-          onChange={(e) => setNumSentences(Number(e.target.value))}
-          className="ml-2 p-2 border border-gray-300 rounded"
-        >
-          {Array.from({ length: 10 }, (_, i) => i + 1).map(num => (
-            <option key={num} value={num}>{num}</option>
-          ))}
-        </select>
-        <button
-          onClick={fetchExampleSentences}
-          className="bg-custom-blue text-white py-2 px-4 rounded-lg hover:bg-custom-red transition-colors"
-        >
-          example sentences from the highlighted list.
-        </button>
-
-      </div>
-      {loadingExamples && <div className="mt-4 text-xl font-semibold text-custom-blue">Loading...</div>}
-      <div className="mt-4 ml-2">
-        {Object.entries(exampleSentences).map(([word, sentences]) => (
-          <div key={word} className="mb-4">
-            <h3 className="text-lg font-semibold text-custom-blue mb-2">{word}</h3>
-            <ul className="list-disc list-inside">
-              {sentences.map((sentence, index) => (
-                <li key={index} className="text-gray-700">{sentence}</li>
+          {!loadingExamples && Object.keys(exampleSentences).length > 0 && (
+            <div className="space-y-4 mt-4">
+              {Object.entries(exampleSentences).map(([word, sentences]) => (
+                <div key={word} className="p-4 bg-gray-50 rounded-lg">
+                  <h3 className="font-semibold text-primary-700 mb-2">{word}</h3>
+                  <ul className="space-y-1">
+                    {sentences.map((sentence, index) => (
+                      <li key={index} className="text-sm text-gray-700 pl-4 border-l-2 border-primary-200">
+                        {sentence}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-      <Chat></Chat>
+            </div>
+          )}
+        </Card.Body>
+      </Card>
+
+      {/* Chat Section */}
+      <Card>
+        <Card.Header>
+          <h2 className="text-lg font-semibold text-gray-800">Practice Chat</h2>
+        </Card.Header>
+        <Card.Body className="p-0">
+          <Chat />
+        </Card.Body>
+      </Card>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={deleteModal.isOpen}
+        onClose={() => setDeleteModal({ isOpen: false, type: 'list', id: '', name: '' })}
+        title={`Delete ${deleteModal.type === 'list' ? 'List' : 'Word'}`}
+      >
+        <p className="text-gray-600 mb-4">
+          Are you sure you want to delete {deleteModal.type === 'list' ? 'the list' : 'the word'}{' '}
+          <strong>"{deleteModal.name}"</strong>?
+          {deleteModal.type === 'list' && ' This will also delete all words in this list.'}
+        </p>
+        <p className="text-sm text-gray-500 mb-6">This action cannot be undone.</p>
+        <div className="flex justify-end gap-3">
+          <Button
+            variant="ghost"
+            onClick={() => setDeleteModal({ isOpen: false, type: 'list', id: '', name: '' })}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            onClick={handleConfirmDelete}
+            leftIcon={<Trash2 className="w-4 h-4" />}
+          >
+            Delete
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 };
