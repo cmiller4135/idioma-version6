@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MoreHorizontal } from 'lucide-react';
 
 interface MenuButtonProps {
@@ -7,6 +8,7 @@ interface MenuButtonProps {
 }
 
 const MenuButton: React.FC<MenuButtonProps> = ({ onDelete, onRename }) => {
+  const { t } = useTranslation('common');
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -43,7 +45,7 @@ const MenuButton: React.FC<MenuButtonProps> = ({ onDelete, onRename }) => {
             }}
             className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
           >
-            Rename
+            {t('actions.rename')}
           </div>
           <div
             onClick={(e) => {
@@ -53,7 +55,7 @@ const MenuButton: React.FC<MenuButtonProps> = ({ onDelete, onRename }) => {
             }}
             className="px-4 py-2 text-sm text-red-600 hover:bg-gray-100 cursor-pointer"
           >
-            Delete
+            {t('actions.delete')}
           </div>
         </div>
       )}

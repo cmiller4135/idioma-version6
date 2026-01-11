@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Mic,
   MicOff,
@@ -16,15 +17,6 @@ import Breadcrumb from '../../components/Breadcrumb';
 
 type TargetLanguage = 'Spanish' | 'French' | 'German' | 'Japanese' | 'Portuguese' | 'Chinese';
 
-const languageOptions = [
-  { value: 'Spanish', label: 'Spanish' },
-  { value: 'French', label: 'French' },
-  { value: 'German', label: 'German' },
-  { value: 'Japanese', label: 'Japanese' },
-  { value: 'Portuguese', label: 'Portuguese' },
-  { value: 'Chinese', label: 'Chinese (Mandarin)' },
-];
-
 interface TranslationResult {
   transcription: string;
   translation: string;
@@ -32,6 +24,18 @@ interface TranslationResult {
 }
 
 const TeachSub2: React.FC = () => {
+  const { t } = useTranslation('teach');
+
+  // Language options moved inside to use i18n
+  const languageOptions = [
+    { value: 'Spanish', label: t('photoTranslation.languages.spanish') },
+    { value: 'French', label: t('photoTranslation.languages.french') },
+    { value: 'German', label: t('photoTranslation.languages.german') },
+    { value: 'Japanese', label: t('photoTranslation.languages.japanese') },
+    { value: 'Portuguese', label: t('photoTranslation.languages.portuguese') },
+    { value: 'Chinese', label: t('photoTranslation.languages.chinese') },
+  ];
+
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
@@ -189,7 +193,7 @@ const TeachSub2: React.FC = () => {
     if (!audioBlob) return;
 
     setIsLoading(true);
-    setLoadingAction('Transcribing audio...');
+    setLoadingAction(t('audioTranslation.transcribing'));
     setError(null);
 
     try {
@@ -212,7 +216,7 @@ const TeachSub2: React.FC = () => {
 
       const transcription = transcriptionData.text;
 
-      setLoadingAction(`Translating to ${targetLanguage}...`);
+      setLoadingAction(t('audioTranslation.translatingTo', { language: targetLanguage }));
 
       // Step 2: Translate transcription
       const translationResponse = await callOpenAI({
@@ -258,10 +262,10 @@ const TeachSub2: React.FC = () => {
           <div className="p-2 bg-warning-100 rounded-xl">
             <Mic className="w-6 h-6 text-warning-600" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-800">Audio Translation</h1>
+          <h1 className="text-2xl font-bold text-gray-800">{t('audioTranslation.title')}</h1>
         </div>
         <p className="text-gray-600 ml-14">
-          Record your voice and get instant transcription and translation.
+          {t('audioTranslation.subtitle')}
         </p>
       </div>
 
@@ -282,7 +286,7 @@ const TeachSub2: React.FC = () => {
             <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
               <span className="text-sm font-bold text-primary-600">1</span>
             </div>
-            <h2 className="text-lg font-semibold text-gray-800">Select Target Language</h2>
+            <h2 className="text-lg font-semibold text-gray-800">{t('audioTranslation.selectTargetLanguage')}</h2>
           </div>
         </Card.Header>
         <Card.Body>
@@ -294,7 +298,7 @@ const TeachSub2: React.FC = () => {
               leftIcon={<Languages className="w-5 h-5" />}
             />
             <p className="mt-2 text-sm text-gray-500">
-              Speak in English and your audio will be translated to {targetLanguage}.
+              {t('audioTranslation.speakInEnglish', { language: targetLanguage })}
             </p>
           </div>
         </Card.Body>
@@ -307,7 +311,7 @@ const TeachSub2: React.FC = () => {
             <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
               <span className="text-sm font-bold text-primary-600">2</span>
             </div>
-            <h2 className="text-lg font-semibold text-gray-800">Record Audio</h2>
+            <h2 className="text-lg font-semibold text-gray-800">{t('audioTranslation.recordAudio')}</h2>
           </div>
         </Card.Header>
         <Card.Body>
@@ -329,12 +333,12 @@ const TeachSub2: React.FC = () => {
                 ) : audioUrl ? (
                   <div className="flex items-center gap-4">
                     <Volume2 className="w-8 h-8 text-success-500" />
-                    <span className="text-gray-600">Recording ready</span>
+                    <span className="text-gray-600">{t('audioTranslation.recordingReady')}</span>
                   </div>
                 ) : (
                   <div className="flex items-center gap-2 text-gray-400">
                     <Mic className="w-8 h-8" />
-                    <span>Click the button below to start recording</span>
+                    <span>{t('audioTranslation.clickToStart')}</span>
                   </div>
                 )}
               </div>
@@ -365,7 +369,7 @@ const TeachSub2: React.FC = () => {
                   leftIcon={<Mic className="w-5 h-5" />}
                   className="bg-warning-500 hover:bg-warning-600"
                 >
-                  Start Recording
+                  {t('audioTranslation.startRecording')}
                 </Button>
               )}
 
@@ -376,7 +380,7 @@ const TeachSub2: React.FC = () => {
                   variant="danger"
                   leftIcon={<MicOff className="w-5 h-5" />}
                 >
-                  Stop Recording
+                  {t('audioTranslation.stopRecording')}
                 </Button>
               )}
 
@@ -387,14 +391,14 @@ const TeachSub2: React.FC = () => {
                     variant="secondary"
                     leftIcon={isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                   >
-                    {isPlaying ? 'Pause' : 'Play Recording'}
+                    {isPlaying ? t('audioTranslation.pause') : t('audioTranslation.playback')}
                   </Button>
                   <Button
                     onClick={resetRecording}
                     variant="ghost"
                     leftIcon={<RotateCcw className="w-4 h-4" />}
                   >
-                    Record Again
+                    {t('audioTranslation.recordAgain')}
                   </Button>
                   <Button
                     onClick={handleTranslate}
@@ -403,7 +407,7 @@ const TeachSub2: React.FC = () => {
                     size="lg"
                     leftIcon={<Languages className="w-4 h-4" />}
                   >
-                    Translate
+                    {t('audioTranslation.translate')}
                   </Button>
                 </>
               )}
@@ -442,7 +446,7 @@ const TeachSub2: React.FC = () => {
               <div className="w-8 h-8 rounded-full bg-success-100 flex items-center justify-center">
                 <span className="text-sm font-bold text-success-600">3</span>
               </div>
-              <h2 className="text-lg font-semibold text-gray-800">Translation Results</h2>
+              <h2 className="text-lg font-semibold text-gray-800">{t('audioTranslation.results')}</h2>
             </div>
           </Card.Header>
           <Card.Body>
@@ -452,7 +456,7 @@ const TeachSub2: React.FC = () => {
               <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
                 <div className="flex items-center gap-2 mb-3">
                   <Mic className="w-4 h-4 text-gray-500" />
-                  <h3 className="font-medium text-gray-700">Your Speech (English)</h3>
+                  <h3 className="font-medium text-gray-700">{t('audioTranslation.yourSpeech')}</h3>
                 </div>
                 <p className="text-gray-800 whitespace-pre-wrap">{translationResult.transcription}</p>
               </div>
@@ -461,7 +465,7 @@ const TeachSub2: React.FC = () => {
               <div className="p-4 bg-primary-50 rounded-xl border border-primary-200">
                 <div className="flex items-center gap-2 mb-3">
                   <Languages className="w-4 h-4 text-primary-600" />
-                  <h3 className="font-medium text-primary-700">{translationResult.targetLanguage} Translation</h3>
+                  <h3 className="font-medium text-primary-700">{translationResult.targetLanguage} {t('audioTranslation.translation')}</h3>
                 </div>
                 <p className="text-gray-800 whitespace-pre-wrap">{translationResult.translation}</p>
               </div>
@@ -474,7 +478,7 @@ const TeachSub2: React.FC = () => {
                 variant="secondary"
                 leftIcon={<RotateCcw className="w-4 h-4" />}
               >
-                Record New Audio
+                {t('audioTranslation.recordNewAudio')}
               </Button>
             </div>
           </Card.Body>
@@ -485,23 +489,23 @@ const TeachSub2: React.FC = () => {
       {!translationResult && !isLoading && !isRecording && (
         <Card className="bg-gray-50 border-gray-200">
           <Card.Body>
-            <h3 className="font-semibold text-gray-800 mb-3">Tips for Best Results</h3>
+            <h3 className="font-semibold text-gray-800 mb-3">{t('audioTranslation.tips.title')}</h3>
             <ul className="space-y-2 text-sm text-gray-600">
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-warning-500 mt-2 flex-shrink-0" />
-                <span>Speak clearly and at a normal pace</span>
+                <span>{t('audioTranslation.tips.tip1')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-warning-500 mt-2 flex-shrink-0" />
-                <span>Minimize background noise for better accuracy</span>
+                <span>{t('audioTranslation.tips.tip2')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-warning-500 mt-2 flex-shrink-0" />
-                <span>Pause briefly between sentences for clearer transcription</span>
+                <span>{t('audioTranslation.tips.tip3')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-warning-500 mt-2 flex-shrink-0" />
-                <span>Use the playback feature to review your recording before translating</span>
+                <span>{t('audioTranslation.tips.tip4')}</span>
               </li>
             </ul>
           </Card.Body>

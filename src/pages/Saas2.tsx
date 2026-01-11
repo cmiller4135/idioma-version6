@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Send,
   Sparkles,
@@ -42,17 +43,18 @@ interface QuizQuestion {
   correctAnswer: string;
 }
 
-const languageOptions = [
-  { value: 'Spanish', label: 'Spanish' },
-  { value: 'French', label: 'French' },
-  { value: 'German', label: 'German' },
-  { value: 'Chinese', label: 'Chinese (Mandarin)' },
-  { value: 'Japanese', label: 'Japanese' },
-  { value: 'Portuguese', label: 'Portuguese' },
-  { value: 'Italian', label: 'Italian' },
-];
-
 function Saas2() {
+  const { t } = useTranslation('quiz');
+
+  const languageOptions = [
+    { value: 'Spanish', label: t('multiLanguageQuiz.languages.spanish') },
+    { value: 'French', label: t('multiLanguageQuiz.languages.french') },
+    { value: 'German', label: t('multiLanguageQuiz.languages.german') },
+    { value: 'Chinese', label: t('multiLanguageQuiz.languages.chinese') },
+    { value: 'Japanese', label: t('multiLanguageQuiz.languages.japanese') },
+    { value: 'Portuguese', label: t('multiLanguageQuiz.languages.portuguese') },
+    { value: 'Italian', label: t('multiLanguageQuiz.languages.italian') },
+  ];
   const [loading, setLoading] = useState(false);
   const [loadingQuiz, setLoadingQuiz] = useState(false);
   const [response, setResponse] = useState<GrokResponse | null>(null);
@@ -437,31 +439,31 @@ Continue for all 5 questions.`;
           <div className="p-2 bg-warning-100 rounded-xl">
             <Globe className="w-6 h-6 text-warning-600" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-800">AI Language Study</h1>
+          <h1 className="text-2xl font-bold text-gray-800">{t('multiLanguageQuiz.title')}</h1>
         </div>
         <p className="text-gray-600 ml-14">
-          Generate content in multiple languages with vocabulary analysis and comprehension quizzes.
+          {t('multiLanguageQuiz.subtitle')}
         </p>
       </div>
 
       {/* Topic and Language Input */}
       <Card>
         <Card.Header>
-          <h2 className="text-lg font-semibold text-gray-800">Configure Your Study Session</h2>
+          <h2 className="text-lg font-semibold text-gray-800">{t('multiLanguageQuiz.configureSession')}</h2>
         </Card.Header>
         <Card.Body>
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
-              label="Enter a topic"
+              label={t('multiLanguageQuiz.enterTopic')}
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
-              placeholder="e.g., climate change, space exploration, cooking recipes..."
+              placeholder={t('multiLanguageQuiz.topicPlaceholder')}
               leftIcon={<FileText className="w-5 h-5" />}
               error={error && !response ? error : undefined}
             />
 
             <Select
-              label="Select target language"
+              label={t('multiLanguageQuiz.selectTargetLanguage')}
               options={languageOptions}
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
@@ -474,7 +476,7 @@ Continue for all 5 questions.`;
               fullWidth
               rightIcon={<Send className="w-4 h-4" />}
             >
-              {loading ? 'Generating...' : `Generate ${language} Content`}
+              {loading ? t('multiLanguageQuiz.generating') : t('multiLanguageQuiz.generateContent', { language })}
             </Button>
           </form>
         </Card.Body>
@@ -486,7 +488,7 @@ Continue for all 5 questions.`;
           <Card.Body className="py-12">
             <div className="flex flex-col items-center justify-center gap-4">
               <Spinner size="lg" />
-              <p className="text-gray-500">Generating {language} content about "{topic}"...</p>
+              <p className="text-gray-500">{t('multiLanguageQuiz.generatingContent', { language, topic })}</p>
             </div>
           </Card.Body>
         </Card>
@@ -514,7 +516,7 @@ Continue for all 5 questions.`;
             <Card.Header>
               <div className="flex items-center gap-2">
                 <FileText className="w-5 h-5 text-primary-600" />
-                <h2 className="text-lg font-semibold text-gray-800">Generated Content</h2>
+                <h2 className="text-lg font-semibold text-gray-800">{t('multiLanguageQuiz.generatedContent')}</h2>
               </div>
             </Card.Header>
             <Card.Body>
@@ -532,7 +534,7 @@ Continue for all 5 questions.`;
                 <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
                   <div className="flex items-center gap-2 mb-3">
                     <Languages className="w-4 h-4 text-gray-600" />
-                    <h3 className="font-medium text-gray-700">English Translation</h3>
+                    <h3 className="font-medium text-gray-700">{t('multiLanguageQuiz.englishTranslation')}</h3>
                   </div>
                   <p className="text-gray-700 leading-relaxed">{getTextParts().english}</p>
                 </div>
@@ -545,8 +547,8 @@ Continue for all 5 questions.`;
             <Card.Header>
               <div className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-purple-600" />
-                <h2 className="text-lg font-semibold text-gray-800">Verb Analysis</h2>
-                <span className="ml-auto text-sm text-gray-500">{response.verbs.length} verbs</span>
+                <h2 className="text-lg font-semibold text-gray-800">{t('multiLanguageQuiz.verbAnalysis')}</h2>
+                <span className="ml-auto text-sm text-gray-500">{response.verbs.length} {t('multiLanguageQuiz.verbs')}</span>
               </div>
             </Card.Header>
             <Card.Body className="p-0">
@@ -555,8 +557,8 @@ Continue for all 5 questions.`;
                   <thead>
                     <tr className="bg-gray-50 border-b border-gray-200">
                       <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">{language}</th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">English</th>
-                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Conjugation</th>
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">{t('multiLanguageQuiz.english')}</th>
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">{t('multiLanguageQuiz.conjugation')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
@@ -578,8 +580,8 @@ Continue for all 5 questions.`;
             <Card.Header>
               <div className="flex items-center gap-2">
                 <BookOpen className="w-5 h-5 text-accent-600" />
-                <h2 className="text-lg font-semibold text-gray-800">Adjective Analysis</h2>
-                <span className="ml-auto text-sm text-gray-500">{response.adjectives.length} adjectives</span>
+                <h2 className="text-lg font-semibold text-gray-800">{t('multiLanguageQuiz.adjAnalysis')}</h2>
+                <span className="ml-auto text-sm text-gray-500">{response.adjectives.length} {t('multiLanguageQuiz.adjectives')}</span>
               </div>
             </Card.Header>
             <Card.Body>
@@ -603,7 +605,7 @@ Continue for all 5 questions.`;
               leftIcon={<HelpCircle className="w-5 h-5" />}
               className="bg-success-500 hover:bg-success-600"
             >
-              Create Comprehension Quiz
+              {t('multiLanguageQuiz.createQuiz')}
             </Button>
           )}
 
@@ -613,7 +615,7 @@ Continue for all 5 questions.`;
               <Card.Body className="py-12">
                 <div className="flex flex-col items-center justify-center gap-4">
                   <Spinner size="lg" />
-                  <p className="text-gray-500">Creating {language} quiz questions...</p>
+                  <p className="text-gray-500">{t('multiLanguageQuiz.creatingQuiz', { language })}</p>
                 </div>
               </Card.Body>
             </Card>
@@ -631,11 +633,11 @@ Continue for all 5 questions.`;
                         <HelpCircle className="w-8 h-8 text-white" />
                       </div>
                       <div>
-                        <h2 className="text-xl font-bold text-white">{language} Comprehension Quiz</h2>
+                        <h2 className="text-xl font-bold text-white">{t('multiLanguageQuiz.comprehensionQuiz', { language })}</h2>
                         <p className="text-warning-100">
                           {showResults
-                            ? `Score: ${getScore().correct}/${getScore().total} (${getScore().percentage}%)`
-                            : `${getAnsweredCount()}/${quiz.length} questions answered`
+                            ? t('results.scoreDisplay', { correct: getScore().correct, total: getScore().total, percentage: getScore().percentage })
+                            : t('multiLanguageQuiz.ofAnswered', { count: getAnsweredCount(), total: quiz.length })
                           }
                         </p>
                       </div>
@@ -646,7 +648,7 @@ Continue for all 5 questions.`;
                         disabled={getAnsweredCount() < quiz.length}
                         className="bg-white text-warning-600 hover:bg-gray-100"
                       >
-                        Check Answers
+                        {t('multiLanguageQuiz.checkAnswers')}
                       </Button>
                     )}
                     {showResults && (
@@ -655,7 +657,7 @@ Continue for all 5 questions.`;
                         leftIcon={<RotateCcw className="w-4 h-4" />}
                         className="bg-white text-warning-600 hover:bg-gray-100"
                       >
-                        Retry Quiz
+                        {t('multiLanguageQuiz.retryQuiz')}
                       </Button>
                     )}
                   </div>
@@ -666,8 +668,8 @@ Continue for all 5 questions.`;
               {!showResults && (
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm text-gray-600">
-                    <span>Progress</span>
-                    <span>{getAnsweredCount()} of {quiz.length} answered</span>
+                    <span>{t('multiLanguageQuiz.progress')}</span>
+                    <span>{t('multiLanguageQuiz.ofAnswered', { count: getAnsweredCount(), total: quiz.length })}</span>
                   </div>
                   <ProgressBar
                     value={getAnsweredCount()}
@@ -688,10 +690,10 @@ Continue for all 5 questions.`;
                         </div>
                         <div>
                           <h3 className="text-xl font-bold text-gray-800">
-                            {getScore().percentage >= 80 ? 'Excellent!' : getScore().percentage >= 60 ? 'Good Job!' : 'Keep Practicing!'}
+                            {getScore().percentage >= 80 ? t('results.performance.excellent') : getScore().percentage >= 60 ? t('results.performance.good') : t('results.performance.needsPractice')}
                           </h3>
                           <p className="text-gray-600">
-                            You got {getScore().correct} out of {getScore().total} questions correct ({getScore().percentage}%)
+                            {t('results.correctOf', { correct: getScore().correct, total: getScore().total, percentage: getScore().percentage })}
                           </p>
                         </div>
                       </div>
@@ -791,7 +793,7 @@ Continue for all 5 questions.`;
                 variant="secondary"
                 leftIcon={<Download className="w-4 h-4" />}
               >
-                Download Study Material as DOCX
+                {t('multiLanguageQuiz.downloadDocx')}
               </Button>
             </div>
           )}
@@ -802,23 +804,23 @@ Continue for all 5 questions.`;
       {!response && !loading && (
         <Card className="bg-gray-50 border-gray-200">
           <Card.Body>
-            <h3 className="font-semibold text-gray-800 mb-3">Study Tips</h3>
+            <h3 className="font-semibold text-gray-800 mb-3">{t('multiLanguageQuiz.studyTips')}</h3>
             <ul className="space-y-2 text-sm text-gray-600">
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-warning-500 mt-2 flex-shrink-0" />
-                <span>Enter any topic - current events, stories, specific grammar concepts, or vocabulary themes</span>
+                <span>{t('multiLanguageQuiz.tip1')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-warning-500 mt-2 flex-shrink-0" />
-                <span>Review the verb and adjective analysis to expand your vocabulary</span>
+                <span>{t('multiLanguageQuiz.tip2')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-warning-500 mt-2 flex-shrink-0" />
-                <span>Take the comprehension quiz to test your understanding</span>
+                <span>{t('multiLanguageQuiz.tip3')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-warning-500 mt-2 flex-shrink-0" />
-                <span>Download your study materials as a DOCX file for offline practice</span>
+                <span>{t('multiLanguageQuiz.tip4')}</span>
               </li>
             </ul>
           </Card.Body>

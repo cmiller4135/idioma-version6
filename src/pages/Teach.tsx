@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Camera,
   Mic,
@@ -21,6 +22,8 @@ interface ToolCardProps {
   steps: string[];
   color: string;
   bgColor: string;
+  howItWorksText: string;
+  getStartedText: string;
 }
 
 const ToolCard: React.FC<ToolCardProps> = ({
@@ -30,7 +33,9 @@ const ToolCard: React.FC<ToolCardProps> = ({
   description,
   steps,
   color,
-  bgColor
+  bgColor,
+  howItWorksText,
+  getStartedText
 }) => (
   <Link to={to} className="group block h-full">
     <Card hover className="h-full flex flex-col">
@@ -43,7 +48,7 @@ const ToolCard: React.FC<ToolCardProps> = ({
         </h3>
         <p className="text-gray-600 mb-4">{description}</p>
         <div className="space-y-3">
-          <p className="text-sm font-medium text-gray-700">How it works:</p>
+          <p className="text-sm font-medium text-gray-700">{howItWorksText}</p>
           {steps.map((step, index) => (
             <div key={index} className="flex items-start gap-3">
               <div className={`w-6 h-6 rounded-full ${bgColor} flex items-center justify-center flex-shrink-0`}>
@@ -56,7 +61,7 @@ const ToolCard: React.FC<ToolCardProps> = ({
       </Card.Body>
       <Card.Footer className="bg-gray-50">
         <span className="flex items-center gap-2 text-sm font-medium text-primary-600 group-hover:text-primary-700">
-          Get started
+          {getStartedText}
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </span>
       </Card.Footer>
@@ -65,6 +70,8 @@ const ToolCard: React.FC<ToolCardProps> = ({
 );
 
 const Teach: React.FC = () => {
+  const { t } = useTranslation('teach');
+
   return (
     <div className="space-y-8">
       <Breadcrumb />
@@ -75,10 +82,10 @@ const Teach: React.FC = () => {
           <div className="p-2 bg-success-100 rounded-xl">
             <Play className="w-6 h-6 text-success-600" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-800">Multimedia Learning</h1>
+          <h1 className="text-2xl font-bold text-gray-800">{t('hub.title')}</h1>
         </div>
         <p className="text-gray-600 ml-14">
-          Learn languages using real-world multimedia. Translate photos and audio instantly.
+          {t('hub.subtitle')}
         </p>
       </div>
 
@@ -90,10 +97,9 @@ const Teach: React.FC = () => {
               <Globe className="w-10 h-10 text-white" />
             </div>
             <div className="flex-1">
-              <h2 className="text-xl font-bold text-white mb-2">Learn from the Real World</h2>
+              <h2 className="text-xl font-bold text-white mb-2">{t('hub.learnFromWorld')}</h2>
               <p className="text-success-100">
-                Use our multimedia tools to translate text from photos you take or audio you record.
-                Perfect for learning on the go, traveling, or practicing with authentic content.
+                {t('hub.learnFromWorldDesc')}
               </p>
             </div>
           </div>
@@ -105,46 +111,50 @@ const Teach: React.FC = () => {
         <ToolCard
           to="/teach/sub1"
           icon={<Camera className="w-7 h-7" />}
-          title="Photo Translation"
-          description="Point your camera at any text and get instant translations with vocabulary analysis."
+          title={t('hub.photoTranslation.title')}
+          description={t('hub.photoTranslation.description')}
           steps={[
-            'Select your target language',
-            'Take a photo of text you want to translate',
-            'Get instant translation with verb & adjective analysis',
-            'Save new words to your vocabulary lists'
+            t('hub.photoTranslation.step1'),
+            t('hub.photoTranslation.step2'),
+            t('hub.photoTranslation.step3'),
+            t('hub.photoTranslation.step4')
           ]}
           color="text-success-600"
           bgColor="bg-success-100"
+          howItWorksText={t('hub.howItWorks')}
+          getStartedText={t('hub.getStarted')}
         />
 
         <ToolCard
           to="/teach/sub2"
           icon={<Mic className="w-7 h-7" />}
-          title="Audio Translation"
-          description="Record speech and get translations. Great for practicing pronunciation and understanding."
+          title={t('hub.audioTranslation.title')}
+          description={t('hub.audioTranslation.description')}
           steps={[
-            'Start recording your voice',
-            'Speak in English or your native language',
-            'Get instant transcription and translation',
-            'Review and practice the translated text'
+            t('hub.audioTranslation.step1'),
+            t('hub.audioTranslation.step2'),
+            t('hub.audioTranslation.step3'),
+            t('hub.audioTranslation.step4')
           ]}
           color="text-warning-600"
           bgColor="bg-warning-100"
+          howItWorksText={t('hub.howItWorks')}
+          getStartedText={t('hub.getStarted')}
         />
       </div>
 
       {/* Use Cases */}
       <Card className="bg-gray-50 border-gray-200">
         <Card.Body>
-          <h3 className="font-semibold text-gray-800 mb-4">Perfect For</h3>
+          <h3 className="font-semibold text-gray-800 mb-4">{t('hub.perfectFor')}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
               <div className="p-2 bg-primary-100 rounded-lg">
                 <Image className="w-5 h-5 text-primary-600" />
               </div>
               <div>
-                <p className="font-medium text-gray-700">Menus & Signs</p>
-                <p className="text-xs text-gray-500">While traveling</p>
+                <p className="font-medium text-gray-700">{t('hub.useCases.menus')}</p>
+                <p className="text-xs text-gray-500">{t('hub.useCases.menusDesc')}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
@@ -152,8 +162,8 @@ const Teach: React.FC = () => {
                 <BookOpen className="w-5 h-5 text-accent-600" />
               </div>
               <div>
-                <p className="font-medium text-gray-700">Books & Articles</p>
-                <p className="text-xs text-gray-500">Foreign language reading</p>
+                <p className="font-medium text-gray-700">{t('hub.useCases.books')}</p>
+                <p className="text-xs text-gray-500">{t('hub.useCases.booksDesc')}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
@@ -161,8 +171,8 @@ const Teach: React.FC = () => {
                 <Volume2 className="w-5 h-5 text-success-600" />
               </div>
               <div>
-                <p className="font-medium text-gray-700">Conversations</p>
-                <p className="text-xs text-gray-500">Record and translate</p>
+                <p className="font-medium text-gray-700">{t('hub.useCases.conversations')}</p>
+                <p className="text-xs text-gray-500">{t('hub.useCases.conversationsDesc')}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
@@ -170,8 +180,8 @@ const Teach: React.FC = () => {
                 <Globe className="w-5 h-5 text-warning-600" />
               </div>
               <div>
-                <p className="font-medium text-gray-700">Real-World Practice</p>
-                <p className="text-xs text-gray-500">Authentic content</p>
+                <p className="font-medium text-gray-700">{t('hub.useCases.realWorld')}</p>
+                <p className="text-xs text-gray-500">{t('hub.useCases.realWorldDesc')}</p>
               </div>
             </div>
           </div>
@@ -187,11 +197,11 @@ const Teach: React.FC = () => {
                 <Camera className="w-6 h-6 text-success-600" />
               </div>
               <div>
-                <h4 className="font-semibold text-gray-800 mb-1">Photo Tips</h4>
+                <h4 className="font-semibold text-gray-800 mb-1">{t('hub.photoTips.title')}</h4>
                 <ul className="text-sm text-gray-600 space-y-1">
-                  <li>Ensure good lighting for clear text recognition</li>
-                  <li>Hold camera steady and focus on the text</li>
-                  <li>Capture only the text you want translated</li>
+                  <li>{t('hub.photoTips.tip1')}</li>
+                  <li>{t('hub.photoTips.tip2')}</li>
+                  <li>{t('hub.photoTips.tip3')}</li>
                 </ul>
               </div>
             </div>
@@ -205,11 +215,11 @@ const Teach: React.FC = () => {
                 <Mic className="w-6 h-6 text-warning-600" />
               </div>
               <div>
-                <h4 className="font-semibold text-gray-800 mb-1">Audio Tips</h4>
+                <h4 className="font-semibold text-gray-800 mb-1">{t('hub.audioTips.title')}</h4>
                 <ul className="text-sm text-gray-600 space-y-1">
-                  <li>Speak clearly and at a normal pace</li>
-                  <li>Minimize background noise</li>
-                  <li>Pause between sentences for better accuracy</li>
+                  <li>{t('hub.audioTips.tip1')}</li>
+                  <li>{t('hub.audioTips.tip2')}</li>
+                  <li>{t('hub.audioTips.tip3')}</li>
                 </ul>
               </div>
             </div>

@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   RotateCcw,
   Check,
@@ -35,6 +36,7 @@ const FlashcardDeck: React.FC<FlashcardDeckProps> = ({
   onComplete,
   showTranslationFirst = false
 }) => {
+  const { t } = useTranslation('home');
   const [deck, setDeck] = useState<FlashcardWord[]>(words);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -136,12 +138,12 @@ const FlashcardDeck: React.FC<FlashcardDeckProps> = ({
 
   const getFamiliarityLabel = (level: number) => {
     switch (level) {
-      case 0: return 'New';
-      case 1: return 'Learning';
-      case 2: return 'Familiar';
-      case 3: return 'Known';
-      case 4: return 'Mastered';
-      default: return 'Unknown';
+      case 0: return t('gamification.familiarity.new');
+      case 1: return t('gamification.familiarity.learning');
+      case 2: return t('gamification.familiarity.familiar');
+      case 3: return t('gamification.familiarity.known');
+      case 4: return t('gamification.familiarity.mastered');
+      default: return t('gamification.familiarity.new');
     }
   };
 
@@ -152,8 +154,8 @@ const FlashcardDeck: React.FC<FlashcardDeckProps> = ({
           <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
             <Eye className="w-8 h-8 text-gray-400" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">No Cards to Review</h3>
-          <p className="text-gray-500">Add some words to your vocabulary to start practicing!</p>
+          <h3 className="text-lg font-semibold text-gray-800 mb-2">{t('flashcardPractice.noCardsToReview')}</h3>
+          <p className="text-gray-500">{t('flashcardPractice.addWordsToStart')}</p>
         </Card.Body>
       </Card>
     );
@@ -179,32 +181,32 @@ const FlashcardDeck: React.FC<FlashcardDeckProps> = ({
             )}
           </div>
 
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">Session Complete!</h3>
-          <p className="text-gray-500 mb-6">You reviewed {deck.length} cards</p>
+          <h3 className="text-2xl font-bold text-gray-800 mb-2">{t('flashcardPractice.sessionComplete')}</h3>
+          <p className="text-gray-500 mb-6">{t('flashcardPractice.youReviewed', { count: deck.length })}</p>
 
           <div className="grid grid-cols-3 gap-4 mb-8">
             <div className="p-4 bg-green-50 rounded-xl">
               <p className="text-2xl font-bold text-green-600">{correctCount}</p>
-              <p className="text-sm text-green-700">Correct</p>
+              <p className="text-sm text-green-700">{t('flashcardPractice.correct')}</p>
             </div>
             <div className="p-4 bg-red-50 rounded-xl">
               <p className="text-2xl font-bold text-red-600">{incorrectCount}</p>
-              <p className="text-sm text-red-700">Incorrect</p>
+              <p className="text-sm text-red-700">{t('flashcardPractice.incorrect')}</p>
             </div>
             <div className="p-4 bg-blue-50 rounded-xl">
               <p className="text-2xl font-bold text-blue-600">{percentage}%</p>
-              <p className="text-sm text-blue-700">Score</p>
+              <p className="text-sm text-blue-700">{t('flashcardPractice.score')}</p>
             </div>
           </div>
 
           <div className="flex gap-3 justify-center">
             <Button variant="secondary" onClick={handleRestart}>
               <RotateCcw className="w-4 h-4 mr-2" />
-              Practice Again
+              {t('flashcardPractice.practiceAgain')}
             </Button>
             <Button variant="secondary" onClick={handleShuffle}>
               <Shuffle className="w-4 h-4 mr-2" />
-              Shuffle & Restart
+              {t('flashcardPractice.shuffleRestart')}
             </Button>
           </div>
         </Card.Body>
@@ -255,7 +257,7 @@ const FlashcardDeck: React.FC<FlashcardDeckProps> = ({
               <p className="text-3xl font-bold text-gray-800 text-center">
                 {frontContent}
               </p>
-              <p className="text-sm text-gray-400 mt-4">Click to flip</p>
+              <p className="text-sm text-gray-400 mt-4">{t('flashcardPractice.clickToFlip')}</p>
             </Card.Body>
           </Card>
 
@@ -275,7 +277,7 @@ const FlashcardDeck: React.FC<FlashcardDeckProps> = ({
                     className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 mx-auto"
                   >
                     {showHint ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    {showHint ? 'Hide example' : 'Show example'}
+                    {showHint ? t('flashcardPractice.hideExample') : t('flashcardPractice.showExample')}
                   </button>
                   {showHint && (
                     <p className="text-sm text-gray-600 italic text-center mt-2">
@@ -310,7 +312,7 @@ const FlashcardDeck: React.FC<FlashcardDeckProps> = ({
             className="px-8"
           >
             <X className="w-5 h-5 mr-2" />
-            Didn't Know
+            {t('flashcardPractice.didntKnow')}
           </Button>
           <Button
             variant="success"
@@ -322,7 +324,7 @@ const FlashcardDeck: React.FC<FlashcardDeckProps> = ({
             className="px-8"
           >
             <Check className="w-5 h-5 mr-2" />
-            Knew It
+            {t('flashcardPractice.knewIt')}
           </Button>
         </div>
 

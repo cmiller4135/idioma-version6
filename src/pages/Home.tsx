@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   BookOpen,
   Languages,
@@ -50,6 +51,7 @@ const QuickAction: React.FC<QuickActionProps> = ({ to, icon, title, description,
 );
 
 const Home: React.FC = () => {
+  const { t } = useTranslation('home');
   const { stats, loading, getXPToNextLevel } = useGamification();
   const [showAchievement, setShowAchievement] = useState(false);
   const [currentAchievement, setCurrentAchievement] = useState<Achievement | null>(null);
@@ -129,9 +131,9 @@ const Home: React.FC = () => {
       <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 text-white">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 lg:gap-6">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2">Welcome back!</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2">{t('welcome.title', { name: '' }).replace(', !', '!')}</h1>
             <p className="text-primary-100 text-base sm:text-lg">
-              Continue your language learning journey.
+              {t('welcome.subtitle')}
             </p>
           </div>
 
@@ -141,12 +143,12 @@ const Home: React.FC = () => {
             <div className="h-8 sm:h-12 w-px bg-white/20 hidden sm:block" />
             <div className="text-center">
               <p className="text-lg sm:text-2xl font-bold">{stats.xp.toLocaleString()}</p>
-              <p className="text-xs sm:text-sm text-primary-200">XP</p>
+              <p className="text-xs sm:text-sm text-primary-200">{t('statsLabels.xp')}</p>
             </div>
             <div className="h-8 sm:h-12 w-px bg-white/20 hidden sm:block" />
             <div className="text-center">
-              <p className="text-lg sm:text-2xl font-bold">Lvl {stats.level}</p>
-              <p className="text-xs sm:text-sm text-primary-200">Level</p>
+              <p className="text-lg sm:text-2xl font-bold">{t('statsLabels.lvl')} {stats.level}</p>
+              <p className="text-xs sm:text-sm text-primary-200">{t('statsLabels.level')}</p>
             </div>
           </div>
         </div>
@@ -160,7 +162,7 @@ const Home: React.FC = () => {
               <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600" />
             </div>
             <div className="min-w-0">
-              <p className="text-xs sm:text-sm text-gray-500 truncate">Words</p>
+              <p className="text-xs sm:text-sm text-gray-500 truncate">{t('statsLabels.words')}</p>
               <p className="text-xl sm:text-2xl font-bold text-gray-800">{stats.wordsLearned}</p>
             </div>
           </Card.Body>
@@ -172,7 +174,7 @@ const Home: React.FC = () => {
               <Target className="w-5 h-5 sm:w-6 sm:h-6 text-success-600" />
             </div>
             <div className="min-w-0">
-              <p className="text-xs sm:text-sm text-gray-500 truncate">Quizzes</p>
+              <p className="text-xs sm:text-sm text-gray-500 truncate">{t('statsLabels.quizzes')}</p>
               <p className="text-xl sm:text-2xl font-bold text-gray-800">{stats.quizzesCompleted}</p>
             </div>
           </Card.Body>
@@ -184,7 +186,7 @@ const Home: React.FC = () => {
               <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-warning-600" />
             </div>
             <div className="min-w-0">
-              <p className="text-xs sm:text-sm text-gray-500 truncate">Minutes</p>
+              <p className="text-xs sm:text-sm text-gray-500 truncate">{t('statsLabels.minutes')}</p>
               <p className="text-xl sm:text-2xl font-bold text-gray-800">{stats.minutesToday}</p>
             </div>
           </Card.Body>
@@ -194,7 +196,7 @@ const Home: React.FC = () => {
           <Card.Body className="flex items-center gap-2 sm:gap-4 p-3 sm:p-4">
             <StreakBadge streak={stats.streak} size="sm" showLabel={false} animated={false} />
             <div className="min-w-0">
-              <p className="text-xs sm:text-sm text-gray-500 truncate">Streak</p>
+              <p className="text-xs sm:text-sm text-gray-500 truncate">{t('statsLabels.streak')}</p>
               <p className="text-xl sm:text-2xl font-bold text-gray-800">{stats.streak}</p>
             </div>
           </Card.Body>
@@ -221,17 +223,17 @@ const Home: React.FC = () => {
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
                 <Layers className="w-5 h-5 text-accent-500" />
-                Quick Flashcard Practice
+                {t('quickPractice.title')}
               </h2>
               <Button
                 variant={showFlashcards ? 'secondary' : 'primary'}
                 size="sm"
                 onClick={() => setShowFlashcards(!showFlashcards)}
               >
-                {showFlashcards ? 'Hide Cards' : (
+                {showFlashcards ? t('quickPractice.hideCards') : (
                   <>
                     <Play className="w-4 h-4 mr-2" />
-                    Practice Now
+                    {t('quickPractice.practiceNow')}
                   </>
                 )}
               </Button>
@@ -250,7 +252,7 @@ const Home: React.FC = () => {
           {!showFlashcards && (
             <Card.Body>
               <p className="text-gray-500 text-center py-4">
-                You have {flashcardWords.length} words ready to practice. Click "Practice Now" to start!
+                {t('quickPractice.wordsReady', { count: flashcardWords.length })}
               </p>
             </Card.Body>
           )}
@@ -259,34 +261,34 @@ const Home: React.FC = () => {
 
       {/* Quick Actions */}
       <div>
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h2>
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">{t('quickActions.title')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <QuickAction
             to="/tools/sub2"
             icon={<BookOpen className="w-6 h-6" />}
-            title="My Vocabulary"
-            description="Review and manage your saved words and lists"
+            title={t('quickActionsItems.myVocabulary')}
+            description={t('quickActionsItems.myVocabularyDesc')}
             color="bg-primary-500"
           />
           <QuickAction
             to="/tools/sub1"
             icon={<Languages className="w-6 h-6" />}
-            title="Verb Conjugator"
-            description="Practice Spanish verb conjugations"
+            title={t('quickActionsItems.verbConjugator')}
+            description={t('quickActionsItems.verbConjugatorDesc')}
             color="bg-accent-500"
           />
           <QuickAction
             to="/teach/sub1"
             icon={<Camera className="w-6 h-6" />}
-            title="Photo Translation"
-            description="Translate text from photos instantly"
+            title={t('quickActionsItems.photoTranslation')}
+            description={t('quickActionsItems.photoTranslationDesc')}
             color="bg-success-500"
           />
           <QuickAction
             to="/saas2"
             icon={<Sparkles className="w-6 h-6" />}
-            title="AI Language Study"
-            description="Learn with AI-generated content and quizzes"
+            title={t('quickActionsItems.aiLanguageStudy')}
+            description={t('quickActionsItems.aiLanguageStudyDesc')}
             color="bg-warning-500"
           />
         </div>
@@ -299,7 +301,7 @@ const Home: React.FC = () => {
           <Card.Header>
             <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
               <Languages className="w-5 h-5 text-primary-500" />
-              Learning Tools
+              {t('learningTools.title')}
             </h2>
           </Card.Header>
           <Card.Body className="space-y-3">
@@ -312,8 +314,8 @@ const Home: React.FC = () => {
                   <Languages className="w-5 h-5 text-primary-600" />
                 </div>
                 <div>
-                  <p className="font-medium text-gray-800">Verb Conjugator</p>
-                  <p className="text-sm text-gray-500">Master verb forms</p>
+                  <p className="font-medium text-gray-800">{t('learningTools.verbConjugator')}</p>
+                  <p className="text-sm text-gray-500">{t('learningTools.verbConjugatorDesc')}</p>
                 </div>
               </div>
               <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-primary-500 transition-colors" />
@@ -327,8 +329,8 @@ const Home: React.FC = () => {
                   <BookOpen className="w-5 h-5 text-accent-600" />
                 </div>
                 <div>
-                  <p className="font-medium text-gray-800">Topic Vocabulary</p>
-                  <p className="text-sm text-gray-500">Learn words by subject</p>
+                  <p className="font-medium text-gray-800">{t('learningTools.topicVocabulary')}</p>
+                  <p className="text-sm text-gray-500">{t('learningTools.topicVocabularyDesc')}</p>
                 </div>
               </div>
               <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-primary-500 transition-colors" />
@@ -336,7 +338,7 @@ const Home: React.FC = () => {
           </Card.Body>
           <Card.Footer>
             <Link to="/tools" className="text-sm text-primary-600 hover:text-primary-700 font-medium">
-              View all tools
+              {t('learningTools.viewAll')}
             </Link>
           </Card.Footer>
         </Card>
@@ -346,7 +348,7 @@ const Home: React.FC = () => {
           <Card.Header>
             <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
               <Trophy className="w-5 h-5 text-yellow-500" />
-              Achievements
+              {t('achievements.title')}
             </h2>
           </Card.Header>
           <Card.Body>
@@ -381,7 +383,7 @@ const Home: React.FC = () => {
           </Card.Body>
           <Card.Footer>
             <p className="text-sm text-gray-500">
-              {stats.unlockedAchievements.length} of {ACHIEVEMENTS.length} achievements unlocked
+              {t('achievementsSection.unlockedOf', { unlocked: stats.unlockedAchievements.length, total: ACHIEVEMENTS.length })}
             </p>
           </Card.Footer>
         </Card>
@@ -392,7 +394,7 @@ const Home: React.FC = () => {
         <Card.Header>
           <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
             <Camera className="w-5 h-5 text-success-500" />
-            Multimedia Learning
+            {t('multimedia.title')}
           </h2>
         </Card.Header>
         <Card.Body className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -405,8 +407,8 @@ const Home: React.FC = () => {
                 <Camera className="w-5 h-5 text-success-600" />
               </div>
               <div>
-                <p className="font-medium text-gray-800">Photo Translation</p>
-                <p className="text-sm text-gray-500">Snap and translate</p>
+                <p className="font-medium text-gray-800">{t('multimedia.photoTranslation')}</p>
+                <p className="text-sm text-gray-500">{t('multimedia.photoTranslationDesc')}</p>
               </div>
             </div>
             <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-primary-500 transition-colors" />
@@ -420,8 +422,8 @@ const Home: React.FC = () => {
                 <Mic className="w-5 h-5 text-warning-600" />
               </div>
               <div>
-                <p className="font-medium text-gray-800">Audio Translation</p>
-                <p className="text-sm text-gray-500">Speak and translate</p>
+                <p className="font-medium text-gray-800">{t('multimedia.audioTranslation')}</p>
+                <p className="text-sm text-gray-500">{t('multimedia.audioTranslationDesc')}</p>
               </div>
             </div>
             <ArrowRight className="w-5 h-5 text-gray-300 group-hover:text-primary-500 transition-colors" />
@@ -429,7 +431,7 @@ const Home: React.FC = () => {
         </Card.Body>
         <Card.Footer>
           <Link to="/teach" className="text-sm text-primary-600 hover:text-primary-700 font-medium">
-            View all multimedia tools
+            {t('multimedia.viewAll')}
           </Link>
         </Card.Footer>
       </Card>
@@ -442,10 +444,9 @@ const Home: React.FC = () => {
               <Star className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-800 mb-1">Pro Tip</h3>
+              <h3 className="font-semibold text-gray-800 mb-1">{t('tips.proTip')}</h3>
               <p className="text-gray-600">
-                Consistency is key! Try to practice a little every day rather than long sessions once a week.
-                Even 10 minutes of daily practice can lead to significant progress over time.
+                {t('tips.consistencyTip')}
               </p>
             </div>
           </div>

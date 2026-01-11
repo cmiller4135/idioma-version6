@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Menu,
   X,
@@ -16,6 +17,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { LanguageSelector } from './LanguageSelector';
 
 interface NavLinkProps {
   to: string;
@@ -137,6 +139,7 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
 };
 
 const Navbar: React.FC = () => {
+  const { t } = useTranslation('navigation');
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -192,40 +195,40 @@ const Navbar: React.FC = () => {
 
   const toolsItems: DropdownItem[] = [
     {
-      label: 'Verb Conjugator',
+      label: t('toolsDropdown.verbConjugator'),
       path: '/tools/sub1',
       icon: <Languages className="w-5 h-5" />,
-      description: 'Master verb conjugations'
+      description: t('toolsDropdown.verbConjugatorDesc')
     },
     {
-      label: 'Topic Vocabulary',
+      label: t('toolsDropdown.topicVocabulary'),
       path: '/tools/sub3',
       icon: <BookOpen className="w-5 h-5" />,
-      description: 'Learn words by topic'
+      description: t('toolsDropdown.topicVocabularyDesc')
     },
   ];
 
   const multimediaItems: DropdownItem[] = [
     {
-      label: 'Photo Translation',
+      label: t('teachDropdown.photoTranslation'),
       path: '/teach/sub1',
       icon: <Camera className="w-5 h-5" />,
-      description: 'Translate text from images'
+      description: t('teachDropdown.photoTranslationDesc')
     },
     {
-      label: 'Audio Translation',
+      label: t('teachDropdown.audioTranslation'),
       path: '/teach/sub2',
       icon: <Mic className="w-5 h-5" />,
-      description: 'Speech to text translation'
+      description: t('teachDropdown.audioTranslationDesc')
     },
   ];
 
   const profileItems: DropdownItem[] = [
     {
-      label: 'Settings',
+      label: t('navbar.settings'),
       path: '/profile/config',
       icon: <Settings className="w-5 h-5" />,
-      description: 'Manage your account'
+      description: t('toolsDropdown.vocabularyManagerDesc')
     },
   ];
 
@@ -250,15 +253,15 @@ const Navbar: React.FC = () => {
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
             <NavLink to="/home" icon={<Home className="w-4 h-4" />}>
-              Home
+              {t('navbar.home')}
             </NavLink>
 
             <NavLink to="/tools/sub2" icon={<BookOpen className="w-4 h-4" />}>
-              My Vocabulary
+              {t('navbar.myVocabulary')}
             </NavLink>
 
             <NavDropdown
-              label="Learning Tools"
+              label={t('navbar.learningTools')}
               icon={<Languages className="w-4 h-4" />}
               items={toolsItems}
               isOpen={activeDropdown === 'tools'}
@@ -267,7 +270,7 @@ const Navbar: React.FC = () => {
             />
 
             <NavDropdown
-              label="Multimedia"
+              label={t('navbar.multimedia')}
               icon={<Camera className="w-4 h-4" />}
               items={multimediaItems}
               isOpen={activeDropdown === 'multimedia'}
@@ -276,14 +279,18 @@ const Navbar: React.FC = () => {
             />
 
             <NavLink to="/saas2" icon={<Sparkles className="w-4 h-4" />}>
-              AI Study
+              {t('navbar.aiStudy')}
             </NavLink>
           </div>
 
-          {/* Desktop Profile Menu */}
-          <div className="hidden lg:block">
+          {/* Desktop Right Section - Language & Profile */}
+          <div className="hidden lg:flex items-center gap-2">
+            {/* Language Selector */}
+            <LanguageSelector />
+
+            {/* Profile Dropdown */}
             <NavDropdown
-              label="Profile"
+              label={t('navbar.profile')}
               icon={<User className="w-4 h-4" />}
               items={profileItems}
               isOpen={activeDropdown === 'profile'}
@@ -296,7 +303,7 @@ const Navbar: React.FC = () => {
           <button
             className="lg:hidden p-2 rounded-lg text-accent-400 hover:bg-primary-700 transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-label={mobileMenuOpen ? t('navbar.closeMenu') : t('navbar.openMenu')}
             aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -322,11 +329,11 @@ const Navbar: React.FC = () => {
       >
         {/* Mobile Menu Header */}
         <div className="flex items-center justify-between p-4 border-b border-primary-500">
-          <span className="text-lg font-semibold text-accent-400">Menu</span>
+          <span className="text-lg font-semibold text-accent-400">{t('navbar.menu')}</span>
           <button
             onClick={() => setMobileMenuOpen(false)}
             className="p-2 rounded-lg text-accent-400 hover:bg-primary-700 transition-colors"
-            aria-label="Close menu"
+            aria-label={t('navbar.closeMenu')}
           >
             <X className="w-6 h-6" />
           </button>
@@ -335,60 +342,70 @@ const Navbar: React.FC = () => {
         {/* Mobile Menu Content */}
         <div className="p-4 space-y-2 overflow-y-auto h-[calc(100%-80px)]">
           <NavLink to="/home" icon={<Home className="w-5 h-5" />}>
-            Home
+            {t('navbar.home')}
           </NavLink>
 
           <NavLink to="/tools/sub2" icon={<BookOpen className="w-5 h-5" />}>
-            My Vocabulary
+            {t('navbar.myVocabulary')}
           </NavLink>
 
           {/* Tools Section */}
           <div className="pt-4">
             <div className="text-xs font-semibold text-accent-500/60 uppercase tracking-wider px-3 mb-2">
-              Learning Tools
+              {t('navbar.learningTools')}
             </div>
             <NavLink to="/tools/sub1" icon={<Languages className="w-5 h-5" />}>
-              Verb Conjugator
+              {t('toolsDropdown.verbConjugator')}
             </NavLink>
             <NavLink to="/tools/sub3" icon={<BookOpen className="w-5 h-5" />}>
-              Topic Vocabulary
+              {t('toolsDropdown.topicVocabulary')}
             </NavLink>
           </div>
 
           {/* Multimedia Section */}
           <div className="pt-4">
             <div className="text-xs font-semibold text-accent-500/60 uppercase tracking-wider px-3 mb-2">
-              Multimedia Learning
+              {t('navbar.multimediaLearning')}
             </div>
             <NavLink to="/teach/sub1" icon={<Camera className="w-5 h-5" />}>
-              Photo Translation
+              {t('teachDropdown.photoTranslation')}
             </NavLink>
             <NavLink to="/teach/sub2" icon={<Mic className="w-5 h-5" />}>
-              Audio Translation
+              {t('teachDropdown.audioTranslation')}
             </NavLink>
           </div>
 
           {/* AI Study */}
           <div className="pt-4">
             <NavLink to="/saas2" icon={<Sparkles className="w-5 h-5" />}>
-              AI Language Study
+              {t('navbar.aiLanguageStudy')}
             </NavLink>
+          </div>
+
+          {/* Language Selection */}
+          <div className="pt-4 border-t border-primary-500 mt-4">
+            <div className="text-xs font-semibold text-accent-500/60 uppercase tracking-wider px-3 mb-2">
+              {t('navbar.language')}
+            </div>
+            <div className="px-3 py-2">
+              <LanguageSelector />
+            </div>
           </div>
 
           {/* Profile Section */}
           <div className="pt-4 border-t border-primary-500 mt-4">
             <div className="text-xs font-semibold text-accent-500/60 uppercase tracking-wider px-3 mb-2">
-              Account
+              {t('navbar.account')}
             </div>
             <NavLink to="/profile/config" icon={<Settings className="w-5 h-5" />}>
-              Settings
+              {t('navbar.settings')}
             </NavLink>
             <button
               onClick={handleLogout}
               className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-accent-300 hover:bg-primary-700 hover:text-accent-400 transition-all duration-200"
             >
               <LogOut className="w-5 h-5" />
-              Sign Out
+              {t('navbar.signOut')}
             </button>
           </div>
         </div>

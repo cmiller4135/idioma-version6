@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Flame, Zap } from 'lucide-react';
 
 interface StreakBadgeProps {
@@ -14,6 +15,8 @@ const StreakBadge: React.FC<StreakBadgeProps> = ({
   showLabel = true,
   animated = true
 }) => {
+  const { t } = useTranslation('home');
+
   const sizeClasses = {
     sm: 'w-8 h-8 text-xs',
     md: 'w-12 h-12 text-sm',
@@ -35,12 +38,12 @@ const StreakBadge: React.FC<StreakBadgeProps> = ({
   };
 
   const getStreakLabel = () => {
-    if (streak >= 30) return 'On Fire!';
-    if (streak >= 14) return 'Blazing!';
-    if (streak >= 7) return 'Hot Streak!';
-    if (streak >= 3) return 'Getting Started!';
-    if (streak > 0) return 'Keep Going!';
-    return 'Start Streak';
+    if (streak >= 30) return t('gamification.streak.onFire');
+    if (streak >= 14) return t('gamification.streak.blazing');
+    if (streak >= 7) return t('gamification.streak.hotStreak');
+    if (streak >= 3) return t('gamification.streak.gettingStarted');
+    if (streak > 0) return t('gamification.streak.keepGoing');
+    return t('gamification.streak.startStreak');
   };
 
   const isActive = streak > 0;
@@ -92,7 +95,7 @@ const StreakBadge: React.FC<StreakBadgeProps> = ({
       {showLabel && (
         <div className="flex flex-col">
           <span className="font-semibold text-gray-800">
-            {streak} Day{streak !== 1 ? 's' : ''}
+            {streak} {streak !== 1 ? t('gamification.streak.days') : t('gamification.streak.day')}
           </span>
           <span className="text-xs text-gray-500">{getStreakLabel()}</span>
         </div>

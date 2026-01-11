@@ -1,26 +1,12 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ChevronRight, Home } from 'lucide-react';
 
 interface BreadcrumbItem {
   label: string;
   path: string;
 }
-
-// Route to breadcrumb mapping
-const routeLabels: Record<string, string> = {
-  '/home': 'Home',
-  '/tools': 'Learning Tools',
-  '/tools/sub1': 'Verb Conjugator',
-  '/tools/sub2': 'My Vocabulary',
-  '/tools/sub3': 'Topic Vocabulary',
-  '/teach': 'Multimedia Learning',
-  '/teach/sub1': 'Photo Translation',
-  '/teach/sub2': 'Audio Translation',
-  '/saas1': 'Spanish Practice',
-  '/saas2': 'AI Language Study',
-  '/profile/config': 'Settings',
-};
 
 // Parent route mapping for building hierarchy
 const parentRoutes: Record<string, string> = {
@@ -32,8 +18,27 @@ const parentRoutes: Record<string, string> = {
 };
 
 export const Breadcrumb: React.FC = () => {
+  const { t } = useTranslation('navigation');
   const location = useLocation();
   const currentPath = location.pathname;
+
+  // Route to breadcrumb mapping using translations
+  const getRouteLabel = (path: string): string => {
+    const labels: Record<string, string> = {
+      '/home': t('breadcrumbs.home'),
+      '/tools': t('breadcrumbLabels.learningTools'),
+      '/tools/sub1': t('toolsDropdown.verbConjugator'),
+      '/tools/sub2': t('breadcrumbLabels.myVocabulary'),
+      '/tools/sub3': t('toolsDropdown.topicVocabulary'),
+      '/teach': t('breadcrumbLabels.multimediaLearning'),
+      '/teach/sub1': t('teachDropdown.photoTranslation'),
+      '/teach/sub2': t('teachDropdown.audioTranslation'),
+      '/saas1': t('breadcrumbLabels.spanishPractice'),
+      '/saas2': t('breadcrumbLabels.aiLanguageStudy'),
+      '/profile/config': t('breadcrumbs.settings'),
+    };
+    return labels[path] || path;
+  };
 
   // Don't show breadcrumbs on home or landing
   if (currentPath === '/' || currentPath === '/home') {
@@ -43,22 +48,23 @@ export const Breadcrumb: React.FC = () => {
   // Build breadcrumb trail
   const buildBreadcrumbs = (): BreadcrumbItem[] => {
     const breadcrumbs: BreadcrumbItem[] = [
-      { label: 'Home', path: '/home' }
+      { label: t('breadcrumbs.home'), path: '/home' }
     ];
 
     // Check if current path has a parent
     const parent = parentRoutes[currentPath];
-    if (parent && routeLabels[parent]) {
+    if (parent) {
       breadcrumbs.push({
-        label: routeLabels[parent],
+        label: getRouteLabel(parent),
         path: parent
       });
     }
 
     // Add current page
-    if (routeLabels[currentPath]) {
+    const currentLabel = getRouteLabel(currentPath);
+    if (currentLabel !== currentPath) {
       breadcrumbs.push({
-        label: routeLabels[currentPath],
+        label: currentLabel,
         path: currentPath
       });
     }

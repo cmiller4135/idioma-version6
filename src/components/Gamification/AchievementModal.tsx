@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X, Trophy, Star, Flame, BookOpen, Target, Zap, Award, Medal } from 'lucide-react';
 import { Button } from '../ui';
 
@@ -52,6 +53,7 @@ const AchievementModal: React.FC<AchievementModalProps> = ({
   isOpen,
   onClose
 }) => {
+  const { t } = useTranslation('home');
   const [show, setShow] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
 
@@ -146,7 +148,7 @@ const AchievementModal: React.FC<AchievementModalProps> = ({
 
           {/* Achievement unlocked text */}
           <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
-            Achievement Unlocked!
+            {t('gamification.achievement.unlocked')}
           </p>
 
           {/* Title */}
@@ -166,14 +168,14 @@ const AchievementModal: React.FC<AchievementModalProps> = ({
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent-100 rounded-full mb-6">
               <Star className="w-5 h-5 text-accent-500 fill-accent-500" />
               <span className="font-semibold text-accent-700">
-                +{achievement.xpReward} XP
+                {t('gamification.achievement.xpReward', { xp: achievement.xpReward })}
               </span>
             </div>
           )}
 
           {/* Close button */}
           <Button onClick={onClose} className="w-full">
-            Awesome!
+            {t('gamification.achievement.awesome')}
           </Button>
         </div>
       </div>

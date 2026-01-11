@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Star, TrendingUp } from 'lucide-react';
 
 interface XPCounterProps {
@@ -20,6 +21,7 @@ const XPCounter: React.FC<XPCounterProps> = ({
   animated = true,
   recentGain
 }) => {
+  const { t } = useTranslation('home');
   const [displayXP, setDisplayXP] = useState(xp);
   const [showGain, setShowGain] = useState(false);
 
@@ -95,7 +97,7 @@ const XPCounter: React.FC<XPCounterProps> = ({
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span className="font-semibold text-gray-800">
-            {displayXP.toLocaleString()} XP
+            {displayXP.toLocaleString()} {t('gamification.xp.xp')}
           </span>
           {showGain && recentGain && (
             <span className="text-success-500 font-medium animate-bounce flex items-center gap-1">
@@ -108,8 +110,8 @@ const XPCounter: React.FC<XPCounterProps> = ({
         {showProgress && (
           <div className="mt-1">
             <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
-              <span>Level {level}</span>
-              <span>{xpInCurrentLevel}/{xpToNextLevel} to Level {level + 1}</span>
+              <span>{t('gamification.xp.level')} {level}</span>
+              <span>{xpInCurrentLevel}/{xpToNextLevel} {t('gamification.xp.toLevel', { level: level + 1 })}</span>
             </div>
             <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
               <div

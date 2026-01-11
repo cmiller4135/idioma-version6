@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Camera,
   Image,
@@ -22,15 +23,6 @@ type TranslationType =
   | 'Translate from English to German'
   | 'Translate from English to Portuguese';
 
-const translationOptions = [
-  { value: 'Translate to Spanish', label: 'English → Spanish' },
-  { value: 'Translate from Spanish to English', label: 'Spanish → English' },
-  { value: 'Translate from English to Japanese', label: 'English → Japanese' },
-  { value: 'Translate from English to French', label: 'English → French' },
-  { value: 'Translate from English to German', label: 'English → German' },
-  { value: 'Translate from English to Portuguese', label: 'English → Portuguese' },
-];
-
 interface TranslationResult {
   original: string;
   translated: string;
@@ -38,9 +30,20 @@ interface TranslationResult {
 }
 
 function TeachSub1() {
+  const { t } = useTranslation('teach');
   const [photo, setPhoto] = useState<string | null>(null);
   const [isStreamReady, setIsStreamReady] = useState(false);
   const [translationType, setTranslationType] = useState<TranslationType>('Translate to Spanish');
+
+  // Translation options moved inside to use i18n (labels are for display only)
+  const translationOptions = [
+    { value: 'Translate to Spanish', label: 'English → Spanish' },
+    { value: 'Translate from Spanish to English', label: 'Spanish → English' },
+    { value: 'Translate from English to Japanese', label: 'English → Japanese' },
+    { value: 'Translate from English to French', label: 'English → French' },
+    { value: 'Translate from English to German', label: 'English → German' },
+    { value: 'Translate from English to Portuguese', label: 'English → Portuguese' },
+  ];
   const [isLoading, setIsLoading] = useState(false);
   const [loadingAction, setLoadingAction] = useState<string>('');
   const [translationResult, setTranslationResult] = useState<TranslationResult | null>(null);
@@ -140,7 +143,7 @@ function TeachSub1() {
     if (!photo) return;
 
     setIsLoading(true);
-    setLoadingAction('Translating image...');
+    setLoadingAction(t('photoTranslation.translatingImage'));
     setError(null);
     setVerbAnalysis(null);
     setAdjectiveAnalysis(null);
@@ -187,7 +190,7 @@ function TeachSub1() {
     if (!translationResult) return;
 
     setIsLoading(true);
-    setLoadingAction('Analyzing verbs...');
+    setLoadingAction(t('photoTranslation.analyzingVerbs'));
     try {
       const response = await callOpenAI({
         type: 'chat',
@@ -224,7 +227,7 @@ ${translationResult.translated}`
     if (!translationResult) return;
 
     setIsLoading(true);
-    setLoadingAction('Analyzing adjectives...');
+    setLoadingAction(t('photoTranslation.analyzingAdjectives'));
     try {
       const response = await callOpenAI({
         type: 'chat',
@@ -266,10 +269,10 @@ ${translationResult.translated}`
           <div className="p-2 bg-success-100 rounded-xl">
             <Camera className="w-6 h-6 text-success-600" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-800">Photo Translation</h1>
+          <h1 className="text-2xl font-bold text-gray-800">{t('photoTranslation.title')}</h1>
         </div>
         <p className="text-gray-600 ml-14">
-          Take a photo of text and get instant translations with verb and adjective analysis.
+          {t('photoTranslation.subtitle')}
         </p>
       </div>
 
@@ -290,7 +293,7 @@ ${translationResult.translated}`
             <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
               <span className="text-sm font-bold text-primary-600">1</span>
             </div>
-            <h2 className="text-lg font-semibold text-gray-800">Select Translation Direction</h2>
+            <h2 className="text-lg font-semibold text-gray-800">{t('photoTranslation.selectTranslationDirection')}</h2>
           </div>
         </Card.Header>
         <Card.Body>
@@ -312,7 +315,7 @@ ${translationResult.translated}`
             <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
               <span className="text-sm font-bold text-primary-600">2</span>
             </div>
-            <h2 className="text-lg font-semibold text-gray-800">Capture Photo</h2>
+            <h2 className="text-lg font-semibold text-gray-800">{t('photoTranslation.capturePhoto')}</h2>
           </div>
         </Card.Header>
         <Card.Body>
@@ -329,7 +332,7 @@ ${translationResult.translated}`
                 {!isStreamReady && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-100">
                     <Camera className="w-16 h-16 text-gray-300 mb-4" />
-                    <p className="text-gray-500">Camera preview will appear here</p>
+                    <p className="text-gray-500">{t('photoTranslation.cameraPreview')}</p>
                   </div>
                 )}
               </div>
@@ -342,7 +345,7 @@ ${translationResult.translated}`
                     leftIcon={<Camera className="w-4 h-4" />}
                     size="lg"
                   >
-                    Start Camera
+                    {t('photoTranslation.startCamera')}
                   </Button>
                 ) : (
                   <>
@@ -352,14 +355,14 @@ ${translationResult.translated}`
                       leftIcon={<Image className="w-4 h-4" />}
                       size="lg"
                     >
-                      Take Photo
+                      {t('photoTranslation.takePhoto')}
                     </Button>
                     <Button
                       onClick={stopCamera}
                       variant="secondary"
                       leftIcon={<X className="w-4 h-4" />}
                     >
-                      Cancel
+                      {t('photoTranslation.cancel')}
                     </Button>
                   </>
                 )}
@@ -392,16 +395,16 @@ ${translationResult.translated}`
                   variant="secondary"
                   leftIcon={<RotateCcw className="w-4 h-4" />}
                 >
-                  Take Another Photo
+                  {t('photoTranslation.takeAnotherPhoto')}
                 </Button>
                 <Button
                   onClick={handleTranslateImage}
-                  isLoading={isLoading && loadingAction === 'Translating image...'}
+                  isLoading={isLoading && loadingAction === t('photoTranslation.translatingImage')}
                   disabled={isLoading}
                   leftIcon={<Languages className="w-4 h-4" />}
                   size="lg"
                 >
-                  Translate Text
+                  {t('photoTranslation.translateText')}
                 </Button>
               </div>
             </div>
@@ -429,7 +432,7 @@ ${translationResult.translated}`
               <div className="w-8 h-8 rounded-full bg-success-100 flex items-center justify-center">
                 <span className="text-sm font-bold text-success-600">3</span>
               </div>
-              <h2 className="text-lg font-semibold text-gray-800">Translation Results</h2>
+              <h2 className="text-lg font-semibold text-gray-800">{t('photoTranslation.results')}</h2>
             </div>
           </Card.Header>
           <Card.Body>
@@ -439,7 +442,7 @@ ${translationResult.translated}`
               <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
                 <div className="flex items-center gap-2 mb-3">
                   <Type className="w-4 h-4 text-gray-500" />
-                  <h3 className="font-medium text-gray-700">Original Text</h3>
+                  <h3 className="font-medium text-gray-700">{t('photoTranslation.originalText')}</h3>
                 </div>
                 <p className="text-gray-800 whitespace-pre-wrap">{translationResult.original}</p>
               </div>
@@ -448,7 +451,7 @@ ${translationResult.translated}`
               <div className="p-4 bg-primary-50 rounded-xl border border-primary-200">
                 <div className="flex items-center gap-2 mb-3">
                   <Languages className="w-4 h-4 text-primary-600" />
-                  <h3 className="font-medium text-primary-700">{translationResult.targetLanguage} Translation</h3>
+                  <h3 className="font-medium text-primary-700">{translationResult.targetLanguage} {t('audioTranslation.translation')}</h3>
                 </div>
                 <p className="text-gray-800 whitespace-pre-wrap">{translationResult.translated}</p>
               </div>
@@ -462,7 +465,7 @@ ${translationResult.translated}`
                 disabled={isLoading}
                 leftIcon={<Sparkles className="w-4 h-4" />}
               >
-                Analyze Verbs
+                {t('photoTranslation.analyzeVerbs')}
               </Button>
               <Button
                 onClick={handleAnalyzeAdjectives}
@@ -470,7 +473,7 @@ ${translationResult.translated}`
                 disabled={isLoading}
                 leftIcon={<BookOpen className="w-4 h-4" />}
               >
-                Analyze Adjectives
+                {t('photoTranslation.analyzeAdjectives')}
               </Button>
             </div>
           </Card.Body>
@@ -483,7 +486,7 @@ ${translationResult.translated}`
           <Card.Header>
             <div className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-purple-600" />
-              <h2 className="text-lg font-semibold text-gray-800">Verb Analysis</h2>
+              <h2 className="text-lg font-semibold text-gray-800">{t('photoTranslation.verbAnalysis')}</h2>
             </div>
           </Card.Header>
           <Card.Body>
@@ -500,7 +503,7 @@ ${translationResult.translated}`
           <Card.Header>
             <div className="flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-indigo-600" />
-              <h2 className="text-lg font-semibold text-gray-800">Adjective Analysis</h2>
+              <h2 className="text-lg font-semibold text-gray-800">{t('photoTranslation.adjectiveAnalysis')}</h2>
             </div>
           </Card.Header>
           <Card.Body>
@@ -515,23 +518,23 @@ ${translationResult.translated}`
       {!translationResult && !isLoading && (
         <Card className="bg-gray-50 border-gray-200">
           <Card.Body>
-            <h3 className="font-semibold text-gray-800 mb-3">Tips for Best Results</h3>
+            <h3 className="font-semibold text-gray-800 mb-3">{t('photoTranslation.tips.title')}</h3>
             <ul className="space-y-2 text-sm text-gray-600">
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-success-500 mt-2 flex-shrink-0" />
-                <span>Ensure good lighting and hold the camera steady</span>
+                <span>{t('photoTranslation.tips.tip1')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-success-500 mt-2 flex-shrink-0" />
-                <span>Focus on the text you want to translate - avoid cluttered backgrounds</span>
+                <span>{t('photoTranslation.tips.tip2')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-success-500 mt-2 flex-shrink-0" />
-                <span>Works best with printed text - handwriting may be less accurate</span>
+                <span>{t('photoTranslation.tips.tip3')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-success-500 mt-2 flex-shrink-0" />
-                <span>After translation, use the verb and adjective analysis to deepen your learning</span>
+                <span>{t('photoTranslation.tips.tip4')}</span>
               </li>
             </ul>
           </Card.Body>

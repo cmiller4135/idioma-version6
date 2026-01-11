@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Home,
   BookOpen,
@@ -45,6 +46,7 @@ const NavItem: React.FC<NavItemProps> = ({ to, icon, label, isActive }) => (
  * Fixed to bottom, shows on screens < 1024px (lg breakpoint)
  */
 const MobileNav: React.FC = () => {
+  const { t } = useTranslation('navigation');
   const location = useLocation();
 
   const isActive = (path: string) => {
@@ -55,11 +57,11 @@ const MobileNav: React.FC = () => {
   };
 
   const navItems = [
-    { to: '/home', icon: <Home className="w-5 h-5" />, label: 'Home' },
-    { to: '/tools/sub2', icon: <BookOpen className="w-5 h-5" />, label: 'Vocab' },
-    { to: '/tools', icon: <Languages className="w-5 h-5" />, label: 'Tools' },
-    { to: '/teach', icon: <Camera className="w-5 h-5" />, label: 'Media' },
-    { to: '/saas2', icon: <Sparkles className="w-5 h-5" />, label: 'Study' },
+    { to: '/home', icon: <Home className="w-5 h-5" />, label: t('mobileNav.home') },
+    { to: '/tools/sub2', icon: <BookOpen className="w-5 h-5" />, label: t('mobileNav.vocab') },
+    { to: '/tools', icon: <Languages className="w-5 h-5" />, label: t('mobileNav.tools') },
+    { to: '/teach', icon: <Camera className="w-5 h-5" />, label: t('mobileNav.media') },
+    { to: '/saas2', icon: <Sparkles className="w-5 h-5" />, label: t('mobileNav.study') },
   ];
 
   return (
