@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   BookOpen,
   Plus,
@@ -13,9 +14,13 @@ import {
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { callOpenAI, translateWithDeepL } from '../../lib/edgeFunctions';
+import { extractOpenAIContent } from '../../lib/validation';
+import { createLogger } from '../../lib/errorLogger';
 import { Chat } from './Chat';
 import { Card, Button, Input, Select, Spinner, Modal } from '../../components/ui';
 import Breadcrumb from '../../components/Breadcrumb';
+
+const logger = createLogger('VocabularyManager');
 
 interface VocabularyWord {
   vocab_id: string;
@@ -25,22 +30,23 @@ interface VocabularyWord {
   language: string;
 }
 
-const languageOptions = [
-  { value: '', label: 'Select a Language' },
-  { value: 'Spanish', label: 'Spanish' },
-  { value: 'French', label: 'French' },
-  { value: 'German', label: 'German' },
-  { value: 'Japanese', label: 'Japanese' },
-  { value: 'Portuguese', label: 'Portuguese' },
-  { value: 'Other', label: 'Other' },
-];
-
-const sentenceCountOptions = Array.from({ length: 10 }, (_, i) => ({
-  value: String(i + 1),
-  label: `${i + 1} sentence${i > 0 ? 's' : ''}`
-}));
-
 const Sub2: React.FC = () => {
+  const { t } = useTranslation('tools');
+
+  const languageOptions = [
+    { value: '', label: t('vocabularyManager.selectLanguage') },
+    { value: 'Spanish', label: t('vocabularyManager.languages.spanish') },
+    { value: 'French', label: t('vocabularyManager.languages.french') },
+    { value: 'German', label: t('vocabularyManager.languages.german') },
+    { value: 'Japanese', label: t('vocabularyManager.languages.japanese') },
+    { value: 'Portuguese', label: t('vocabularyManager.languages.portuguese') },
+    { value: 'Other', label: t('vocabularyManager.languages.other') },
+  ];
+
+  const sentenceCountOptions = Array.from({ length: 10 }, (_, i) => ({
+    value: String(i + 1),
+    label: `${i + 1} sentence${i > 0 ? 's' : ''}`
+  }));
   const [userId, setUserId] = useState<string | null>(null);
   const [vocabulary, setVocabulary] = useState<VocabularyWord[]>([]);
   const [listNames, setListNames] = useState<string[]>([]);
@@ -175,27 +181,27 @@ const Sub2: React.FC = () => {
 
   const handleAddWord = async () => {
     if (creatingNewList && !newListName.trim()) {
-      setError('Please enter a vocabulary list name');
+      setError(t('vocabularyManager.errors.enterListName'));
       return;
     }
 
     if (creatingNewList && selectedLanguage === '') {
-      setError('Please select a language');
+      setError(t('vocabularyManager.errors.selectLanguage'));
       return;
     }
 
     if (selectedLanguage === 'Other' && !otherLanguage.trim()) {
-      setError('Please enter a language');
+      setError(t('vocabularyManager.errors.enterLanguage'));
       return;
     }
 
     if (!newWord.trim()) {
-      setError('Please enter a word');
+      setError(t('vocabularyManager.errors.enterWord'));
       return;
     }
 
     if (!newTranslation.trim()) {
-      setError('Please enter a translation');
+      setError(t('vocabularyManager.errors.enterTranslation'));
       return;
     }
 
@@ -240,7 +246,7 @@ const Sub2: React.FC = () => {
 
   const handleGetTranslation = async () => {
     if (!newWord.trim()) {
-      setError('Please enter a word to translate');
+      setError(t('vocabularyManager.errors.enterWordToTranslate'));
       return;
     }
     setTranslating(true);
@@ -250,10 +256,10 @@ const Sub2: React.FC = () => {
         setNewTranslation(data.translations[0].text);
         setError(null);
       } else {
-        setError('No translation found');
+        setError(t('vocabularyManager.errors.noTranslation'));
       }
     } catch (err) {
-      setError('Error fetching translation');
+      setError(t('vocabularyManager.errors.translationError'));
     } finally {
       setTranslating(false);
     }
@@ -261,12 +267,12 @@ const Sub2: React.FC = () => {
 
   const fetchExampleSentences = async () => {
     if (!selectedListName) {
-      setError('No list is selected. Please click one of your Vocabulary Lists and try again.');
+      setError(t('vocabularyManager.errors.noListSelected'));
       return;
     }
 
     if (vocabulary.length === 0) {
-      setError('No words in this list. Add some words first.');
+      setError(t('vocabularyManager.errors.noWordsInList'));
       return;
     }
 
@@ -293,10 +299,10 @@ const Sub2: React.FC = () => {
           temperature: 0.4
         });
 
-        const data = response.choices[0].message.content;
-        sentences[word.word_translated] = data.split('\n').filter((sentence: string) => sentence.trim() !== '');
+        const content = extractOpenAIContent(response);
+        sentences[word.word_translated] = content.split('\n').filter((sentence: string) => sentence.trim() !== '');
       } catch (error) {
-        console.error('Error fetching example sentences:', error);
+        logger.error(error, 'fetchExampleSentences', { word: word.word_translated });
       }
     }
     setExampleSentences(sentences);
@@ -427,8 +433,8 @@ const Sub2: React.FC = () => {
 
   const getListOptions = () => {
     const options = [
-      { value: '', label: 'Select a vocabulary list' },
-      { value: 'new', label: '+ Create a New List' },
+      { value: '', label: t('vocabularyManager.selectVocabularyList') },
+      { value: 'new', label: t('vocabularyManager.createNewList') },
       ...listNames.map(name => ({ value: name, label: name }))
     ];
     return options;
@@ -452,10 +458,10 @@ const Sub2: React.FC = () => {
           <div className="p-2 bg-primary-100 rounded-xl">
             <BookOpen className="w-6 h-6 text-primary-600" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-800">My Vocabulary</h1>
+          <h1 className="text-2xl font-bold text-gray-800">{t('vocabularyManager.title')}</h1>
         </div>
         <p className="text-gray-600 ml-14">
-          Build and manage your personal vocabulary lists.
+          {t('vocabularyManager.subtitle')}
         </p>
       </div>
 
@@ -477,17 +483,17 @@ const Sub2: React.FC = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <FolderOpen className="w-5 h-5 text-primary-600" />
-                <h2 className="text-lg font-semibold text-gray-800">My Vocabulary Lists</h2>
+                <h2 className="text-lg font-semibold text-gray-800">{t('vocabularyManager.myLists')}</h2>
               </div>
-              <span className="text-sm text-gray-500">{listNames.length} lists</span>
+              <span className="text-sm text-gray-500">{listNames.length} {t('vocabularyManager.lists')}</span>
             </div>
           </Card.Header>
           <Card.Body>
             {listNames.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
                 <FolderOpen className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                <p>No vocabulary lists yet.</p>
-                <p className="text-sm">Click "Add a Word" to create your first list.</p>
+                <p>{t('vocabularyManager.noLists')}</p>
+                <p className="text-sm">{t('vocabularyManager.noListsHint')}</p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -507,7 +513,7 @@ const Sub2: React.FC = () => {
                           onClick={() => handleSaveListName(listName)}
                           leftIcon={<Save className="w-4 h-4" />}
                         >
-                          Save
+                          {t('vocabularyManager.save')}
                         </Button>
                         <Button
                           size="sm"
@@ -535,14 +541,14 @@ const Sub2: React.FC = () => {
                           <button
                             onClick={(e) => { e.stopPropagation(); handleRenameList(listName); }}
                             className="p-1.5 rounded hover:bg-gray-200 text-gray-500 hover:text-gray-700"
-                            title="Rename list"
+                            title={t('vocabularyManager.renameList')}
                           >
                             <Edit3 className="w-4 h-4" />
                           </button>
                           <button
                             onClick={(e) => { e.stopPropagation(); confirmDeleteList(listName); }}
                             className="p-1.5 rounded hover:bg-error-100 text-gray-500 hover:text-error-600"
-                            title="Delete list"
+                            title={t('vocabularyManager.deleteList')}
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -563,7 +569,7 @@ const Sub2: React.FC = () => {
               <div className="flex items-center gap-2">
                 <FileText className="w-5 h-5 text-accent-600" />
                 <h2 className="text-lg font-semibold text-gray-800">
-                  {selectedListName ? `${selectedListName} Words` : 'Select a List'}
+                  {selectedListName ? `${selectedListName} ${t('vocabularyManager.words')}` : t('vocabularyManager.selectAList')}
                 </h2>
               </div>
               <Button
@@ -572,7 +578,7 @@ const Sub2: React.FC = () => {
                 leftIcon={addingWord ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                 variant={addingWord ? 'secondary' : 'primary'}
               >
-                {addingWord ? 'Cancel' : 'Add a Word'}
+                {addingWord ? t('vocabularyManager.cancel') : t('vocabularyManager.addWord')}
               </Button>
             </div>
           </Card.Header>
@@ -580,10 +586,10 @@ const Sub2: React.FC = () => {
             {/* Add Word Form */}
             {addingWord && (
               <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <h3 className="font-medium text-gray-800 mb-3">Add New Word</h3>
+                <h3 className="font-medium text-gray-800 mb-3">{t('vocabularyManager.addNewWord')}</h3>
                 <div className="space-y-3">
                   <Select
-                    label="Vocabulary List"
+                    label={t('vocabularyManager.vocabularyList')}
                     options={getListOptions()}
                     value={newWordListName || ''}
                     onChange={(e) => handleNewWordListNameChange(e.target.value)}
@@ -592,23 +598,23 @@ const Sub2: React.FC = () => {
                   {creatingNewList && (
                     <>
                       <Input
-                        label="New List Name"
+                        label={t('vocabularyManager.newListName')}
                         value={newListName}
                         onChange={(e) => setNewListName(e.target.value)}
-                        placeholder="Enter new list name"
+                        placeholder={t('vocabularyManager.enterNewListName')}
                       />
                       <Select
-                        label="Language"
+                        label={t('vocabularyManager.language')}
                         options={languageOptions}
                         value={selectedLanguage}
                         onChange={(e) => setSelectedLanguage(e.target.value)}
                       />
                       {selectedLanguage === 'Other' && (
                         <Input
-                          label="Specify Language"
+                          label={t('vocabularyManager.specifyLanguage')}
                           value={otherLanguage}
                           onChange={(e) => setOtherLanguage(e.target.value)}
-                          placeholder="Enter language name"
+                          placeholder={t('vocabularyManager.enterLanguageName')}
                         />
                       )}
                     </>
@@ -617,7 +623,7 @@ const Sub2: React.FC = () => {
                   <div className="flex gap-2">
                     <div className="flex-1">
                       <Input
-                        label="Word (English)"
+                        label={t('vocabularyManager.wordEnglish')}
                         value={newWord}
                         onChange={(e) => setNewWord(e.target.value)}
                         placeholder="e.g., apple"
@@ -629,15 +635,15 @@ const Sub2: React.FC = () => {
                         onClick={handleGetTranslation}
                         isLoading={translating}
                         leftIcon={<Languages className="w-4 h-4" />}
-                        title="Auto-translate to Spanish"
+                        title={t('vocabularyManager.autoTranslate')}
                       >
-                        Translate
+                        {t('vocabularyManager.translate')}
                       </Button>
                     </div>
                   </div>
 
                   <Input
-                    label="Translation"
+                    label={t('vocabularyManager.translation')}
                     value={newTranslation}
                     onChange={(e) => setNewTranslation(e.target.value)}
                     placeholder="e.g., manzana"
@@ -648,7 +654,7 @@ const Sub2: React.FC = () => {
                     fullWidth
                     leftIcon={<Save className="w-4 h-4" />}
                   >
-                    Save Word
+                    {t('vocabularyManager.saveWord')}
                   </Button>
                 </div>
               </div>
@@ -662,13 +668,13 @@ const Sub2: React.FC = () => {
             ) : !selectedListName ? (
               <div className="text-center py-8 text-gray-500">
                 <FileText className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                <p>Select a list to view words</p>
+                <p>{t('vocabularyManager.selectListToView')}</p>
               </div>
             ) : vocabulary.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
                 <FileText className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                <p>No words in this list yet.</p>
-                <p className="text-sm">Click "Add a Word" to get started.</p>
+                <p>{t('vocabularyManager.emptyList')}</p>
+                <p className="text-sm">{t('vocabularyManager.emptyListHint')}</p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -682,12 +688,12 @@ const Sub2: React.FC = () => {
                         <Input
                           value={newWordInput}
                           onChange={(e) => setNewWordInput(e.target.value)}
-                          placeholder="Word"
+                          placeholder={t('vocabularyManager.word')}
                         />
                         <Input
                           value={newTranslationInput}
                           onChange={(e) => setNewTranslationInput(e.target.value)}
-                          placeholder="Translation"
+                          placeholder={t('vocabularyManager.translation')}
                         />
                         <div className="flex gap-2">
                           <Button
@@ -695,14 +701,14 @@ const Sub2: React.FC = () => {
                             onClick={() => handleSaveRename(word.vocab_id)}
                             leftIcon={<Save className="w-4 h-4" />}
                           >
-                            Save
+                            {t('vocabularyManager.save')}
                           </Button>
                           <Button
                             size="sm"
                             variant="ghost"
                             onClick={handleCancelRename}
                           >
-                            Cancel
+                            {t('vocabularyManager.cancel')}
                           </Button>
                         </div>
                       </div>
@@ -716,14 +722,14 @@ const Sub2: React.FC = () => {
                           <button
                             onClick={() => handleRename(word.vocab_id)}
                             className="p-1.5 rounded hover:bg-gray-200 text-gray-500 hover:text-gray-700"
-                            title="Edit word"
+                            title={t('vocabularyManager.editWord')}
                           >
                             <Edit3 className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => confirmDeleteWord(word.vocab_id, word.word)}
                             className="p-1.5 rounded hover:bg-error-100 text-gray-500 hover:text-error-600"
-                            title="Delete word"
+                            title={t('vocabularyManager.deleteWord')}
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -743,12 +749,12 @@ const Sub2: React.FC = () => {
         <Card.Header>
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-warning-600" />
-            <h2 className="text-lg font-semibold text-gray-800">Generate Example Sentences</h2>
+            <h2 className="text-lg font-semibold text-gray-800">{t('vocabularyManager.generateExampleSentences')}</h2>
           </div>
         </Card.Header>
         <Card.Body>
           <p className="text-gray-600 mb-4">
-            Select a vocabulary list above, then generate example sentences for all words in the list.
+            {t('vocabularyManager.selectListGenerate')}
           </p>
           <div className="flex flex-wrap items-center gap-3 mb-4">
             <div className="w-32">
@@ -764,11 +770,11 @@ const Sub2: React.FC = () => {
               disabled={!selectedListName || vocabulary.length === 0}
               leftIcon={<Sparkles className="w-4 h-4" />}
             >
-              Generate Examples
+              {t('vocabularyManager.generateExamples')}
             </Button>
             {selectedListName && (
               <span className="text-sm text-gray-500">
-                for {vocabulary.length} words in "{selectedListName}"
+                {t('vocabularyManager.forWordsInList', { count: vocabulary.length, listName: selectedListName })}
               </span>
             )}
           </div>
@@ -778,7 +784,7 @@ const Sub2: React.FC = () => {
             <div className="flex items-center justify-center py-8">
               <div className="text-center">
                 <Spinner size="lg" />
-                <p className="mt-3 text-gray-500">Generating example sentences...</p>
+                <p className="mt-3 text-gray-500">{t('vocabularyManager.generatingExamples')}</p>
               </div>
             </div>
           )}
@@ -805,7 +811,7 @@ const Sub2: React.FC = () => {
       {/* Chat Section */}
       <Card>
         <Card.Header>
-          <h2 className="text-lg font-semibold text-gray-800">Practice Chat</h2>
+          <h2 className="text-lg font-semibold text-gray-800">{t('vocabularyManager.practiceChat')}</h2>
         </Card.Header>
         <Card.Body className="p-0">
           <Chat />
@@ -816,27 +822,27 @@ const Sub2: React.FC = () => {
       <Modal
         isOpen={deleteModal.isOpen}
         onClose={() => setDeleteModal({ isOpen: false, type: 'list', id: '', name: '' })}
-        title={`Delete ${deleteModal.type === 'list' ? 'List' : 'Word'}`}
+        title={deleteModal.type === 'list' ? t('vocabularyManager.deleteListTitle') : t('vocabularyManager.deleteWordTitle')}
       >
         <p className="text-gray-600 mb-4">
-          Are you sure you want to delete {deleteModal.type === 'list' ? 'the list' : 'the word'}{' '}
+          {deleteModal.type === 'list' ? t('vocabularyManager.confirmDeleteList') : t('vocabularyManager.confirmDeleteWord')}{' '}
           <strong>"{deleteModal.name}"</strong>?
-          {deleteModal.type === 'list' && ' This will also delete all words in this list.'}
+          {deleteModal.type === 'list' && ` ${t('vocabularyManager.deleteAlsoWords')}`}
         </p>
-        <p className="text-sm text-gray-500 mb-6">This action cannot be undone.</p>
+        <p className="text-sm text-gray-500 mb-6">{t('vocabularyManager.cannotBeUndone')}</p>
         <div className="flex justify-end gap-3">
           <Button
             variant="ghost"
             onClick={() => setDeleteModal({ isOpen: false, type: 'list', id: '', name: '' })}
           >
-            Cancel
+            {t('vocabularyManager.cancel')}
           </Button>
           <Button
             variant="danger"
             onClick={handleConfirmDelete}
             leftIcon={<Trash2 className="w-4 h-4" />}
           >
-            Delete
+            {t('vocabularyManager.delete')}
           </Button>
         </div>
       </Modal>

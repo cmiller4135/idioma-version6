@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Languages, Send, Copy, Check, ChevronDown, ChevronUp } from 'lucide-react';
 import { callOpenAI } from '../../lib/edgeFunctions';
+import { extractOpenAIContent } from '../../lib/validation';
+import { createLogger } from '../../lib/errorLogger';
 import { Card, Button, Input, Spinner } from '../../components/ui';
 import Breadcrumb from '../../components/Breadcrumb';
+
+const logger = createLogger('VerbConjugator');
 
 interface ConjugationData {
   infinitive: string;
@@ -11,6 +16,7 @@ interface ConjugationData {
 }
 
 const Sub1: React.FC = () => {
+  const { t } = useTranslation('tools');
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [conjugation, setConjugation] = useState<ConjugationData | null>(null);
@@ -21,7 +27,7 @@ const Sub1: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim()) {
-      setError('Please enter a verb to conjugate');
+      setError(t('verbConjugator.error'));
       return;
     }
 
@@ -70,7 +76,7 @@ EXAMPLES:
         temperature: 0.4
       });
 
-      const content = response.choices[0].message.content;
+      const content = extractOpenAIContent(response);
 
       // Parse the response
       const infinitiveMatch = content.match(/INFINITIVE:\s*(.+)/i);
@@ -82,8 +88,8 @@ EXAMPLES:
         rawContent: content
       });
     } catch (error) {
-      console.error('Error:', error);
-      setError(error instanceof Error ? error.message : 'An unexpected error occurred');
+      logger.error(error, 'conjugateVerb', { query });
+      setError(error instanceof Error ? error.message : t('verbConjugator.errorGeneric'));
     } finally {
       setLoading(false);
     }
@@ -132,10 +138,10 @@ EXAMPLES:
           <div className="p-2 bg-primary-100 rounded-xl">
             <Languages className="w-6 h-6 text-primary-600" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-800">Spanish Verb Conjugator</h1>
+          <h1 className="text-2xl font-bold text-gray-800">{t('verbConjugator.title')}</h1>
         </div>
         <p className="text-gray-600 ml-14">
-          Enter any Spanish or English verb to get complete conjugations and example sentences.
+          {t('verbConjugator.subtitle')}
         </p>
       </div>
 
@@ -144,10 +150,10 @@ EXAMPLES:
         <Card.Body>
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
-              label="Enter a verb"
+              label={t('verbConjugator.enterVerb')}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="e.g., hablar, to speak, como, running..."
+              placeholder={t('verbConjugator.placeholder')}
               error={error && !loading ? error : undefined}
               leftIcon={<Languages className="w-5 h-5" />}
             />
@@ -157,7 +163,7 @@ EXAMPLES:
               fullWidth
               rightIcon={<Send className="w-4 h-4" />}
             >
-              {loading ? 'Conjugating...' : 'Conjugate Verb'}
+              {loading ? t('verbConjugator.conjugating') : t('verbConjugator.conjugate')}
             </Button>
           </form>
         </Card.Body>
@@ -169,7 +175,7 @@ EXAMPLES:
           <Card.Body className="py-12">
             <div className="flex flex-col items-center justify-center gap-4">
               <Spinner size="lg" />
-              <p className="text-gray-500">Generating conjugations and examples...</p>
+              <p className="text-gray-500">{t('verbConjugator.generatingConjugations')}</p>
             </div>
           </Card.Body>
         </Card>
@@ -192,7 +198,7 @@ EXAMPLES:
                   className="text-white hover:bg-white/10"
                   leftIcon={copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                 >
-                  {copied ? 'Copied!' : 'Copy All'}
+                  {copied ? t('verbConjugator.copied') : t('verbConjugator.copyAll')}
                 </Button>
               </div>
             </Card.Body>
@@ -204,7 +210,7 @@ EXAMPLES:
               onClick={() => toggleSection('conjugation')}
               className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
             >
-              <h3 className="text-lg font-semibold text-gray-800">Conjugation Tables</h3>
+              <h3 className="text-lg font-semibold text-gray-800">{t('verbConjugator.conjugationTables')}</h3>
               {expandedSections.has('conjugation') ? (
                 <ChevronUp className="w-5 h-5 text-gray-500" />
               ) : (
@@ -228,7 +234,7 @@ EXAMPLES:
               onClick={() => toggleSection('examples')}
               className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
             >
-              <h3 className="text-lg font-semibold text-gray-800">Example Sentences</h3>
+              <h3 className="text-lg font-semibold text-gray-800">{t('verbConjugator.exampleSentences')}</h3>
               {expandedSections.has('examples') ? (
                 <ChevronUp className="w-5 h-5 text-gray-500" />
               ) : (
@@ -271,7 +277,7 @@ EXAMPLES:
               onClick={() => toggleSection('full')}
               className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
             >
-              <h3 className="text-lg font-semibold text-gray-800">Full Response</h3>
+              <h3 className="text-lg font-semibold text-gray-800">{t('verbConjugator.fullResponse')}</h3>
               {expandedSections.has('full') ? (
                 <ChevronUp className="w-5 h-5 text-gray-500" />
               ) : (
@@ -293,19 +299,19 @@ EXAMPLES:
       {!conjugation && !loading && (
         <Card className="bg-gray-50 border-gray-200">
           <Card.Body>
-            <h3 className="font-semibold text-gray-800 mb-3">Tips for Better Results</h3>
+            <h3 className="font-semibold text-gray-800 mb-3">{t('verbConjugator.tipsTitle')}</h3>
             <ul className="space-y-2 text-sm text-gray-600">
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary-500 mt-2 flex-shrink-0" />
-                <span>You can enter verbs in any form (infinitive, conjugated, English, or Spanish)</span>
+                <span>{t('verbConjugator.tip1')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary-500 mt-2 flex-shrink-0" />
-                <span>Try entering "como" to see conjugations of "comer" (to eat)</span>
+                <span>{t('verbConjugator.tip2')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary-500 mt-2 flex-shrink-0" />
-                <span>English verbs like "to speak" will be translated to Spanish automatically</span>
+                <span>{t('verbConjugator.tip3')}</span>
               </li>
             </ul>
           </Card.Body>

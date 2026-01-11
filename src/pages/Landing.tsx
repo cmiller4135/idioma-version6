@@ -1,10 +1,10 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
-import { Mail } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 const Landing = () => {
+  const { t } = useTranslation('auth');
   const navigate = useNavigate();
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -66,53 +66,41 @@ const Landing = () => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-      });
-      if (error) throw error;
-    } catch (error) {
-      console.error('Error:', error);
-      setError(error.message);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <div className="flex-1 container-custom py-12">
         <div className="grid md:grid-cols-2 gap-8 items-center">
-          <div className="text-center md:text-left bg-gradient-to-r from-[#264653] to-[#E63946] p-8 rounded-lg text-white">
+          <div className="text-center md:text-left bg-gradient-to-r from-primary-600 to-error-500 p-8 rounded-lg text-white">
           <div className="mb-4">
-        <h1 className="text-4xl font-bold mb-6">For a limited time, try these learning tools for free!</h1>
+        <h1 className="text-4xl font-bold mb-6">{t('landing.promoTitle')}</h1>
         <Link to="/teach/sub1" className="text-2xl hover:text-custom-red underline mr-4 ">
-          Photo Translator
+          {t('landing.photoTranslator')}
         </Link>
         <br></br>
         <Link to="/saas2" className="text-2xl hover:text-custom-red underline">
-          Study a Language with AI
+          {t('landing.studyWithAI')}
         </Link>
         <br></br>
         <br></br>
       </div>
-            <h1 className="text-3xl font-bold mb-4">Welcome to Idioma-AI</h1>
+            <h1 className="text-3xl font-bold mb-4">{t('landing.welcomeTitle')}</h1>
             <p className="text-lg mb-3">
-              Transform your language learning journey with AI-powered tools and personalized lessons.
+              {t('landing.welcomeSubtitle')}
             </p>
             <div className="space-y-4">
-              <h3 className="font-semibold text-xl">Cool Tools You'll Love:</h3>
+              <h3 className="font-semibold text-xl">{t('landing.toolsTitle')}</h3>
               <ul className="space-y-2">
-                <li>• AI-Powered Image/Photo Translation</li>
-                <li>• Learn a Language with topics you love</li>
-                <li>• Fun conjugation learning tools</li>
-                <li>• Improve your vocabulary with AI</li>
+                <li>• {t('landing.tool1')}</li>
+                <li>• {t('landing.tool2')}</li>
+                <li>• {t('landing.tool3')}</li>
+                <li>• {t('landing.tool4')}</li>
               </ul>
             </div>
           </div>
 
-          <div className="bg-white p-8 rounded-lg shadow-md border border-[#E63946]">
-            <h2 className="text-2xl font-bold mb-6 text-center text-[#264653]">
-              {isLogin ? 'Welcome Back!' : 'Create Your Account to Get More Language Learning Tools'}
+          <div className="bg-white p-8 rounded-lg shadow-md border border-error-500">
+            <h2 className="text-2xl font-bold mb-6 text-center text-primary-600">
+              {isLogin ? t('login.title') : t('landing.createAccountTitle')}
             </h2>
 
             {error && (
@@ -129,7 +117,7 @@ const Landing = () => {
 
             <form onSubmit={handleAuth} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2 text-[#264653]">Email</label>
+                <label className="block text-sm font-medium mb-2 text-primary-600">{t('login.email')}</label>
                 <input
                   type="email"
                   className="input border border-black"
@@ -140,7 +128,7 @@ const Landing = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2 text-[#264653]">Password</label>
+                <label className="block text-sm font-medium mb-2 text-primary-600">{t('login.password')}</label>
                 <input
                   type="password"
                   className="input border border-black"
@@ -150,9 +138,20 @@ const Landing = () => {
                 />
               </div>
 
-              <button type="submit" className="btn w-full bg-[#E9C46A]">
-                {isLogin ? 'Log In' : 'Sign Up'}
+              <button type="submit" className="btn w-full bg-accent-500">
+                {isLogin ? t('login.signIn') : t('signup.createAccount')}
               </button>
+
+              {isLogin && (
+                <div className="text-center mt-3">
+                  <Link
+                    to="/forgot-password"
+                    className="text-sm text-error-500 hover:underline"
+                  >
+                    {t('login.forgotPassword')}
+                  </Link>
+                </div>
+              )}
             </form>
 
             {/* <div className="mt-4">
@@ -161,17 +160,17 @@ const Landing = () => {
                 className="w-full flex items-center justify-center px-4 py-2 border border-[#E63946] rounded-lg text-[#264653] hover:bg-gray-50"
               >
                 <Mail className="h-5 w-5 mr-2" />
-                Continue with Google
+                {t('login.google')}
               </button>
             </div> */}
 
-            <p className="mt-4 text-center text-[#264653]">
-              {isLogin ? "Don't have an account? " : "Already a member? "}
+            <p className="mt-4 text-center text-primary-600">
+              {isLogin ? t('login.noAccount') + ' ' : t('signup.alreadyHaveAccount') + ' '}
               <button
                 onClick={() => setIsLogin(!isLogin)}
-                className="text-[#E63946] hover:underline"
+                className="text-error-500 hover:underline"
               >
-                {isLogin ? 'Sign Up' : 'Log In'}
+                {isLogin ? t('login.signUp') : t('signup.signIn')}
               </button>
             </p>
           </div>

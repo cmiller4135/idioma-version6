@@ -316,6 +316,76 @@
   }
 }
 
+/* ===== Component Classes ===== */
+@layer components {
+  /* Legacy button class (kept for compatibility) */
+  .btn {
+    @apply px-4 py-2 bg-accent-500 text-primary-600 rounded-lg hover:opacity-90 transition-opacity;
+  }
+
+  /* Legacy input class (kept for compatibility) */
+  .input {
+    @apply w-full px-4 py-2 bg-white border border-error-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-error-500;
+  }
+
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Toast container positioning */
+  .toast-container {
+    @apply fixed top-4 right-4 z-50 flex flex-col gap-2;
+  }
+
+  /* Modal overlay */
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex items-center justify-center;
+  }
+
+  /* Card hover effect */
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5;
+  }
+
+  /* Navigation link */
+  .nav-link {
+    @apply text-primary-600 hover:text-error-500 transition-colors;
+  }
+
+  /* Dropdown menu */
+  .dropdown {
+    @apply absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-50 border border-error-500;
+  }
+}
+
+/* ===== Text Utilities ===== */
+@layer utilities {
+  /* Text truncate utilities */
+  .truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .truncate-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Glass effect */
+  .glass {
+    @apply bg-white/80 backdrop-blur-md;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-600 to-accent-500 bg-clip-text text-transparent;
+  }
+}
+
 /* ===== Print Styles ===== */
 @media print {
   /* Hide navigation and non-essential elements */

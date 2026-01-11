@@ -1,0 +1,88 @@
+{
+  "navbar": {
+    "brand": "Idioma-AI",
+    "home": "Home",
+    "tools": "Tools",
+    "teach": "Teach",
+    "quizzes": "Quizzes",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "login": "Login",
+    "signup": "Sign Up",
+    "menu": "Menu",
+    "closeMenu": "Close menu",
+    "openMenu": "Open menu",
+    "userMenu": "User menu",
+    "notifications": "Notifications",
+    "help": "Help",
+    "language": "Language",
+    "myVocabulary": "My Vocabulary",
+    "learningTools": "Learning Tools",
+    "multimedia": "Multimedia",
+    "multimediaLearning": "Multimedia Learning",
+    "aiStudy": "AI Study",
+    "aiLanguageStudy": "AI Language Study",
+    "account": "Account",
+    "signOut": "Sign Out"
+  },
+  "toolsDropdown": {
+    "title": "Language Tools",
+    "verbConjugator": "Verb Conjugator",
+    "verbConjugatorDesc": "Master Spanish verb conjugations",
+    "vocabularyManager": "Vocabulary Manager",
+    "vocabularyManagerDesc": "Build and manage your word lists",
+    "topicVocabulary": "Topic Vocabulary",
+    "topicVocabularyDesc": "Learn vocabulary by topic",
+    "chat": "AI Chat",
+    "chatDesc": "Practice with AI conversation partner"
+  },
+  "teachDropdown": {
+    "title": "Teaching Tools",
+    "photoTranslation": "Photo Translation",
+    "photoTranslationDesc": "Translate text from images",
+    "audioTranslation": "Audio Translation",
+    "audioTranslationDesc": "Transcribe and translate speech"
+  },
+  "quizzesDropdown": {
+    "title": "Quizzes",
+    "spanishQuiz": "Spanish Quiz",
+    "spanishQuizDesc": "Test your Spanish knowledge",
+    "multiLanguageQuiz": "Multi-Language Quiz",
+    "multiLanguageQuizDesc": "Quiz in multiple languages"
+  },
+  "footer": {
+    "copyright": "All rights reserved.",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "contact": "Contact",
+    "about": "About",
+    "madeWith": "Made with",
+    "byTeam": "by the Idioma-AI team"
+  },
+  "breadcrumbs": {
+    "home": "Home",
+    "tools": "Tools",
+    "teach": "Teach",
+    "quizzes": "Quizzes",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "mobileNav": {
+    "home": "Home",
+    "tools": "Tools",
+    "teach": "Teach",
+    "quiz": "Quiz",
+    "profile": "Profile",
+    "vocab": "Vocab",
+    "media": "Media",
+    "study": "Study"
+  },
+  "breadcrumbLabels": {
+    "learningTools": "Learning Tools",
+    "myVocabulary": "My Vocabulary",
+    "multimediaLearning": "Multimedia Learning",
+    "spanishPractice": "Spanish Practice",
+    "aiLanguageStudy": "AI Language Study"
+  }
+}

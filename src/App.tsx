@@ -1,6 +1,9 @@
 import React, { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import TagManager from 'react-gtm-module';
+
+// Initialize i18n before app renders
+import './i18n';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import LeftColumn from './components/LeftColumn';
@@ -20,6 +23,8 @@ const Sub3 = lazy(() => import('./pages/tools/Sub3'));
 const TeachSub1 = lazy(() => import('./pages/teach/TeachSub1'));
 const TeachSub2 = lazy(() => import('./pages/teach/TeachSub2'));
 const ProfileConfig = lazy(() => import('./pages/ProfileConfig'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 
 const tagManagerArgs = {
   gtmId: 'GTM-KJTB89TKD'
@@ -110,6 +115,8 @@ const App: React.FC = () => {
         <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/" element={<Landing />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/home" element={<Layout><Home /></Layout>} />
             <Route path="/tools" element={<Layout><Tools /></Layout>} />
             <Route path="/tools/sub1" element={<Layout><Sub1 /></Layout>} />

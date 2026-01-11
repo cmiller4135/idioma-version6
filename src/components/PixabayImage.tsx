@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { searchPixabay } from '../lib/edgeFunctions';
 
 interface PixabayImageProps {
@@ -6,6 +7,7 @@ interface PixabayImageProps {
 }
 
 const PixabayImage: React.FC<PixabayImageProps> = ({ description }) => {
+  const { t } = useTranslation('common');
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,18 +25,17 @@ const PixabayImage: React.FC<PixabayImageProps> = ({ description }) => {
         if (data.hits && data.hits.length > 0) {
           setImageUrl(data.hits[0].webformatURL);
         } else {
-          setError('No images found');
+          setError(t('imageErrors.noImages'));
         }
-      } catch (err) {
-        setError('Error fetching image');
+      } catch {
+        setError(t('imageErrors.fetchError'));
       }
     };
 
     fetchImage();
-  }, [description]);
+  }, [description, t]);
 
   return (
-    <div>
     <div>
       {imageUrl ? (
         <img src={imageUrl} alt={description} className="mb-1 rounded-lg shadow-md" />
@@ -42,7 +43,6 @@ const PixabayImage: React.FC<PixabayImageProps> = ({ description }) => {
         <p className="mt-4 text-red-500">{error}</p>
       )}
     </div>
-      </div>
   );
 };
 

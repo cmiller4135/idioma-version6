@@ -37,7 +37,7 @@ export async function invokeEdgeFunction<T>({
  */
 export interface ChatRequest {
   type: 'chat';
-  model: 'gpt-4-turbo' | 'gpt-3.5-turbo';
+  model: 'gpt-4-turbo' | 'gpt-3.5-turbo' | 'gpt-4o';
   messages: Array<{
     role: 'system' | 'user' | 'assistant';
     content: string | any;

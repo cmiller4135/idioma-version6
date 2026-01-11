@@ -1,0 +1,88 @@
+{
+  "navbar": {
+    "brand": "Idioma-AI",
+    "home": "Accueil",
+    "tools": "Outils",
+    "teach": "Enseigner",
+    "quizzes": "Quiz",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "logout": "Déconnexion",
+    "login": "Connexion",
+    "signup": "S'inscrire",
+    "menu": "Menu",
+    "closeMenu": "Fermer le menu",
+    "openMenu": "Ouvrir le menu",
+    "userMenu": "Menu utilisateur",
+    "notifications": "Notifications",
+    "help": "Aide",
+    "language": "Langue",
+    "myVocabulary": "Mon Vocabulaire",
+    "learningTools": "Outils d'Apprentissage",
+    "multimedia": "Multimédia",
+    "multimediaLearning": "Apprentissage Multimédia",
+    "aiStudy": "Étude IA",
+    "aiLanguageStudy": "Étude de Langues avec IA",
+    "account": "Compte",
+    "signOut": "Déconnexion"
+  },
+  "toolsDropdown": {
+    "title": "Outils Linguistiques",
+    "verbConjugator": "Conjugueur de Verbes",
+    "verbConjugatorDesc": "Maîtrisez les conjugaisons espagnoles",
+    "vocabularyManager": "Gestionnaire de Vocabulaire",
+    "vocabularyManagerDesc": "Créez et gérez vos listes de mots",
+    "topicVocabulary": "Vocabulaire par Thème",
+    "topicVocabularyDesc": "Apprenez le vocabulaire par thème",
+    "chat": "Chat IA",
+    "chatDesc": "Pratiquez avec un partenaire de conversation IA"
+  },
+  "teachDropdown": {
+    "title": "Outils Pédagogiques",
+    "photoTranslation": "Traduction Photo",
+    "photoTranslationDesc": "Traduisez le texte des images",
+    "audioTranslation": "Traduction Audio",
+    "audioTranslationDesc": "Transcrivez et traduisez la parole"
+  },
+  "quizzesDropdown": {
+    "title": "Quiz",
+    "spanishQuiz": "Quiz Espagnol",
+    "spanishQuizDesc": "Testez vos connaissances en espagnol",
+    "multiLanguageQuiz": "Quiz Multilingue",
+    "multiLanguageQuizDesc": "Quiz en plusieurs langues"
+  },
+  "footer": {
+    "copyright": "Tous droits réservés.",
+    "privacyPolicy": "Politique de Confidentialité",
+    "termsOfService": "Conditions d'Utilisation",
+    "contact": "Contact",
+    "about": "À Propos",
+    "madeWith": "Fait avec",
+    "byTeam": "par l'équipe Idioma-AI"
+  },
+  "breadcrumbs": {
+    "home": "Accueil",
+    "tools": "Outils",
+    "teach": "Enseigner",
+    "quizzes": "Quiz",
+    "profile": "Profil",
+    "settings": "Paramètres"
+  },
+  "mobileNav": {
+    "home": "Accueil",
+    "tools": "Outils",
+    "teach": "Enseigner",
+    "quiz": "Quiz",
+    "profile": "Profil",
+    "vocab": "Vocab",
+    "media": "Média",
+    "study": "Étude"
+  },
+  "breadcrumbLabels": {
+    "learningTools": "Outils d'Apprentissage",
+    "myVocabulary": "Mon Vocabulaire",
+    "multimediaLearning": "Apprentissage Multimédia",
+    "spanishPractice": "Pratique de l'Espagnol",
+    "aiLanguageStudy": "Étude de Langues avec IA"
+  }
+}

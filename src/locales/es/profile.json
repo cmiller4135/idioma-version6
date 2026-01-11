@@ -1,0 +1,146 @@
+{
+  "title": "Perfil",
+  "subtitle": "Administra tu cuenta y preferencias",
+  "tabs": {
+    "profile": "Perfil",
+    "settings": "Configuración",
+    "preferences": "Preferencias",
+    "statistics": "Estadísticas",
+    "achievements": "Logros"
+  },
+  "personalInfo": {
+    "title": "Información Personal",
+    "avatar": "Foto de Perfil",
+    "changeAvatar": "Cambiar Foto",
+    "removeAvatar": "Eliminar Foto",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "displayName": "Nombre para Mostrar",
+    "email": "Correo Electrónico",
+    "phone": "Número de Teléfono",
+    "bio": "Biografía",
+    "bioPlaceholder": "Cuéntanos sobre ti...",
+    "location": "Ubicación",
+    "timezone": "Zona Horaria",
+    "language": "Idioma de la Interfaz",
+    "save": "Guardar Cambios",
+    "saving": "Guardando...",
+    "saved": "¡Cambios guardados!"
+  },
+  "account": {
+    "title": "Configuración de Cuenta",
+    "changePassword": "Cambiar Contraseña",
+    "currentPassword": "Contraseña Actual",
+    "newPassword": "Nueva Contraseña",
+    "confirmPassword": "Confirmar Nueva Contraseña",
+    "updatePassword": "Actualizar Contraseña",
+    "twoFactor": "Autenticación de Dos Factores",
+    "enable2FA": "Habilitar 2FA",
+    "disable2FA": "Deshabilitar 2FA",
+    "deleteAccount": "Eliminar Cuenta",
+    "deleteWarning": "Esta acción no se puede deshacer. Todos tus datos serán eliminados permanentemente.",
+    "confirmDelete": "Escribe ELIMINAR para confirmar",
+    "lastLogin": "Último Inicio de Sesión",
+    "loginCount": "Cantidad de Inicios de Sesión",
+    "accountCreated": "Cuenta Creada",
+    "emailVerified": "Correo Verificado",
+    "notVerified": "No Verificado",
+    "verifyEmail": "Verificar Correo",
+    "resendVerification": "Reenviar Verificación"
+  },
+  "preferences": {
+    "title": "Preferencias de Aprendizaje",
+    "targetLanguage": "Idioma Objetivo",
+    "nativeLanguage": "Idioma Nativo",
+    "dailyGoal": "Meta Diaria de XP",
+    "goalOptions": {
+      "casual": "Casual (10 XP)",
+      "regular": "Regular (20 XP)",
+      "serious": "Serio (30 XP)",
+      "intense": "Intenso (50 XP)"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "email": "Notificaciones por Correo",
+      "push": "Notificaciones Push",
+      "reminders": "Recordatorios de Práctica",
+      "streakAlerts": "Alertas de Racha",
+      "achievements": "Notificaciones de Logros",
+      "weeklyReport": "Reporte Semanal de Progreso"
+    },
+    "accessibility": {
+      "title": "Accesibilidad",
+      "fontSize": "Tamaño de Fuente",
+      "highContrast": "Modo de Alto Contraste",
+      "reducedMotion": "Movimiento Reducido",
+      "screenReader": "Optimizaciones para Lector de Pantalla"
+    },
+    "appearance": {
+      "title": "Apariencia",
+      "theme": "Tema",
+      "light": "Claro",
+      "dark": "Oscuro",
+      "system": "Sistema"
+    }
+  },
+  "statistics": {
+    "title": "Estadísticas de Aprendizaje",
+    "overview": "Resumen",
+    "totalWords": "Total de Palabras Aprendidas",
+    "totalQuizzes": "Cuestionarios Completados",
+    "totalXP": "XP Total Ganados",
+    "studyTime": "Tiempo Total de Estudio",
+    "accuracy": "Precisión Promedio",
+    "currentStreak": "Racha Actual",
+    "longestStreak": "Racha Más Larga",
+    "level": "Nivel Actual",
+    "byLanguage": "Estadísticas por Idioma",
+    "byWeek": "Progreso Semanal",
+    "byMonth": "Progreso Mensual",
+    "exportData": "Exportar Mis Datos"
+  },
+  "achievements": {
+    "title": "Tus Logros",
+    "unlocked": "Desbloqueados",
+    "locked": "Bloqueados",
+    "progress": "En Progreso",
+    "categories": {
+      "vocabulary": "Vocabulario",
+      "quizzes": "Cuestionarios",
+      "streaks": "Rachas",
+      "social": "Social",
+      "special": "Especial"
+    },
+    "shareAchievement": "Compartir",
+    "viewDetails": "Ver Detalles"
+  },
+  "danger": {
+    "title": "Zona de Peligro",
+    "resetProgress": "Restablecer Progreso",
+    "resetWarning": "Esto restablecerá todo tu progreso de aprendizaje. Tus listas de vocabulario se mantendrán.",
+    "deleteAccount": "Eliminar Cuenta",
+    "deleteWarning": "Elimina permanentemente tu cuenta y todos los datos asociados.",
+    "exportFirst": "Exporta tus datos primero",
+    "confirmReset": "Restablecer Progreso",
+    "confirmDelete": "Eliminar Cuenta"
+  },
+  "config": {
+    "title": "Configuración de Perfil",
+    "username": "Nombre de Usuario",
+    "name": "Nombre",
+    "countryCode": "Código de País",
+    "selectCountryCode": "Selecciona un código de país",
+    "phoneNumber": "Número de Teléfono",
+    "phoneNumberError": "Por favor ingresa solo los números de tu teléfono.",
+    "textOptIn": {
+      "title": "¡Sí! Quiero recibir mensajes de texto: Acepto recibir los siguientes mensajes",
+      "conversationStarters": "Iniciadores de Conversación",
+      "phraseOfTheDay": "Frase del Día"
+    },
+    "updateProfile": "Actualizar Perfil",
+    "updateSuccessful": "Actualización Exitosa",
+    "loading": "Cargando...",
+    "error": "Error",
+    "noProfile": "No se encontró perfil"
+  }
+}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   BookOpen,
   Stethoscope,
@@ -17,29 +18,33 @@ import {
   Check
 } from 'lucide-react';
 import { callOpenAI } from '../../lib/edgeFunctions';
+import { extractOpenAIContent } from '../../lib/validation';
+import { createLogger } from '../../lib/errorLogger';
 import { Card, Button, Input, Spinner } from '../../components/ui';
 import Breadcrumb from '../../components/Breadcrumb';
 
+const logger = createLogger('TopicVocabulary');
+
 interface TopicOption {
   id: string;
-  label: string;
+  labelKey: string;
   icon: React.ReactNode;
   color: string;
   bgColor: string;
 }
 
-const topics: TopicOption[] = [
-  { id: 'Medicine/Healthcare', label: 'Healthcare', icon: <Stethoscope className="w-6 h-6" />, color: 'text-red-600', bgColor: 'bg-red-100' },
-  { id: 'Business/Finance', label: 'Business', icon: <Briefcase className="w-6 h-6" />, color: 'text-blue-600', bgColor: 'bg-blue-100' },
-  { id: 'Hospitality/Tourism', label: 'Hospitality', icon: <Hotel className="w-6 h-6" />, color: 'text-purple-600', bgColor: 'bg-purple-100' },
-  { id: 'Technology/IT', label: 'Technology', icon: <Laptop className="w-6 h-6" />, color: 'text-cyan-600', bgColor: 'bg-cyan-100' },
-  { id: 'Construction/Engineering', label: 'Construction', icon: <HardHat className="w-6 h-6" />, color: 'text-orange-600', bgColor: 'bg-orange-100' },
-  { id: 'Education/Teaching', label: 'Education', icon: <GraduationCap className="w-6 h-6" />, color: 'text-green-600', bgColor: 'bg-green-100' },
-  { id: 'Law/Legal', label: 'Legal', icon: <Scale className="w-6 h-6" />, color: 'text-gray-600', bgColor: 'bg-gray-100' },
-  { id: 'Agriculture/Farming', label: 'Agriculture', icon: <Wheat className="w-6 h-6" />, color: 'text-amber-600', bgColor: 'bg-amber-100' },
-  { id: 'Arts/Entertainment', label: 'Arts', icon: <Palette className="w-6 h-6" />, color: 'text-pink-600', bgColor: 'bg-pink-100' },
-  { id: 'Culinary/Gastronomy', label: 'Culinary', icon: <ChefHat className="w-6 h-6" />, color: 'text-rose-600', bgColor: 'bg-rose-100' },
-  { id: 'custom', label: 'Custom Topic', icon: <MoreHorizontal className="w-6 h-6" />, color: 'text-primary-600', bgColor: 'bg-primary-100' },
+const topicsConfig: TopicOption[] = [
+  { id: 'Medicine/Healthcare', labelKey: 'healthcare', icon: <Stethoscope className="w-6 h-6" />, color: 'text-red-600', bgColor: 'bg-red-100' },
+  { id: 'Business/Finance', labelKey: 'business', icon: <Briefcase className="w-6 h-6" />, color: 'text-blue-600', bgColor: 'bg-blue-100' },
+  { id: 'Hospitality/Tourism', labelKey: 'hospitality', icon: <Hotel className="w-6 h-6" />, color: 'text-purple-600', bgColor: 'bg-purple-100' },
+  { id: 'Technology/IT', labelKey: 'technology', icon: <Laptop className="w-6 h-6" />, color: 'text-cyan-600', bgColor: 'bg-cyan-100' },
+  { id: 'Construction/Engineering', labelKey: 'construction', icon: <HardHat className="w-6 h-6" />, color: 'text-orange-600', bgColor: 'bg-orange-100' },
+  { id: 'Education/Teaching', labelKey: 'education', icon: <GraduationCap className="w-6 h-6" />, color: 'text-green-600', bgColor: 'bg-green-100' },
+  { id: 'Law/Legal', labelKey: 'legal', icon: <Scale className="w-6 h-6" />, color: 'text-gray-600', bgColor: 'bg-gray-100' },
+  { id: 'Agriculture/Farming', labelKey: 'agriculture', icon: <Wheat className="w-6 h-6" />, color: 'text-amber-600', bgColor: 'bg-amber-100' },
+  { id: 'Arts/Entertainment', labelKey: 'arts', icon: <Palette className="w-6 h-6" />, color: 'text-pink-600', bgColor: 'bg-pink-100' },
+  { id: 'Culinary/Gastronomy', labelKey: 'culinary', icon: <ChefHat className="w-6 h-6" />, color: 'text-rose-600', bgColor: 'bg-rose-100' },
+  { id: 'custom', labelKey: 'customTopic', icon: <MoreHorizontal className="w-6 h-6" />, color: 'text-primary-600', bgColor: 'bg-primary-100' },
 ];
 
 interface VocabWord {
@@ -49,6 +54,7 @@ interface VocabWord {
 }
 
 const Sub3: React.FC = () => {
+  const { t } = useTranslation('tools');
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [customTopic, setCustomTopic] = useState('');
   const [loading, setLoading] = useState(false);
@@ -64,12 +70,12 @@ const Sub3: React.FC = () => {
 
   const handleSubmit = async () => {
     if (!selectedTopic) {
-      setError('Please select a topic');
+      setError(t('topicVocabulary.errorSelectTopic'));
       return;
     }
 
     if (selectedTopic === 'custom' && !customTopic.trim()) {
-      setError('Please enter a custom topic');
+      setError(t('topicVocabulary.errorEnterCustom'));
       return;
     }
 
@@ -108,7 +114,7 @@ WORD: [next word]
         temperature: 0.4
       });
 
-      const content = data.choices[0].message.content;
+      const content = extractOpenAIContent(data);
 
       // Parse the response
       const wordBlocks = content.split('---').filter((block: string) => block.trim());
@@ -144,7 +150,7 @@ WORD: [next word]
         setWords(parsedWords);
       }
     } catch (error) {
-      console.error('Error:', error);
+      logger.error(error, 'generateVocabulary', { topic: selectedTopic });
       setError(error instanceof Error ? error.message : 'An unexpected error occurred');
     } finally {
       setLoading(false);
@@ -160,7 +166,11 @@ WORD: [next word]
   };
 
   const getSelectedTopicInfo = () => {
-    return topics.find(t => t.id === selectedTopic);
+    return topicsConfig.find(topic => topic.id === selectedTopic);
+  };
+
+  const getTopicLabel = (labelKey: string) => {
+    return t(`topicVocabulary.topics.${labelKey}`);
   };
 
   return (
@@ -173,21 +183,21 @@ WORD: [next word]
           <div className="p-2 bg-accent-100 rounded-xl">
             <BookOpen className="w-6 h-6 text-accent-600" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-800">Topic Vocabulary</h1>
+          <h1 className="text-2xl font-bold text-gray-800">{t('topicVocabulary.title')}</h1>
         </div>
         <p className="text-gray-600 ml-14">
-          Learn Spanish vocabulary organized by industry and topic areas.
+          {t('topicVocabulary.subtitle')}
         </p>
       </div>
 
       {/* Topic Selection Grid */}
       <Card>
         <Card.Header>
-          <h2 className="text-lg font-semibold text-gray-800">Select a Topic</h2>
+          <h2 className="text-lg font-semibold text-gray-800">{t('topicVocabulary.selectTopic')}</h2>
         </Card.Header>
         <Card.Body>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-            {topics.map((topic) => (
+            {topicsConfig.map((topic) => (
               <button
                 key={topic.id}
                 onClick={() => handleTopicSelect(topic.id)}
@@ -203,7 +213,7 @@ WORD: [next word]
                   <span className={topic.color}>{topic.icon}</span>
                 </div>
                 <span className="text-sm font-medium text-gray-700 text-center">
-                  {topic.label}
+                  {getTopicLabel(topic.labelKey)}
                 </span>
               </button>
             ))}
@@ -213,10 +223,10 @@ WORD: [next word]
           {selectedTopic === 'custom' && (
             <div className="mt-4">
               <Input
-                label="Enter your custom topic"
+                label={t('topicVocabulary.enterCustomTopic')}
                 value={customTopic}
                 onChange={(e) => setCustomTopic(e.target.value)}
-                placeholder="e.g., Sports, Music, Travel, Fashion..."
+                placeholder={t('topicVocabulary.customPlaceholder')}
                 error={error && selectedTopic === 'custom' ? error : undefined}
               />
             </div>
@@ -234,7 +244,7 @@ WORD: [next word]
               disabled={!selectedTopic}
               rightIcon={<Send className="w-4 h-4" />}
             >
-              {loading ? 'Generating Vocabulary...' : 'Generate Vocabulary'}
+              {loading ? t('topicVocabulary.generating') : t('topicVocabulary.generate')}
             </Button>
           </div>
         </Card.Body>
@@ -247,7 +257,7 @@ WORD: [next word]
             <div className="flex flex-col items-center justify-center gap-4">
               <Spinner size="lg" />
               <p className="text-gray-500">
-                Generating vocabulary for {selectedTopic === 'custom' ? customTopic : getSelectedTopicInfo()?.label}...
+                {t('topicVocabulary.generatingFor', { topic: selectedTopic === 'custom' ? customTopic : getTopicLabel(getSelectedTopicInfo()?.labelKey || '') })}
               </p>
             </div>
           </Card.Body>
@@ -268,9 +278,9 @@ WORD: [next word]
                 )}
                 <div>
                   <h2 className="text-xl font-bold text-white">
-                    {selectedTopic === 'custom' ? customTopic : getSelectedTopicInfo()?.label} Vocabulary
+                    {selectedTopic === 'custom' ? customTopic : getTopicLabel(getSelectedTopicInfo()?.labelKey || '')} {t('topicVocabulary.vocabulary')}
                   </h2>
-                  <p className="text-accent-100">{words.length} words with example sentences</p>
+                  <p className="text-accent-100">{t('topicVocabulary.wordCount', { count: words.length })}</p>
                 </div>
               </div>
             </Card.Body>
@@ -289,7 +299,7 @@ WORD: [next word]
                     <button
                       onClick={() => handleCopyWord(index)}
                       className="p-2 rounded-lg hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600"
-                      title="Copy word and examples"
+                      title={t('topicVocabulary.copyWordAndExamples')}
                     >
                       {copiedIndex === index ? (
                         <Check className="w-4 h-4 text-success-500" />
@@ -300,7 +310,7 @@ WORD: [next word]
                   </div>
                   {word.examples.length > 0 && (
                     <div className="space-y-2 border-t border-gray-100 pt-3">
-                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Examples</p>
+                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{t('topicVocabulary.examples')}</p>
                       {word.examples.map((example, exIndex) => (
                         <p key={exIndex} className="text-sm text-gray-600 pl-3 border-l-2 border-primary-200">
                           {example}
@@ -319,19 +329,19 @@ WORD: [next word]
       {!words.length && !loading && (
         <Card className="bg-gray-50 border-gray-200">
           <Card.Body>
-            <h3 className="font-semibold text-gray-800 mb-3">How to Use This Tool</h3>
+            <h3 className="font-semibold text-gray-800 mb-3">{t('topicVocabulary.howToUse')}</h3>
             <ul className="space-y-2 text-sm text-gray-600">
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent-500 mt-2 flex-shrink-0" />
-                <span>Select a topic that matches your learning goals or professional field</span>
+                <span>{t('topicVocabulary.tip1')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent-500 mt-2 flex-shrink-0" />
-                <span>Use "Custom Topic" to explore any subject not in the list</span>
+                <span>{t('topicVocabulary.tip2')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent-500 mt-2 flex-shrink-0" />
-                <span>Copy words to save them to your vocabulary lists</span>
+                <span>{t('topicVocabulary.tip3')}</span>
               </li>
             </ul>
           </Card.Body>

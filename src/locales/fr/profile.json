@@ -1,0 +1,146 @@
+{
+  "title": "Profil",
+  "subtitle": "Gérez votre compte et vos préférences",
+  "tabs": {
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "preferences": "Préférences",
+    "statistics": "Statistiques",
+    "achievements": "Succès"
+  },
+  "personalInfo": {
+    "title": "Informations Personnelles",
+    "avatar": "Photo de Profil",
+    "changeAvatar": "Changer la Photo",
+    "removeAvatar": "Supprimer la Photo",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "displayName": "Nom d'Affichage",
+    "email": "Adresse E-mail",
+    "phone": "Numéro de Téléphone",
+    "bio": "Biographie",
+    "bioPlaceholder": "Parlez-nous de vous...",
+    "location": "Localisation",
+    "timezone": "Fuseau Horaire",
+    "language": "Langue de l'Interface",
+    "save": "Enregistrer les Modifications",
+    "saving": "Enregistrement...",
+    "saved": "Modifications enregistrées !"
+  },
+  "account": {
+    "title": "Paramètres du Compte",
+    "changePassword": "Changer le Mot de Passe",
+    "currentPassword": "Mot de Passe Actuel",
+    "newPassword": "Nouveau Mot de Passe",
+    "confirmPassword": "Confirmer le Nouveau Mot de Passe",
+    "updatePassword": "Mettre à Jour le Mot de Passe",
+    "twoFactor": "Authentification à Deux Facteurs",
+    "enable2FA": "Activer 2FA",
+    "disable2FA": "Désactiver 2FA",
+    "deleteAccount": "Supprimer le Compte",
+    "deleteWarning": "Cette action est irréversible. Toutes vos données seront supprimées définitivement.",
+    "confirmDelete": "Tapez SUPPRIMER pour confirmer",
+    "lastLogin": "Dernière Connexion",
+    "loginCount": "Nombre de Connexions",
+    "accountCreated": "Compte Créé",
+    "emailVerified": "E-mail Vérifié",
+    "notVerified": "Non Vérifié",
+    "verifyEmail": "Vérifier l'E-mail",
+    "resendVerification": "Renvoyer la Vérification"
+  },
+  "preferences": {
+    "title": "Préférences d'Apprentissage",
+    "targetLanguage": "Langue Cible",
+    "nativeLanguage": "Langue Maternelle",
+    "dailyGoal": "Objectif XP Quotidien",
+    "goalOptions": {
+      "casual": "Décontracté (10 XP)",
+      "regular": "Régulier (20 XP)",
+      "serious": "Sérieux (30 XP)",
+      "intense": "Intense (50 XP)"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "email": "Notifications par E-mail",
+      "push": "Notifications Push",
+      "reminders": "Rappels de Pratique",
+      "streakAlerts": "Alertes de Série",
+      "achievements": "Notifications de Succès",
+      "weeklyReport": "Rapport de Progrès Hebdomadaire"
+    },
+    "accessibility": {
+      "title": "Accessibilité",
+      "fontSize": "Taille de Police",
+      "highContrast": "Mode Contraste Élevé",
+      "reducedMotion": "Mouvement Réduit",
+      "screenReader": "Optimisations Lecteur d'Écran"
+    },
+    "appearance": {
+      "title": "Apparence",
+      "theme": "Thème",
+      "light": "Clair",
+      "dark": "Sombre",
+      "system": "Système"
+    }
+  },
+  "statistics": {
+    "title": "Statistiques d'Apprentissage",
+    "overview": "Aperçu",
+    "totalWords": "Total de Mots Appris",
+    "totalQuizzes": "Quiz Terminés",
+    "totalXP": "XP Total Gagnés",
+    "studyTime": "Temps d'Étude Total",
+    "accuracy": "Précision Moyenne",
+    "currentStreak": "Série Actuelle",
+    "longestStreak": "Plus Longue Série",
+    "level": "Niveau Actuel",
+    "byLanguage": "Statistiques par Langue",
+    "byWeek": "Progrès Hebdomadaire",
+    "byMonth": "Progrès Mensuel",
+    "exportData": "Exporter Mes Données"
+  },
+  "achievements": {
+    "title": "Vos Succès",
+    "unlocked": "Déverrouillés",
+    "locked": "Verrouillés",
+    "progress": "En Cours",
+    "categories": {
+      "vocabulary": "Vocabulaire",
+      "quizzes": "Quiz",
+      "streaks": "Séries",
+      "social": "Social",
+      "special": "Spécial"
+    },
+    "shareAchievement": "Partager",
+    "viewDetails": "Voir les Détails"
+  },
+  "danger": {
+    "title": "Zone de Danger",
+    "resetProgress": "Réinitialiser les Progrès",
+    "resetWarning": "Cela réinitialisera tous vos progrès d'apprentissage. Vos listes de vocabulaire seront conservées.",
+    "deleteAccount": "Supprimer le Compte",
+    "deleteWarning": "Supprime définitivement votre compte et toutes les données associées.",
+    "exportFirst": "Exportez d'abord vos données",
+    "confirmReset": "Réinitialiser les Progrès",
+    "confirmDelete": "Supprimer le Compte"
+  },
+  "config": {
+    "title": "Configuration du Profil",
+    "username": "Nom d'Utilisateur",
+    "name": "Nom",
+    "countryCode": "Code du Pays",
+    "selectCountryCode": "Sélectionnez un code de pays",
+    "phoneNumber": "Numéro de Téléphone",
+    "phoneNumberError": "Veuillez saisir uniquement les chiffres de votre numéro de téléphone.",
+    "textOptIn": {
+      "title": "Oui ! Je veux recevoir des SMS : J'accepte de recevoir les messages suivants",
+      "conversationStarters": "Démarreurs de Conversation",
+      "phraseOfTheDay": "Phrase du Jour"
+    },
+    "updateProfile": "Mettre à Jour le Profil",
+    "updateSuccessful": "Mise à Jour Réussie",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "noProfile": "Aucun profil trouvé"
+  }
+}

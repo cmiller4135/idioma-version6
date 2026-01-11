@@ -1,0 +1,88 @@
+{
+  "navbar": {
+    "brand": "Idioma-AI",
+    "home": "Inicio",
+    "tools": "Herramientas",
+    "teach": "Enseñar",
+    "quizzes": "Cuestionarios",
+    "profile": "Perfil",
+    "settings": "Configuración",
+    "logout": "Cerrar Sesión",
+    "login": "Iniciar Sesión",
+    "signup": "Registrarse",
+    "menu": "Menú",
+    "closeMenu": "Cerrar menú",
+    "openMenu": "Abrir menú",
+    "userMenu": "Menú de usuario",
+    "notifications": "Notificaciones",
+    "help": "Ayuda",
+    "language": "Idioma",
+    "myVocabulary": "Mi Vocabulario",
+    "learningTools": "Herramientas de Aprendizaje",
+    "multimedia": "Multimedia",
+    "multimediaLearning": "Aprendizaje Multimedia",
+    "aiStudy": "Estudio con IA",
+    "aiLanguageStudy": "Estudio de Idiomas con IA",
+    "account": "Cuenta",
+    "signOut": "Cerrar Sesión"
+  },
+  "toolsDropdown": {
+    "title": "Herramientas de Idiomas",
+    "verbConjugator": "Conjugador de Verbos",
+    "verbConjugatorDesc": "Domina las conjugaciones de verbos en español",
+    "vocabularyManager": "Gestor de Vocabulario",
+    "vocabularyManagerDesc": "Crea y gestiona tus listas de palabras",
+    "topicVocabulary": "Vocabulario por Temas",
+    "topicVocabularyDesc": "Aprende vocabulario por temas",
+    "chat": "Chat con IA",
+    "chatDesc": "Practica con un compañero de conversación IA"
+  },
+  "teachDropdown": {
+    "title": "Herramientas de Enseñanza",
+    "photoTranslation": "Traducción de Fotos",
+    "photoTranslationDesc": "Traduce texto de imágenes",
+    "audioTranslation": "Traducción de Audio",
+    "audioTranslationDesc": "Transcribe y traduce voz"
+  },
+  "quizzesDropdown": {
+    "title": "Cuestionarios",
+    "spanishQuiz": "Cuestionario de Español",
+    "spanishQuizDesc": "Pon a prueba tu conocimiento de español",
+    "multiLanguageQuiz": "Cuestionario Multilingüe",
+    "multiLanguageQuizDesc": "Cuestionario en varios idiomas"
+  },
+  "footer": {
+    "copyright": "Todos los derechos reservados.",
+    "privacyPolicy": "Política de Privacidad",
+    "termsOfService": "Términos de Servicio",
+    "contact": "Contacto",
+    "about": "Acerca de",
+    "madeWith": "Hecho con",
+    "byTeam": "por el equipo de Idioma-AI"
+  },
+  "breadcrumbs": {
+    "home": "Inicio",
+    "tools": "Herramientas",
+    "teach": "Enseñar",
+    "quizzes": "Cuestionarios",
+    "profile": "Perfil",
+    "settings": "Configuración"
+  },
+  "mobileNav": {
+    "home": "Inicio",
+    "tools": "Herramientas",
+    "teach": "Enseñar",
+    "quiz": "Quiz",
+    "profile": "Perfil",
+    "vocab": "Vocab",
+    "media": "Media",
+    "study": "Estudio"
+  },
+  "breadcrumbLabels": {
+    "learningTools": "Herramientas de Aprendizaje",
+    "myVocabulary": "Mi Vocabulario",
+    "multimediaLearning": "Aprendizaje Multimedia",
+    "spanishPractice": "Práctica de Español",
+    "aiLanguageStudy": "Estudio de Idiomas con IA"
+  }
+}

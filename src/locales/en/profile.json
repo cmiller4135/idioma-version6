@@ -1,0 +1,146 @@
+{
+  "title": "Profile",
+  "subtitle": "Manage your account and preferences",
+  "tabs": {
+    "profile": "Profile",
+    "settings": "Settings",
+    "preferences": "Preferences",
+    "statistics": "Statistics",
+    "achievements": "Achievements"
+  },
+  "personalInfo": {
+    "title": "Personal Information",
+    "avatar": "Profile Picture",
+    "changeAvatar": "Change Picture",
+    "removeAvatar": "Remove Picture",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "displayName": "Display Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "bio": "Bio",
+    "bioPlaceholder": "Tell us about yourself...",
+    "location": "Location",
+    "timezone": "Timezone",
+    "language": "Interface Language",
+    "save": "Save Changes",
+    "saving": "Saving...",
+    "saved": "Changes saved!"
+  },
+  "account": {
+    "title": "Account Settings",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "updatePassword": "Update Password",
+    "twoFactor": "Two-Factor Authentication",
+    "enable2FA": "Enable 2FA",
+    "disable2FA": "Disable 2FA",
+    "deleteAccount": "Delete Account",
+    "deleteWarning": "This action cannot be undone. All your data will be permanently deleted.",
+    "confirmDelete": "Type DELETE to confirm",
+    "lastLogin": "Last Login",
+    "loginCount": "Login Count",
+    "accountCreated": "Account Created",
+    "emailVerified": "Email Verified",
+    "notVerified": "Not Verified",
+    "verifyEmail": "Verify Email",
+    "resendVerification": "Resend Verification"
+  },
+  "preferences": {
+    "title": "Learning Preferences",
+    "targetLanguage": "Target Language",
+    "nativeLanguage": "Native Language",
+    "dailyGoal": "Daily XP Goal",
+    "goalOptions": {
+      "casual": "Casual (10 XP)",
+      "regular": "Regular (20 XP)",
+      "serious": "Serious (30 XP)",
+      "intense": "Intense (50 XP)"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "email": "Email Notifications",
+      "push": "Push Notifications",
+      "reminders": "Practice Reminders",
+      "streakAlerts": "Streak Alerts",
+      "achievements": "Achievement Notifications",
+      "weeklyReport": "Weekly Progress Report"
+    },
+    "accessibility": {
+      "title": "Accessibility",
+      "fontSize": "Font Size",
+      "highContrast": "High Contrast Mode",
+      "reducedMotion": "Reduced Motion",
+      "screenReader": "Screen Reader Optimizations"
+    },
+    "appearance": {
+      "title": "Appearance",
+      "theme": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    }
+  },
+  "statistics": {
+    "title": "Learning Statistics",
+    "overview": "Overview",
+    "totalWords": "Total Words Learned",
+    "totalQuizzes": "Quizzes Completed",
+    "totalXP": "Total XP Earned",
+    "studyTime": "Total Study Time",
+    "accuracy": "Average Accuracy",
+    "currentStreak": "Current Streak",
+    "longestStreak": "Longest Streak",
+    "level": "Current Level",
+    "byLanguage": "Statistics by Language",
+    "byWeek": "Weekly Progress",
+    "byMonth": "Monthly Progress",
+    "exportData": "Export My Data"
+  },
+  "achievements": {
+    "title": "Your Achievements",
+    "unlocked": "Unlocked",
+    "locked": "Locked",
+    "progress": "In Progress",
+    "categories": {
+      "vocabulary": "Vocabulary",
+      "quizzes": "Quizzes",
+      "streaks": "Streaks",
+      "social": "Social",
+      "special": "Special"
+    },
+    "shareAchievement": "Share",
+    "viewDetails": "View Details"
+  },
+  "danger": {
+    "title": "Danger Zone",
+    "resetProgress": "Reset Progress",
+    "resetWarning": "This will reset all your learning progress. Your vocabulary lists will be kept.",
+    "deleteAccount": "Delete Account",
+    "deleteWarning": "Permanently delete your account and all associated data.",
+    "exportFirst": "Export your data first",
+    "confirmReset": "Reset Progress",
+    "confirmDelete": "Delete Account"
+  },
+  "config": {
+    "title": "Profile Configuration",
+    "username": "Username",
+    "name": "Name",
+    "countryCode": "Country Code",
+    "selectCountryCode": "Select a country code",
+    "phoneNumber": "Phone Number",
+    "phoneNumberError": "Please type only the numbers of your phone number.",
+    "textOptIn": {
+      "title": "Yes! I want to receive texts: I Opt-In for the following messages",
+      "conversationStarters": "Conversation Starters",
+      "phraseOfTheDay": "Phrase of the Day"
+    },
+    "updateProfile": "Update Profile",
+    "updateSuccessful": "Update Successful",
+    "loading": "Loading...",
+    "error": "Error",
+    "noProfile": "No profile found"
+  }
+}

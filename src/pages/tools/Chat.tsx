@@ -1,7 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Send, Trash2, MessageSquare, User, Bot } from 'lucide-react';
 import { callOpenAI } from '../../lib/edgeFunctions';
 import { Button } from '../../components/ui';
+import { extractOpenAIContent } from '../../lib/validation';
+import { createLogger } from '../../lib/errorLogger';
+
+const logger = createLogger('Chat');
 
 interface Message {
   role: 'user' | 'assistant';
@@ -10,6 +15,7 @@ interface Message {
 }
 
 export function Chat() {
+  const { t } = useTranslation('tools');
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -61,18 +67,19 @@ export function Chat() {
         })),
       });
 
+      const content = extractOpenAIContent(data);
       const assistantMessage: Message = {
         role: 'assistant',
-        content: data.choices[0].message.content,
+        content,
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
-      console.error('Error:', error);
+      logger.error(error, 'sendMessage');
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.',
+        content: t('chat.errorMessage'),
         timestamp: new Date()
       }]);
     } finally {
@@ -101,13 +108,13 @@ export function Chat() {
       <div className="px-4 py-3 bg-primary-600 flex items-center justify-between">
         <div className="flex items-center gap-2 text-white">
           <MessageSquare className="w-5 h-5" />
-          <span className="font-medium">Language Learning Assistant</span>
+          <span className="font-medium">{t('chat.title')}</span>
         </div>
         {messages.length > 0 && (
           <button
             onClick={handleClearConversation}
             className="p-2 rounded-lg text-primary-200 hover:text-white hover:bg-primary-500 transition-colors"
-            title="Clear conversation"
+            title={t('chat.clearConversation')}
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -119,8 +126,8 @@ export function Chat() {
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-center text-gray-500">
             <Bot className="w-12 h-12 mb-3 text-gray-300" />
-            <p className="font-medium">Start a conversation</p>
-            <p className="text-sm">Ask questions about Spanish, get help with translations, or practice conversations.</p>
+            <p className="font-medium">{t('chat.startConversation')}</p>
+            <p className="text-sm">{t('chat.startConversationDesc')}</p>
           </div>
         )}
 
@@ -185,7 +192,7 @@ export function Chat() {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Type your message... (Enter to send, Shift+Enter for new line)"
+              placeholder={t('chat.placeholder')}
               className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none min-h-[44px] max-h-[120px] text-sm"
               rows={1}
               disabled={isLoading}
@@ -201,7 +208,7 @@ export function Chat() {
           </Button>
         </form>
         <p className="text-xs text-gray-400 mt-2 text-center">
-          Press Enter to send, Shift+Enter for new line
+          {t('chat.enterToSend')}
         </p>
       </div>
     </div>

@@ -1,0 +1,199 @@
+{
+  "hero": {
+    "title": "Aprenda Idiomas com IA",
+    "subtitle": "Acelere sua jornada de aprendizado de idiomas com ferramentas com IA",
+    "getStarted": "Começar",
+    "learnMore": "Saiba Mais"
+  },
+  "welcome": {
+    "title": "Bem-vindo de volta, {{name}}!",
+    "subtitle": "Continue sua jornada de aprendizado de idiomas",
+    "greeting": {
+      "morning": "Bom dia",
+      "afternoon": "Boa tarde",
+      "evening": "Boa noite"
+    }
+  },
+  "stats": {
+    "title": "Seu Progresso",
+    "wordsLearned": "Palavras Aprendidas",
+    "quizzesTaken": "Quizzes Realizados",
+    "streakDays": "Dias de Sequência",
+    "totalXP": "XP Total",
+    "accuracy": "Precisão",
+    "practiceTime": "Tempo de Prática",
+    "level": "Nível {{level}}",
+    "rank": "Classificação",
+    "thisWeek": "Esta Semana",
+    "allTime": "Todo o Tempo"
+  },
+  "quickActions": {
+    "title": "Ações Rápidas",
+    "practiceVocabulary": "Praticar Vocabulário",
+    "takeQuiz": "Fazer um Quiz",
+    "learnNewWords": "Aprender Palavras Novas",
+    "reviewMistakes": "Revisar Erros",
+    "startConversation": "Iniciar Conversa",
+    "translatePhoto": "Traduzir Foto"
+  },
+  "recentActivity": {
+    "title": "Atividade Recente",
+    "noActivity": "Sem atividade recente",
+    "viewAll": "Ver Tudo",
+    "completedQuiz": "Quiz concluído",
+    "addedWords": "Adicionou {{count}} palavras",
+    "practicedFlashcards": "Praticou flashcards",
+    "startedConversation": "Iniciou conversa",
+    "achievementUnlocked": "Conquista desbloqueada"
+  },
+  "streak": {
+    "title": "Sequência de Aprendizado",
+    "currentStreak": "Sequência Atual",
+    "longestStreak": "Maior Sequência",
+    "days": "dias",
+    "keepGoing": "Continue assim!",
+    "streakLost": "Sequência perdida! Comece uma nova hoje.",
+    "practiceToday": "Pratique hoje para manter sua sequência!",
+    "streakMaintained": "Sequência mantida!",
+    "freezeAvailable": "Congelamento de sequência disponível"
+  },
+  "flashcards": {
+    "title": "Prática com Flashcards",
+    "dueToday": "Para hoje",
+    "cardsToReview": "{{count}} cartões para revisar",
+    "allCaughtUp": "Tudo em dia!",
+    "startPractice": "Iniciar Prática",
+    "noCardsYet": "Ainda não há flashcards",
+    "addWords": "Adicione palavras ao seu vocabulário para praticar"
+  },
+  "recommendations": {
+    "title": "Recomendado para Você",
+    "basedOnProgress": "Baseado no seu progresso",
+    "weakAreas": "Foque nas áreas fracas",
+    "newContent": "Novo conteúdo disponível"
+  },
+  "achievements": {
+    "title": "Conquistas",
+    "recent": "Conquistas Recentes",
+    "viewAll": "Ver Todas",
+    "locked": "Bloqueada",
+    "unlocked": "Desbloqueada",
+    "progress": "{{current}}/{{total}}",
+    "firstSteps": "Primeiros Passos",
+    "vocabularyBuilder": "Construtor de Vocabulário",
+    "quizMaster": "Mestre dos Quizzes",
+    "streakChampion": "Campeão de Sequências",
+    "conversationalist": "Conversador"
+  },
+  "dailyGoal": {
+    "title": "Meta Diária",
+    "progress": "{{current}} / {{target}} XP",
+    "completed": "Meta Concluída!",
+    "keepGoing": "Continue assim!",
+    "setGoal": "Definir Meta",
+    "adjustGoal": "Ajustar Meta"
+  },
+  "leaderboard": {
+    "title": "Classificação",
+    "thisWeek": "Esta Semana",
+    "allTime": "Todo o Tempo",
+    "yourRank": "Sua Posição",
+    "viewFull": "Ver Classificação Completa"
+  },
+  "tips": {
+    "title": "Dica do Dia",
+    "dismiss": "Entendi",
+    "nextTip": "Próxima Dica",
+    "proTip": "Dica Pro",
+    "consistencyTip": "A consistência é a chave! Tente praticar um pouco todos os dias em vez de sessões longas uma vez por semana. Mesmo 10 minutos de prática diária podem levar a um progresso significativo ao longo do tempo."
+  },
+  "learningTools": {
+    "title": "Ferramentas de Aprendizado",
+    "viewAll": "Ver todas as ferramentas",
+    "verbConjugator": "Conjugador de Verbos",
+    "verbConjugatorDesc": "Domine as formas verbais",
+    "topicVocabulary": "Vocabulário por Tema",
+    "topicVocabularyDesc": "Aprenda palavras por assunto"
+  },
+  "multimedia": {
+    "title": "Aprendizado Multimídia",
+    "viewAll": "Ver todas as ferramentas multimídia",
+    "photoTranslation": "Tradução de Foto",
+    "photoTranslationDesc": "Capture e traduza",
+    "audioTranslation": "Tradução de Áudio",
+    "audioTranslationDesc": "Fale e traduza"
+  },
+  "quickPractice": {
+    "title": "Prática Rápida com Flashcards",
+    "hideCards": "Ocultar Cartões",
+    "practiceNow": "Praticar Agora",
+    "wordsReady": "Você tem {{count}} palavras prontas para praticar. Clique em \"Praticar Agora\" para começar!"
+  },
+  "quickActionsItems": {
+    "myVocabulary": "Meu Vocabulário",
+    "myVocabularyDesc": "Revise e gerencie suas palavras e listas salvas",
+    "verbConjugator": "Conjugador de Verbos",
+    "verbConjugatorDesc": "Pratique conjugações de verbos em espanhol",
+    "photoTranslation": "Tradução de Foto",
+    "photoTranslationDesc": "Traduza texto de fotos instantaneamente",
+    "aiLanguageStudy": "Estudo de Idiomas com IA",
+    "aiLanguageStudyDesc": "Aprenda com conteúdo gerado por IA e quizzes"
+  },
+  "statsLabels": {
+    "words": "Palavras",
+    "quizzes": "Quizzes",
+    "minutes": "Minutos",
+    "streak": "Sequência",
+    "xp": "XP",
+    "level": "Nível",
+    "lvl": "Nvl"
+  },
+  "achievementsSection": {
+    "unlockedOf": "{{unlocked}} de {{total}} conquistas desbloqueadas"
+  },
+  "gamification": {
+    "streak": {
+      "onFire": "Em Chamas!",
+      "blazing": "Brilhando!",
+      "hotStreak": "Sequência Quente!",
+      "gettingStarted": "Começando Bem!",
+      "keepGoing": "Continue Assim!",
+      "startStreak": "Iniciar Sequência",
+      "day": "Dia",
+      "days": "Dias"
+    },
+    "xp": {
+      "xp": "XP",
+      "level": "Nível",
+      "toLevel": "para Nível {{level}}"
+    },
+    "achievement": {
+      "unlocked": "Conquista Desbloqueada!",
+      "awesome": "Incrível!",
+      "xpReward": "+{{xp}} XP"
+    },
+    "familiarity": {
+      "new": "Novo",
+      "learning": "Aprendendo",
+      "familiar": "Familiar",
+      "known": "Conhecido",
+      "mastered": "Dominado"
+    }
+  },
+  "flashcardPractice": {
+    "sessionComplete": "Sessão Completa!",
+    "youReviewed": "Você revisou {{count}} cartões",
+    "correct": "Correto",
+    "incorrect": "Incorreto",
+    "score": "Pontuação",
+    "noCardsToReview": "Nenhum Cartão para Revisar",
+    "addWordsToStart": "Adicione palavras ao seu vocabulário para começar a praticar!",
+    "clickToFlip": "Clique para virar",
+    "hideExample": "Ocultar exemplo",
+    "showExample": "Mostrar exemplo",
+    "didntKnow": "Não Sabia",
+    "knewIt": "Sabia",
+    "practiceAgain": "Praticar Novamente",
+    "shuffleRestart": "Embaralhar e Reiniciar"
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "title": "Perfil",
+  "subtitle": "Gerencie sua conta e preferências",
+  "tabs": {
+    "profile": "Perfil",
+    "settings": "Configurações",
+    "preferences": "Preferências",
+    "statistics": "Estatísticas",
+    "achievements": "Conquistas"
+  },
+  "personalInfo": {
+    "title": "Informações Pessoais",
+    "avatar": "Foto de Perfil",
+    "changeAvatar": "Alterar Foto",
+    "removeAvatar": "Remover Foto",
+    "firstName": "Nome",
+    "lastName": "Sobrenome",
+    "displayName": "Nome de Exibição",
+    "email": "Endereço de E-mail",
+    "phone": "Número de Telefone",
+    "bio": "Biografia",
+    "bioPlaceholder": "Conte-nos sobre você...",
+    "location": "Localização",
+    "timezone": "Fuso Horário",
+    "language": "Idioma da Interface",
+    "save": "Salvar Alterações",
+    "saving": "Salvando...",
+    "saved": "Alterações salvas!"
+  },
+  "account": {
+    "title": "Configurações da Conta",
+    "changePassword": "Alterar Senha",
+    "currentPassword": "Senha Atual",
+    "newPassword": "Nova Senha",
+    "confirmPassword": "Confirmar Nova Senha",
+    "updatePassword": "Atualizar Senha",
+    "twoFactor": "Autenticação de Dois Fatores",
+    "enable2FA": "Ativar 2FA",
+    "disable2FA": "Desativar 2FA",
+    "deleteAccount": "Excluir Conta",
+    "deleteWarning": "Esta ação não pode ser desfeita. Todos os seus dados serão excluídos permanentemente.",
+    "confirmDelete": "Digite EXCLUIR para confirmar",
+    "lastLogin": "Último Acesso",
+    "loginCount": "Quantidade de Acessos",
+    "accountCreated": "Conta Criada",
+    "emailVerified": "E-mail Verificado",
+    "notVerified": "Não Verificado",
+    "verifyEmail": "Verificar E-mail",
+    "resendVerification": "Reenviar Verificação"
+  },
+  "preferences": {
+    "title": "Preferências de Aprendizado",
+    "targetLanguage": "Idioma Alvo",
+    "nativeLanguage": "Idioma Nativo",
+    "dailyGoal": "Meta Diária de XP",
+    "goalOptions": {
+      "casual": "Casual (10 XP)",
+      "regular": "Regular (20 XP)",
+      "serious": "Sério (30 XP)",
+      "intense": "Intenso (50 XP)"
+    },
+    "notifications": {
+      "title": "Notificações",
+      "email": "Notificações por E-mail",
+      "push": "Notificações Push",
+      "reminders": "Lembretes de Prática",
+      "streakAlerts": "Alertas de Sequência",
+      "achievements": "Notificações de Conquistas",
+      "weeklyReport": "Relatório Semanal de Progresso"
+    },
+    "accessibility": {
+      "title": "Acessibilidade",
+      "fontSize": "Tamanho da Fonte",
+      "highContrast": "Modo de Alto Contraste",
+      "reducedMotion": "Movimento Reduzido",
+      "screenReader": "Otimizações para Leitor de Tela"
+    },
+    "appearance": {
+      "title": "Aparência",
+      "theme": "Tema",
+      "light": "Claro",
+      "dark": "Escuro",
+      "system": "Sistema"
+    }
+  },
+  "statistics": {
+    "title": "Estatísticas de Aprendizado",
+    "overview": "Visão Geral",
+    "totalWords": "Total de Palavras Aprendidas",
+    "totalQuizzes": "Quizzes Concluídos",
+    "totalXP": "XP Total Ganhos",
+    "studyTime": "Tempo Total de Estudo",
+    "accuracy": "Precisão Média",
+    "currentStreak": "Sequência Atual",
+    "longestStreak": "Maior Sequência",
+    "level": "Nível Atual",
+    "byLanguage": "Estatísticas por Idioma",
+    "byWeek": "Progresso Semanal",
+    "byMonth": "Progresso Mensal",
+    "exportData": "Exportar Meus Dados"
+  },
+  "achievements": {
+    "title": "Suas Conquistas",
+    "unlocked": "Desbloqueadas",
+    "locked": "Bloqueadas",
+    "progress": "Em Progresso",
+    "categories": {
+      "vocabulary": "Vocabulário",
+      "quizzes": "Quizzes",
+      "streaks": "Sequências",
+      "social": "Social",
+      "special": "Especial"
+    },
+    "shareAchievement": "Compartilhar",
+    "viewDetails": "Ver Detalhes"
+  },
+  "danger": {
+    "title": "Zona de Perigo",
+    "resetProgress": "Redefinir Progresso",
+    "resetWarning": "Isso redefinirá todo o seu progresso de aprendizado. Suas listas de vocabulário serão mantidas.",
+    "deleteAccount": "Excluir Conta",
+    "deleteWarning": "Exclui permanentemente sua conta e todos os dados associados.",
+    "exportFirst": "Exporte seus dados primeiro",
+    "confirmReset": "Redefinir Progresso",
+    "confirmDelete": "Excluir Conta"
+  },
+  "config": {
+    "title": "Configuração do Perfil",
+    "username": "Nome de Usuário",
+    "name": "Nome",
+    "countryCode": "Código do País",
+    "selectCountryCode": "Selecione um código de país",
+    "phoneNumber": "Número de Telefone",
+    "phoneNumberError": "Por favor, digite apenas os números do seu telefone.",
+    "textOptIn": {
+      "title": "Sim! Quero receber mensagens de texto: Aceito receber as seguintes mensagens",
+      "conversationStarters": "Iniciadores de Conversa",
+      "phraseOfTheDay": "Frase do Dia"
+    },
+    "updateProfile": "Atualizar Perfil",
+    "updateSuccessful": "Atualização Bem-sucedida",
+    "loading": "Carregando...",
+    "error": "Erro",
+    "noProfile": "Nenhum perfil encontrado"
+  }
+}

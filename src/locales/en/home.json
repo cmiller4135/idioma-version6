@@ -1,0 +1,199 @@
+{
+  "hero": {
+    "title": "Learn Languages with AI",
+    "subtitle": "Accelerate your language learning journey with powerful AI-assisted tools",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More"
+  },
+  "welcome": {
+    "title": "Welcome back, {{name}}!",
+    "subtitle": "Continue your language learning journey",
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    }
+  },
+  "stats": {
+    "title": "Your Progress",
+    "wordsLearned": "Words Learned",
+    "quizzesTaken": "Quizzes Taken",
+    "streakDays": "Day Streak",
+    "totalXP": "Total XP",
+    "accuracy": "Accuracy",
+    "practiceTime": "Practice Time",
+    "level": "Level {{level}}",
+    "rank": "Rank",
+    "thisWeek": "This Week",
+    "allTime": "All Time"
+  },
+  "quickActions": {
+    "title": "Quick Actions",
+    "practiceVocabulary": "Practice Vocabulary",
+    "takeQuiz": "Take a Quiz",
+    "learnNewWords": "Learn New Words",
+    "reviewMistakes": "Review Mistakes",
+    "startConversation": "Start Conversation",
+    "translatePhoto": "Translate Photo"
+  },
+  "recentActivity": {
+    "title": "Recent Activity",
+    "noActivity": "No recent activity",
+    "viewAll": "View All",
+    "completedQuiz": "Completed quiz",
+    "addedWords": "Added {{count}} words",
+    "practicedFlashcards": "Practiced flashcards",
+    "startedConversation": "Started conversation",
+    "achievementUnlocked": "Achievement unlocked"
+  },
+  "streak": {
+    "title": "Learning Streak",
+    "currentStreak": "Current Streak",
+    "longestStreak": "Longest Streak",
+    "days": "days",
+    "keepGoing": "Keep going!",
+    "streakLost": "Streak lost! Start a new one today.",
+    "practiceToday": "Practice today to maintain your streak!",
+    "streakMaintained": "Streak maintained!",
+    "freezeAvailable": "Streak freeze available"
+  },
+  "flashcards": {
+    "title": "Flashcard Practice",
+    "dueToday": "Due today",
+    "cardsToReview": "{{count}} cards to review",
+    "allCaughtUp": "All caught up!",
+    "startPractice": "Start Practice",
+    "noCardsYet": "No flashcards yet",
+    "addWords": "Add words to your vocabulary to practice"
+  },
+  "recommendations": {
+    "title": "Recommended for You",
+    "basedOnProgress": "Based on your progress",
+    "weakAreas": "Focus on weak areas",
+    "newContent": "New content available"
+  },
+  "achievements": {
+    "title": "Achievements",
+    "recent": "Recent Achievements",
+    "viewAll": "View All",
+    "locked": "Locked",
+    "unlocked": "Unlocked",
+    "progress": "{{current}}/{{total}}",
+    "firstSteps": "First Steps",
+    "vocabularyBuilder": "Vocabulary Builder",
+    "quizMaster": "Quiz Master",
+    "streakChampion": "Streak Champion",
+    "conversationalist": "Conversationalist"
+  },
+  "dailyGoal": {
+    "title": "Daily Goal",
+    "progress": "{{current}} / {{target}} XP",
+    "completed": "Goal Completed!",
+    "keepGoing": "Keep going!",
+    "setGoal": "Set Goal",
+    "adjustGoal": "Adjust Goal"
+  },
+  "leaderboard": {
+    "title": "Leaderboard",
+    "thisWeek": "This Week",
+    "allTime": "All Time",
+    "yourRank": "Your Rank",
+    "viewFull": "View Full Leaderboard"
+  },
+  "tips": {
+    "title": "Daily Tip",
+    "dismiss": "Got it",
+    "nextTip": "Next Tip",
+    "proTip": "Pro Tip",
+    "consistencyTip": "Consistency is key! Try to practice a little every day rather than long sessions once a week. Even 10 minutes of daily practice can lead to significant progress over time."
+  },
+  "learningTools": {
+    "title": "Learning Tools",
+    "viewAll": "View all tools",
+    "verbConjugator": "Verb Conjugator",
+    "verbConjugatorDesc": "Master verb forms",
+    "topicVocabulary": "Topic Vocabulary",
+    "topicVocabularyDesc": "Learn words by subject"
+  },
+  "multimedia": {
+    "title": "Multimedia Learning",
+    "viewAll": "View all multimedia tools",
+    "photoTranslation": "Photo Translation",
+    "photoTranslationDesc": "Snap and translate",
+    "audioTranslation": "Audio Translation",
+    "audioTranslationDesc": "Speak and translate"
+  },
+  "quickPractice": {
+    "title": "Quick Flashcard Practice",
+    "hideCards": "Hide Cards",
+    "practiceNow": "Practice Now",
+    "wordsReady": "You have {{count}} words ready to practice. Click \"Practice Now\" to start!"
+  },
+  "quickActionsItems": {
+    "myVocabulary": "My Vocabulary",
+    "myVocabularyDesc": "Review and manage your saved words and lists",
+    "verbConjugator": "Verb Conjugator",
+    "verbConjugatorDesc": "Practice Spanish verb conjugations",
+    "photoTranslation": "Photo Translation",
+    "photoTranslationDesc": "Translate text from photos instantly",
+    "aiLanguageStudy": "AI Language Study",
+    "aiLanguageStudyDesc": "Learn with AI-generated content and quizzes"
+  },
+  "statsLabels": {
+    "words": "Words",
+    "quizzes": "Quizzes",
+    "minutes": "Minutes",
+    "streak": "Streak",
+    "xp": "XP",
+    "level": "Level",
+    "lvl": "Lvl"
+  },
+  "achievementsSection": {
+    "unlockedOf": "{{unlocked}} of {{total}} achievements unlocked"
+  },
+  "gamification": {
+    "streak": {
+      "onFire": "On Fire!",
+      "blazing": "Blazing!",
+      "hotStreak": "Hot Streak!",
+      "gettingStarted": "Getting Started!",
+      "keepGoing": "Keep Going!",
+      "startStreak": "Start Streak",
+      "day": "Day",
+      "days": "Days"
+    },
+    "xp": {
+      "xp": "XP",
+      "level": "Level",
+      "toLevel": "to Level {{level}}"
+    },
+    "achievement": {
+      "unlocked": "Achievement Unlocked!",
+      "awesome": "Awesome!",
+      "xpReward": "+{{xp}} XP"
+    },
+    "familiarity": {
+      "new": "New",
+      "learning": "Learning",
+      "familiar": "Familiar",
+      "known": "Known",
+      "mastered": "Mastered"
+    }
+  },
+  "flashcardPractice": {
+    "sessionComplete": "Session Complete!",
+    "youReviewed": "You reviewed {{count}} cards",
+    "correct": "Correct",
+    "incorrect": "Incorrect",
+    "score": "Score",
+    "noCardsToReview": "No Cards to Review",
+    "addWordsToStart": "Add some words to your vocabulary to start practicing!",
+    "clickToFlip": "Click to flip",
+    "hideExample": "Hide example",
+    "showExample": "Show example",
+    "didntKnow": "Didn't Know",
+    "knewIt": "Knew It",
+    "practiceAgain": "Practice Again",
+    "shuffleRestart": "Shuffle & Restart"
+  }
+}
